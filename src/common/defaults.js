@@ -148,7 +148,7 @@ defaults.ether = {
 defaults.layout = {}
 defaults.layout.header = {}
 defaults.layout.header.width = '100%'
-defaults.layout.header.padding = '.7rem .7rem'
+defaults.layout.header.padding = '.888rem'
 defaults.layout.header.minHeight = '41px'
 
 defaults.layout.container = {}
