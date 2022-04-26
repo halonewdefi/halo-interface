@@ -21,8 +21,8 @@ export default {
 			_hover: {
 				background: mode('accent.light.50',
 					'accent.dark.50')(props),
-				color: mode('#222',
-					'#E1E1E1')(props),
+				color: mode('type.dark',
+					'type.light')(props),
 			},
 			_active: {
 				background: mode('accent.light.200',

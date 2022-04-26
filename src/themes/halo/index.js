@@ -21,14 +21,14 @@ import popover from './popover'
 const overrides = {
 	config: {
 		useSystemColorMode: false,
-		initialColorMode: 'dark',
+		initialColorMode: 'light',
 	},
 	styles: {
 		global: props => ({
 			body: {
 				fontSize: '1em',
 				fontWeight: 'normal',
-				color: 'white',
+				color: mode('type.dark', 'type.light')(props),
 				bg: mode('#FFEDCB', '#161616')(props),
 			},
 			'input::placeholder': {
@@ -79,29 +79,6 @@ const overrides = {
 		Switch: switchComp,
 		Tag: tag,
 		Popover: popover,
-	},
-	layerStyles: {
-		opaque: {
-			background: '#1e1b28',
-			border: '1px solid #ffffff22',
-			borderRadius: '1rem',
-			fontWeight: 'bold',
-		},
-		opaqueLight: {
-			background: 'white.100',
-			color: '#4F4F4F',
-			fontWeight: 'bold',
-			borderRadius: '1rem',
-		},
-		colorful: {
-			borderRadius: '24px',
-			background: 'linear-gradient(90deg,rgb(100, 71, 101) 0%,rgb(33, 74, 112) 100%)',
-		},
-		inputLike: {
-			background: '#1b2028',
-			borderRadius: '0.8rem',
-			padding: '0.6rem 1rem',
-		},
 	},
 }
 
