@@ -17,6 +17,7 @@ import spinner from './spinner'
 import modal from './modal'
 import tag from './tag'
 import popover from './popover'
+import layers from './layers'
 
 const overrides = {
 	config: {
@@ -28,8 +29,8 @@ const overrides = {
 			body: {
 				fontSize: '1em',
 				fontWeight: 'normal',
-				color: mode('type.dark', 'type.light')(props),
-				bg: mode('#FFEDCB', '#161616')(props),
+				color: mode('type.body.dark', 'type.body.light')(props),
+				bg: mode('bg.light', 'bg.dark')(props),
 			},
 			'input::placeholder': {
 				color: '#000',
@@ -37,18 +38,24 @@ const overrides = {
 			'.chakra-alert button:focus': {
 				boxShadow: '0 0 0 3px #7b7ce0',
 			},
-			h1: {
+			'h1, h2, h3, h4, h5, h6, h7': {
+				fontFamily: 'Heading',
+				color: mode('primary.blue.100', 'secondary.purple.100')(props),
 				textTransform: 'uppercase',
-				margin: '0 0 1rem',
+			},
+			h1: {
+				fontSize: '1.5rem',
+				margin: '0 0 .3rem',
 			},
 			h2: {
-				margin: '0 0 1.5rem',
+				margin: '0 0 .23rem',
 			},
 			h3: {
-				margin: '0 0 1rem',
+				margin: '0 0 .2rem',
 			},
 			h4: {
-				margin: '0 0 0.5rem',
+				fontSize: '0.7rem',
+				margin: '0 0 .16rem',
 			},
 			'img[src=\'\']': {
 				opacity: '0',
@@ -80,6 +87,7 @@ const overrides = {
 		Tag: tag,
 		Popover: popover,
 	},
+	layerStyles: layers,
 }
 
 export default extendTheme(overrides)

@@ -36,7 +36,7 @@ export const WalletConnectionToggle = props => {
 				ref.current.appendChild(
 					Jazzicon(16, parseInt(wallet.account.slice(2, 10), 16)),
 				).style.marginLeft = '7px'
-				toast(connected)
+				// toast(connected)
 			}
 			return () => {
 				if (wallet.account) {

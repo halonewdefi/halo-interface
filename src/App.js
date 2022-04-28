@@ -5,7 +5,7 @@ import theme from './themes/halo'
 import { UseWalletProvider } from 'use-wallet'
 import { Header } from './components'
 import defaults from './common/defaults'
-import { Home } from './locations'
+import { Lockdrop } from './locations'
 
 const App = () => {
 
@@ -28,7 +28,7 @@ const App = () => {
 						p={defaults.layout.container.padding}>
 						<Switch>
 							<Route path='/' exact render={() =>
-								<Home/>
+								<Lockdrop/>
 							}/>
 							<Route path='*' render={() =>
 								<Redirect to={'/'} />

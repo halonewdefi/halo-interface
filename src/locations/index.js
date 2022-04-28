@@ -1,2 +1,2 @@
-export * from './home'
+export * from './lockdrop'
 export * from './swap'

@@ -1,11 +1,17 @@
 export default {
-	primary: {
-		dark: '#3c3c3c',
-		light: '#d0cfcf',
+	bg: {
+		light: '#FFEDCB',
+		dark: '#161616',
 	},
 	type: {
-		dark: '#222',
-		light: '#E1E1E1',
+		body: {
+			dark: '#222',
+			light: '#E1E1E1',
+		},
+		link: {
+			dark: '#3c3c3c',
+			light: '#d0cfcf',
+		},
 	},
 	accent: {
 		dark: {
@@ -17,6 +23,25 @@ export default {
 			100: '#DDA11D',
 			200: '#d69e22',
 			300: '#cd961b',
+		},
+	},
+	primary: {
+		blue: {
+			100: '#16385A',
+		},
+		white: {
+			100: '#fff',
+		},
+		almond: {
+			100: '#FFEDCB',
+		},
+	},
+	secondary: {
+		purple: {
+			100: '#6D6394',
+		},
+		black: {
+			100: '#000',
 		},
 	},
 }

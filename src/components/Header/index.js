@@ -10,8 +10,8 @@ export const Header = (props) => {
 	const location = useLocation()
 	const pages = [
 		{
-			name: 'Home',
-			text: 'Home',
+			name: 'Lockdrop',
+			text: 'Lockdrop',
 			link: '/',
 		},
 	]

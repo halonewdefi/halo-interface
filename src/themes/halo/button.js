@@ -11,8 +11,8 @@ export default {
 	}),
 	variants: {
 		solid: (props) => ({
-			color: mode('primary.dark',
-				'primary.light')(props),
+			color: mode('type.link.dark',
+				'type.link.light')(props),
 			borderWidth: '1px',
 			borderStyle: 'solid',
 			borderColor: mode('#0000001a', '#ffffff0f')(props),
@@ -21,8 +21,8 @@ export default {
 			_hover: {
 				background: mode('accent.light.50',
 					'accent.dark.50')(props),
-				color: mode('type.dark',
-					'type.light')(props),
+				color: mode('type.body.dark',
+					'type.body.light')(props),
 			},
 			_active: {
 				background: mode('accent.light.200',
@@ -48,8 +48,8 @@ export default {
 			},
 		}),
 		link: (props) => ({
-			color: mode('primary.dark',
-				'primary.light')(props),
+			color: mode('type.link.dark',
+				'type.link.light')(props),
 			height: 'auto',
 			_hover: {
 				color: mode('#222',
@@ -58,8 +58,8 @@ export default {
 			},
 		}),
 		ghost: (props) => ({
-			color: mode('primary.dark',
-				'primary.light')(props),
+			color: mode('type.link.dark',
+				'type.link.light')(props),
 			_hover: {
 				background: 'transparent',
 				color: mode('#222',
