@@ -14,9 +14,9 @@ export const BurgerMenu = (props) => {
 		>
 			<MenuButton
 				as={IconButton}
-				aria-label='Options'
+				aria-label='Menu'
 				icon={<HamburgerIcon />}
-				variant='solid'
+				variant='solidTransparent'
 			/>
 			<MenuList>
 				{props.pages.map(p => <Link

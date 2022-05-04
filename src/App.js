@@ -1,9 +1,9 @@
 import React, {} from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import { ChakraProvider, Flex } from '@chakra-ui/react'
+import { ChakraProvider, Flex, useBreakpointValue } from '@chakra-ui/react'
 import theme from './themes/halo'
 import { UseWalletProvider } from 'use-wallet'
-import { Header } from './components'
+import { Header, Logotype } from './components'
 import defaults from './common/defaults'
 import { Lockdrop } from './locations'
 
@@ -17,6 +17,7 @@ const App = () => {
 					connectors={defaults.network.connectors}
 					autoConnect={defaults.network.autoConnect}
 				>
+					<Logotype/>
 					<Header
 						width={defaults.layout.header.width}
 						p={defaults.layout.header.padding}

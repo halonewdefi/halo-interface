@@ -11,8 +11,10 @@ export const LockersList = (props) => {
 	const Card = () => {
 		return (
 			<Flex
+				flex={{ sm: '100%', md: '32%' }}
 				flexDir='column'
 				h='130px'
+				maxW={{ sm: '100%', md: '49%', lg: '31%' }}
 				w='100%'
 				p='1.2rem .8rem'
 				justifyContent='space-between'
@@ -68,9 +70,13 @@ export const LockersList = (props) => {
 	return (
 		<Flex
 			flexDir='row'
-			flexWrap={{ base: 'wrap', md: 'nowrap' }}
+			flexWrap='wrap'
 			gridGap='1.7rem'
 			{...props}>
+			<Card/>
+			<Card/>
+			<Card/>
+			<Card/>
 			<Card/>
 			<Card/>
 			<Card/>

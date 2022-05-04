@@ -152,12 +152,12 @@ defaults.layout.header.padding = '.888rem'
 defaults.layout.header.minHeight = '41px'
 
 defaults.layout.container = {}
-defaults.layout.container.padding = { base: '.888rem .888rem 0', md : '0 .888rem' }
+defaults.layout.container.padding = { base: '.888rem .888rem 6.2rem', md : '0 .888rem  .888rem' }
 defaults.layout.container.xl = {}
 defaults.layout.container.xl.width = '75rem'
 defaults.layout.container.lg = {}
 defaults.layout.container.lg.width = '65rem'
-defaults.layout.container.lg.padding = { base: '0 1.25rem', md: '0 2.5rem' }
+defaults.layout.container.lg.padding = { base: '0 1.25rem 6.2rem', md: '0 2.5rem .888rem' }
 defaults.layout.container.md = {}
 defaults.layout.container.md.width = '840px'
 defaults.layout.container.sm = {}

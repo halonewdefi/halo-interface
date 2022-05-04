@@ -29,6 +29,20 @@ export default {
 					'accent.dark.200')(props),
 			},
 		}),
+		solidTransparent: (props) => ({
+			color: mode('type.link.dark',
+				'type.link.light')(props),
+			border: '0',
+			background: 'transparent',
+			_hover: {
+				background: 'transparent',
+				color: mode('type.body.dark',
+					'type.body.light')(props),
+			},
+			_active: {
+				background: 'transparent',
+			},
+		}),
 		modalCentricLarge: () => ({
 			background: 'transparent',
 			width: '100%',

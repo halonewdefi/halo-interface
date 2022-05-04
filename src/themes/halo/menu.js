@@ -1,35 +1,40 @@
+import { mode } from '@chakra-ui/theme-tools'
+
 export default {
-	baseStyle: {
+	baseStyle: (props) => ({
 		list: {
-			background: 'white.100',
-			color: '#4F4F4F',
-			borderRadius: '0.8rem',
+			background: mode('baseBg.light',
+				'baseBg.dark')(props),
+			borderRadius: '0.68rem',
 			borderWidth: '0',
+			boxShadow: '0',
 			_focus: {
 				boxShadow: '0',
 			},
 			p: '1rem 0',
 		},
 		item: {
-			color: '#4f4f4f',
-			fontWeight: 'bold',
+			color: mode('type.link.dark',
+				'type.link.light')(props),
 			paddingInlineStart: '1rem',
 			paddingInlineEnd: '1rem',
-			borderRadius: '0',
+			width: '90%',
+			margin: '0 auto',
 			alignItems: 'normal',
+			borderRadius: '0.68rem',
 			_hover: {
-				background: '#ffffff91',
+				background: mode('#f4ebd9', '#333')(props),
 			},
 			_active: {
-				background: '#ffffff91',
-				opacity: '0.866',
+				background: mode('#f4ebd9', '#333')(props),
 			},
 			_focus: {
-				background: '#ffffff91',
+				color: mode('type.link.dark',
+					'type.link.light')(props),
 			},
 		},
 		divider: {
-			borderColor: '#4f4f4f54',
+			borderColor: 'stroke.dark',
 		},
-	},
+	}),
 }

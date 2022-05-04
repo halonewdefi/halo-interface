@@ -3,6 +3,10 @@ export default {
 		light: '#FFEDCB',
 		dark: '#161616',
 	},
+	baseBg: {
+		light: '#fff5e3',
+		dark: '#282828',
+	},
 	type: {
 		body: {
 			dark: '#222',
@@ -12,6 +16,10 @@ export default {
 			dark: '#3c3c3c',
 			light: '#d0cfcf',
 		},
+	},
+	stroke: {
+		dark: '#0000001c',
+		light: '#ffffff14',
 	},
 	accent: {
 		dark: {
