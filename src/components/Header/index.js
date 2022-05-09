@@ -29,7 +29,7 @@ export const Header = (props) => {
 			pos={{ base: 'fixed', md: 'initial' }}
 			borderTop={{ base: useColorModeValue('1px solid var(--chakra-colors-stroke-dark)',
 				'1px solid var(--chakra-colors-stroke-light)'), md: '0' }}
-			background={useColorModeValue('bg.light', 'bg.dark')}
+			background={{ base: useColorModeValue('bg.light', 'bg.dark'), md: 'transparent' }}
 			bottom='0'
 			{...props}>
 			{useBreakpointValue({
