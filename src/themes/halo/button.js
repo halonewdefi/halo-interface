@@ -43,22 +43,25 @@ export default {
 				background: 'transparent',
 			},
 		}),
-		modalCentricLarge: () => ({
+		modalCentricLarge: (props) => ({
 			background: 'transparent',
 			width: '100%',
 			minH: '114px',
-			borderRadius: '20px',
+			borderRadius: '0.68rem',
 			lineHeight: 'unset',
 			cursor: 'pointer',
 			padding: '1rem',
 			_hover: {
-				background: '#ffffff91',
+				background: mode('#FFF7E8',
+					'#1f1f1f')(props),
 			},
 			_active: {
-				background: '#ffffff91',
+				background: mode('#FFF7E8',
+					'#131313')(props),
 			},
 			_focus: {
-				background: '#ffffff91',
+				background: mode('#FFF7E8',
+					'#0f0f0f')(props),
 			},
 		}),
 		link: (props) => ({

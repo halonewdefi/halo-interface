@@ -1,10 +1,19 @@
+import { mode } from '@chakra-ui/theme-tools'
+
 export default {
-	baseStyle: {
+	baseStyle: (props) => ({
+		dialogContainer: {
+			alignItems: { base: 'flex-end', md: 'center' },
+			margin: 0,
+		},
 		dialog: {
 			padding: '8px 0 0',
-			borderRadius: '0.8rem',
-			background: 'white.100',
-			color: '#4F4F4F',
+			background: mode('bg.light', 'bg.dark')(props),
+			color: mode('type.body.dark', 'type.body.light')(props),
+			margin: 0,
+			borderRadius: {
+				base: '0.68rem 0.68rem 0 0',
+				md: '0.68rem' },
 		},
 		body: {
 			padding: '0',
@@ -16,8 +25,10 @@ export default {
 		closeButton: {
 			top: '1rem',
 			_focus: {
-				boxShadow: '0 0 0 3px #7b7ce0',
+				boxShadow: `0 0 0 3px
+			${mode('var(--chakra-colors-accent-dark-100)',
+			'var(--chakra-colors-accent-light-100)')(props)}`,
 			},
 		},
-	},
+	}),
 }

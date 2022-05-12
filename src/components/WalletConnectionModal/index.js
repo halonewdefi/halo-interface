@@ -17,6 +17,7 @@ import {
 	Image,
 	Text,
 	useToast,
+	useBreakpointValue,
 } from '@chakra-ui/react'
 import { walletNotConnected } from '../../messages'
 
@@ -65,8 +66,8 @@ export const WalletConnectionModal = props => {
 				isOpen={props.isOpen}
 				autoFocus={false}
 				scrollBehavior='inside'
-				isCentered
 				size='xl'
+				motionPreset={{ base: 'slideInBottom', md: '' }}
 			>
 				<ModalOverlay />
 				<ModalContent overflow='hidden'>
@@ -75,7 +76,12 @@ export const WalletConnectionModal = props => {
 					<ModalBody minH='138px'>
 						<Box
 							p='3px 1.5rem 1.5rem'>
-							<Grid templateColumns='repeat(3, 1fr)' gap={3}>
+							<Grid
+								templateColumns={{
+									base: 'repeat(1, 1fr)',
+									md: 'repeat(3, 1fr)',
+								}}
+								gap={3}>
 								{wallets.map(w => (
 									<GridItem
 										key={w.name}>
@@ -83,14 +89,16 @@ export const WalletConnectionModal = props => {
 											variant='modalCentricLarge'
 											display='flex'
 											width='100%'
-											flexDir='column'
+											flexDir={{ base: 'row', md: 'column' }}
 											alignItems='center'
 											onClick={() => connect(w.key)}
 										>
 											<Flex minH='50px'>
 												<Image src={w.logo} alt={`${w.name} logo`} width='50px'/>
 											</Flex>
-											<Text mt='0.5rem'>
+											<Text
+												mt={{ base: '0', md: '0.5rem' }}
+												ml={{ base: '0.5rem', md: '0' }}>
 												{w.name}
 											</Text>
 										</Button>

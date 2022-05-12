@@ -15,7 +15,7 @@ export const Logotype = (props) => {
 		{useBreakpointValue({
 			base: <Flex
 				justifyContent='center'
-				padding='.888rem 0'
+				padding={{ base: '1.776rem 0 .888rem 0', md: '.888rem 0' }}
 			>
 				<Link style={{ alignSelf: 'center' }} to='/'>
 					<Image
