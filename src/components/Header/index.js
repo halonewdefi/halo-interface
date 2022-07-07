@@ -2,7 +2,7 @@ import React from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { Flex, Button, useBreakpointValue, useColorModeValue } from '@chakra-ui/react'
 import { Logo, WalletConnectionToggle, ColorModeSwitcher } from '../../components'
-import defaults from '../../common/defaults'
+import { defaults } from '../../common'
 import { BurgerMenu } from '../BurgerMenu'
 
 export const Header = (props) => {

@@ -1,7 +1,7 @@
 import { utils } from 'ethers'
 import { useEffect, useState } from 'react'
-import defaults from '../../common/defaults'
-import { getDateFromSeconds } from '../../common/utils'
+import { defaults } from '../../common'
+import { getDateFromSeconds } from '../../common'
 
 export const useTimeToBlock = (blockTarget) => {
 

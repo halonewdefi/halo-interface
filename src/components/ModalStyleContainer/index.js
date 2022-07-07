@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Flex } from '@chakra-ui/react'
-import defaults from '../../common/defaults'
+import { defaults } from '../../common'
 import PropTypes from 'prop-types'
 
 

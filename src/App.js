@@ -1,10 +1,10 @@
 import React, {} from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import { ChakraProvider, Flex, useBreakpointValue } from '@chakra-ui/react'
+import { ChakraProvider, Flex } from '@chakra-ui/react'
 import theme from './themes/halo'
 import { UseWalletProvider } from 'use-wallet'
 import { Header, Logotype } from './components'
-import defaults from './common/defaults'
+import { defaults } from './common'
 import { Lockdrop } from './locations'
 
 const App = () => {

@@ -1,13 +1,13 @@
 import React, { useRef, useMemo, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import defaults from '../../common/defaults'
+import { defaults } from '../../common'
 import { Button, Box, Image, Modal, ModalHeader, ModalCloseButton, ModalOverlay, ModalContent, ModalBody,
 	ModalFooter, Input, Switch, Flex, useToast,
 } from '@chakra-ui/react'
 import { useLocalStorage } from 'react-use'
 import { FixedSizeList as List } from 'react-window'
 import { EditIcon, ArrowBackIcon } from '@chakra-ui/icons'
-import { getCombinedTokenListFromSources, searchFor } from '../../common/utils'
+import { getCombinedTokenListFromSources, searchFor } from '../../common'
 import { tokenNotAvailableToselect } from '../../messages'
 
 const TokenSelectButton = ({ data, index, style }) => {

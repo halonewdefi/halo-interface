@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { MerkleTree } from 'merkletreejs'
 import getTokenList from 'get-token-list'
-import defaults from './defaults'
+import { defaults } from '../'
 
 const prettifyAddress = (address, prependN) => {
 	if (address) {

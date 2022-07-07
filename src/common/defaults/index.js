@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { QueryClient } from 'react-query'
 import { ethers } from 'ethers'
-import tokenListSources from '../tokenListSources'
+import tokenListSources from '../../tokenListSources.json'
 
 const defaults = {}
 
@@ -172,4 +172,4 @@ defaults.toast.position = 'top'
 defaults.tooltip = {}
 defaults.tooltip.delay = 800
 
-export default defaults
+export { defaults }

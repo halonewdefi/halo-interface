@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import defaults from '../../common/defaults'
+import { defaults } from '../../common'
 import { useWallet } from 'use-wallet'
 import {
 	Modal,
@@ -17,7 +17,6 @@ import {
 	Image,
 	Text,
 	useToast,
-	useBreakpointValue,
 } from '@chakra-ui/react'
 import { walletNotConnected } from '../../messages'
 

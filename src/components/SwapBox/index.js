@@ -3,7 +3,7 @@ import { TokenJazzicon } from '../../components'
 import { Flex, InputGroup, Input, InputRightAddon, Box, Image, Button } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { ethers } from 'ethers'
-import defaults from '../../common/defaults'
+import { defaults } from '../../common'
 
 export const SwapBox = (props) => {
 

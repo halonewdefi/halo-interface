@@ -1,18 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useWallet } from 'use-wallet'
 import { Menu, MenuButton, Button, Portal, MenuList,
-	MenuItem, useToast } from '@chakra-ui/react'
+	MenuItem } from '@chakra-ui/react'
 import { CloseIcon } from '@chakra-ui/icons'
-import { prettifyAddress } from '../../common/utils'
+import { prettifyAddress } from '../../common'
 import Jazzicon from '@metamask/jazzicon'
-import { connected } from '../../messages'
 import { WalletConnectionModal } from '../../components'
 
 export const WalletConnectionToggle = props => {
 	const initialText = 'Connect'
 	const wallet = useWallet()
 	const ref = useRef()
-	const toast = useToast()
 	const [working, setWorking] = useState(false)
 	const [text, setText] = useState(initialText)
 	const [isModalOpen, setIsModalOpen] = useState(false)

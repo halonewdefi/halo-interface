@@ -2,7 +2,7 @@
 import { useQuery as useApolloQuery, gql } from '@apollo/client'
 import { useQuery } from 'react-query'
 import { getERC20BalanceOf } from '../../common/ethereum'
-import defaults from '../../common/defaults'
+import { defaults } from '../../common'
 import { useWallet } from 'use-wallet'
 
 export const useERC20Balance = (tokenAddress, address, rpc = true, pollInterval = defaults.api.graphql.pollInterval, staleTime = defaults.api.staleTime) => {

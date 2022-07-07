@@ -1,4 +1,4 @@
-import defaults from './common/defaults'
+import { defaults } from './common'
 
 const approved = {
 	title: 'Token succesfully approved',

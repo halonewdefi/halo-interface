@@ -1,11 +1,11 @@
 import { ethers } from 'ethers'
-import humanStandardTokenAbi from '../artifacts/abi/humanStandardToken'
-import defaults from './defaults'
+import { humanStandardToken } from '../../artifacts'
+import { defaults } from '../'
 
 const approveERC20ToSpend = async (tokenAddress, spenderAddress, amount, provider) => {
 	const contract = new ethers.Contract(
 		tokenAddress,
-		humanStandardTokenAbi,
+		humanStandardToken,
 		provider.getSigner(0),
 	)
 	return await contract.approve(spenderAddress, amount)
@@ -14,7 +14,7 @@ const approveERC20ToSpend = async (tokenAddress, spenderAddress, amount, provide
 const getERC20Allowance = async (tokenAddress, ownerAddress, spenderAddress, provider) => {
 	const contract = new ethers.Contract(
 		tokenAddress,
-		humanStandardTokenAbi,
+		humanStandardToken,
 		provider,
 	)
 	return await contract.allowance(ownerAddress, spenderAddress)
@@ -23,7 +23,7 @@ const getERC20Allowance = async (tokenAddress, ownerAddress, spenderAddress, pro
 const getERC20BalanceOf = async (tokenAddress, address, provider) => {
 	const contract = new ethers.Contract(
 		tokenAddress,
-		humanStandardTokenAbi,
+		humanStandardToken,
 		provider,
 	)
 	return await contract.balanceOf(address)
@@ -33,7 +33,7 @@ const resolveUnknownERC20 = async (tokenAddress, logoURI = '') => {
 	let token
 	const contract = new ethers.Contract(
 		tokenAddress,
-		humanStandardTokenAbi,
+		humanStandardToken,
 		defaults.network.provider,
 	)
 	const address = await contract.resolvedAddress
