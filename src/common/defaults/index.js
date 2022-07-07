@@ -145,6 +145,12 @@ defaults.ether = {
 	'isEther': true,
 }
 
+defaults.address = {}
+defaults.address.phase1 = (
+	defaults.network.chainId === 1 ? '' :
+		undefined
+)
+
 defaults.layout = {}
 defaults.layout.header = {}
 defaults.layout.header.width = '100%'
