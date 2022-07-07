@@ -10,7 +10,7 @@ export const useERC20Balance = (tokenAddress, address, rpc = true, pollInterval 
 	const wallet = useWallet()
 
 	if (!rpc) {
-		// GQL 2 DO
+		// GQL
 	}
 	else {
 
