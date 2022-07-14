@@ -38,45 +38,40 @@ defaults.network.connectors = {
 		meta: {
 			key: 'injected',
 			name: 'MetaMask',
-			logo: 'https://raw.githubusercontent.com/vetherasset/' +
-			'vader-dapp/main/src/assets/svg/icons/' +
+			logo: '/svg/icons/' +
 			'metamask.svg',
 		},
 	},
 	walletlink: {
 		// WalletLink supports only ChainID 1
-		chainId: defaults.network.chainId,
+		chainId: 1,
 		url: (
 			defaults.network.chainId === 1 ?
-				`https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}` :
+				`http://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}` :
 				undefined
 		),
-		appName: 'Vader Protocol',
-		appLogoUrl: 'https://raw.githubusercontent.com/vetherasset/' +
-			'branding/main/vader/vader-logo-wo-ring.svg',
+		appName: 'HaloSwap',
+		appLogoUrl: 'https://raw.githubusercontent.com/halonewdefi/halo-branding/main/' +
+			'logo-main.svg',
 		meta: {
 			key: 'walletlink',
 			name: 'Coinbase Wallet',
-			logo: 'https://raw.githubusercontent.com/vetherasset/' +
-			'vader-dapp/main/src/assets/svg/icons/' +
+			logo: 'svg/icons/' +
 			'coinbasewallet.svg',
 		},
 	},
 	walletconnect: {
 		rpc: {
 			[defaults.network.chainId]: (
-				defaults.network.chainId === 1 ?
-					`https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}` :
-					defaults.network.chainId === 42 ?
-						`https://eth-kovan.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}` :
-						undefined
+				defaults.network.chainId === 5 ?
+					`https://eth-goerli.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}` :
+					undefined
 			),
 		},
 		meta: {
 			key: 'walletconnect',
 			name: 'WalletConnect',
-			logo: 'https://raw.githubusercontent.com/vetherasset/' +
-			'vader-dapp/main/src/assets/svg/icons/' +
+			logo: '/svg/icons/' +
 			'walletconnect.svg',
 		},
 	},
@@ -84,8 +79,7 @@ defaults.network.connectors = {
 		meta: {
 			key: 'injected',
 			name: 'Other',
-			logo: 'https://raw.githubusercontent.com/vetherasset/' +
-			'vader-dapp/main/src/assets/svg/icons/' +
+			logo: '/svg/icons/' +
 			'otherwallets.svg',
 		},
 	},
@@ -116,8 +110,7 @@ defaults.api.graphql = {}
 defaults.api.graphql.uri = {}
 defaults.api.graphql.uri.uniswapV2 = (
 	defaults.network.chainId === 1 ? 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2' :
-		defaults.network.chainId === 42 ? 'https://api.thegraph.com/subgraphs/name/sc0vu/uniswap-v2-kovan' :
-			undefined
+		undefined
 )
 
 defaults.api.graphql.cache = new InMemoryCache()
@@ -132,7 +125,7 @@ defaults.api.graphql.pollInterval = 100000
 
 defaults.api.etherscanUrl = (
 	defaults.network.chainId === 1 ? 'https://etherscan.io' :
-		defaults.network.chainId === 42 ? 'https://kovan.etherscan.io' :
+		defaults.network.chainId === 5 ? 'https://goerli.etherscan.io' :
 			undefined
 )
 
@@ -152,7 +145,7 @@ defaults.ether = {
 	'name':'ETHER',
 	'symbol':'ETH',
 	'decimals':18,
-	'logoURI':'https://raw.githubusercontent.com/vetherasset/vader-dapp/65a55cc1d1e89e1549b3d119d296ac8d701a37ea/src/assets/png/eth-diamond-purple-purple.png',
+	'logoURI':'/svg/tokens/0x0/index.svg',
 	'isEther': true,
 }
 
