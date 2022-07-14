@@ -1,4 +1,4 @@
-const humanStandardToken = [
+export default [
 	{
 		'constant': true,
 		'inputs': [],
@@ -270,5 +270,3 @@ const humanStandardToken = [
 		'type': 'event',
 	},
 ]
-
-export { humanStandardToken }

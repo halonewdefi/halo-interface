@@ -1,2 +1,2 @@
-export * from './abi/humanStandardToken'
-export * from './abi/phase1'
+export * as humanStandardToken from './abi/humanStandardToken'
+export * as phase1 from './abi/phase1'

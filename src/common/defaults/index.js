@@ -2,6 +2,8 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { QueryClient } from 'react-query'
 import { ethers } from 'ethers'
 import tokenListSources from '../../tokenListSources.json'
+import address from '../address'
+import lockdropPairs from '../lockdropPairs'
 
 const defaults = {}
 
@@ -137,6 +139,15 @@ defaults.api.etherscanUrl = (
 defaults.tokenList = {}
 defaults.tokenList.sources = tokenListSources
 
+defaults.address = (
+	defaults.network.chainId === 5 ? address.goerli :
+		undefined
+)
+defaults.lockdropPairs = (
+	defaults.network.chainId === 5 ? lockdropPairs.goerli :
+		undefined
+)
+
 defaults.ether = {
 	'name':'ETHER',
 	'symbol':'ETH',
@@ -144,12 +155,6 @@ defaults.ether = {
 	'logoURI':'https://raw.githubusercontent.com/vetherasset/vader-dapp/65a55cc1d1e89e1549b3d119d296ac8d701a37ea/src/assets/png/eth-diamond-purple-purple.png',
 	'isEther': true,
 }
-
-defaults.address = {}
-defaults.address.phase1 = (
-	defaults.network.chainId === 1 ? '' :
-		undefined
-)
 
 defaults.layout = {}
 defaults.layout.header = {}
