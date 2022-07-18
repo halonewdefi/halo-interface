@@ -1,13 +1,27 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { Flex, Box, Image } from '@chakra-ui/react'
-import { defaults } from '../../common'
+import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
+import { defaults, prettifyNumber } from '../../common'
+import { usePhase1Allocation } from '../../hooks'
+import { utils } from 'ethers'
 
 const Card = (props) => {
+
+	const allocation = usePhase1Allocation()
 
 	const tokeIconStyle = {
 		h: 'auto',
 		w: '24px',
+	}
+
+	const valuStyle = {
+		fontWeight: '600',
+		minHeight: '24px',
+	}
+
+	const descStyle = {
+		fontSize: '0.899rem',
+		minHeight: '24px',
 	}
 
 	return (
@@ -44,36 +58,59 @@ const Card = (props) => {
 				</Box>
 			</Flex>
 
-			{(props.size) || (props.apr) &&
-						<Flex
-							flexDir='row'
-						>
-							<Flex
-								gridGap='1.3rem'
+			<Flex
+				flexDir='row'
+			>
+				<Flex
+					gridGap='1.333rem'
+				>
+					<Flex
+						flexDir='column'
+					>
+						<>
+							<Skeleton
+								isLoaded={true}
 							>
-								<Flex
-									flexDir='column'
+								<Box
+									style={valuStyle}
 								>
-									{props.size &&
-									<>
-										<Box>{props.size}</Box>
-										<Box>Size</Box>
-									</>
+									{
+										prettifyNumber(1342400, 0, 2, 'US', 'compact')
 									}
-								</Flex>
-								<Flex
-									flexDir='column'
+								</Box>
+							</Skeleton>
+							<Box
+								style={descStyle}
+							>
+								TVL
+							</Box>
+						</>
+					</Flex>
+
+					<Flex
+						flexDir='column'
+					>
+						<>
+							<Skeleton
+								isLoaded={!allocation.isLoading}
+							>
+								<Box
+									style={valuStyle}
 								>
-									{props.apr &&
-									<>
-										<Box>{props.apr}</Box>
-										<Box>APR</Box>
-									</>
+									{allocation.data &&
+										prettifyNumber(utils.formatEther(allocation?.data), 0, 0, 'US', 'compact')
 									}
-								</Flex>
-							</Flex>
-						</Flex>
-			}
+								</Box>
+							</Skeleton>
+							<Box
+								style={descStyle}
+							>
+								Allocation
+							</Box>
+						</>
+					</Flex>
+				</Flex>
+			</Flex>
 		</Flex>
 	)
 }

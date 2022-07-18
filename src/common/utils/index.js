@@ -31,35 +31,13 @@ const prettifyCurrency = (amount, minFractionDigits = 0, maxFractionDigits = 2, 
 		cryptocurrency = true
 	}
 
-	if (currency === 'VETH') {
+	if (currency === 'HALO') {
 		options = {
 			style: 'decimal',
 			minimumFractionDigits: minFractionDigits,
 			maximumFractionDigits: maxFractionDigits,
 		}
-		symbol = 'VETH'
-		symbolPrepended = false
-		cryptocurrency = true
-	}
-
-	if (currency === 'VADER') {
-		options = {
-			style: 'decimal',
-			minimumFractionDigits: minFractionDigits,
-			maximumFractionDigits: maxFractionDigits,
-		}
-		symbol = 'VADER'
-		symbolPrepended = false
-		cryptocurrency = true
-	}
-
-	if (currency === 'USDV') {
-		options = {
-			style: 'decimal',
-			minimumFractionDigits: minFractionDigits,
-			maximumFractionDigits: maxFractionDigits,
-		}
-		symbol = 'USDV'
+		symbol = 'HALO'
 		symbolPrepended = false
 		cryptocurrency = true
 	}

@@ -17,4 +17,13 @@ const deposit = async (payableAmount, pairAddress, amount0, amount1, lockPeriodI
 	)
 }
 
-export { deposit }
+const getAllocation = async (provider) => {
+	const contract = new ethers.Contract(
+		defaults.address.phase1,
+		phase1abi,
+		provider,
+	)
+	return await contract.HALO_PER_PAIR()
+}
+
+export { deposit, getAllocation }

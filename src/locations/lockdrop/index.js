@@ -1,11 +1,8 @@
 import React from 'react'
-import { useWallet } from 'use-wallet'
 import { Flex, Box } from '@chakra-ui/react'
 import { LockersList } from '../../components'
 
 export const Lockdrop = () => {
-
-	const wallet = useWallet()
 
 	return (
 		<>
