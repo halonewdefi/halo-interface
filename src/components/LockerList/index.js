@@ -123,7 +123,7 @@ export const LockersList = (props) => {
 			flexWrap='wrap'
 			gridGap='1.7rem'
 			{...props}>
-			{defaults.lockdropPairs.map(p => <Card
+			{defaults?.lockdropPairs?.map(p => <Card
 				pair={p.pair}
 				address={p.address}
 				token0={p.token0}
