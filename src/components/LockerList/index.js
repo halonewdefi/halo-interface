@@ -2,13 +2,16 @@
 import React from 'react'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
-import { usePhase1Allocation } from '../../hooks'
+import { usePhase1Allocation, useUniLPTokenPrice } from '../../hooks'
 import { utils } from 'ethers'
 import address from '../../common/address'
 
 const Card = (props) => {
 
 	const allocation = usePhase1Allocation()
+	const t = useUniLPTokenPrice(props.address)
+
+	console.log(t)
 
 	const tokeIconStyle = {
 		h: 'auto',

@@ -5,7 +5,7 @@ module.exports = {
 		// Using STABLE_2
 		// usdc: "0x8a23f4E0756Be8174c0827c44853888E42A45223",
 		uniswapV2Router: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D',
-		uniswapV2Pairs: [
+		uniswapV2Pairs: {
 			// // stable 1 - stable 2
 			// "0xCf3DBCfA2965a517A330f4a972f5842FfbdE4B07",
 			// // volatile 1 - stable 1
@@ -14,17 +14,17 @@ module.exports = {
 			// "0x018F6e2f719c6A3Cd27165F35d58Ecab0587D821",
 			// // eth - stable 2
 			// "0xc17DDb233Aa68e4f8c9170881e7bD38712b51f7f",
+			// USDC/WETH
+			usdcEth: '0x1fE7C64E1b5f3121AbD33957B2944c5e525C5608',
 			// USDC/USDT
-			'0xD5B2049BD2B7315E1b064BDa889167b59eD991f5',
-			// USDC/ETH
-			'0xF98f54D2f5CaE3b2CaC1C16E7B8eD74A3b5Fa580',
+			usdcUsdt: '0xD5B2049BD2B7315E1b064BDa889167b59eD991f5',
 			// WBTC/ETH
-			'0x61Fb8A3c9239e3d061a599EEE1FD856FD7C7587D',
+			wbtcEth: '0x61Fb8A3c9239e3d061a599EEE1FD856FD7C7587D',
 			// USDT/ETH
-			'0x5d9190533a86fB7129c801FCDfd48C059392Aaf8',
+			usdtEth: '0x5d9190533a86fB7129c801FCDfd48C059392Aaf8',
 			// WBTC/USDC
-			'0xDB7A43b768Dbf8081cF6Cd6fac16811bFbA7D66a',
-		],
+			wbtcUsdc: '0xDB7A43b768Dbf8081cF6Cd6fac16811bFbA7D66a',
+		},
 		haloPairs: [
 			// // stable 1 - stable 2
 			// "0xaF2ED1460427f1B4AA4c5290CCa9a388CC2D36C2",

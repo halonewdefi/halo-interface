@@ -29,6 +29,24 @@ const getERC20BalanceOf = async (tokenAddress, address, provider) => {
 	return await contract.balanceOf(address)
 }
 
+const getERC20TotalSupply = async (tokenAddress) => {
+	const contract = new ethers.Contract(
+		tokenAddress,
+		humanStandardToken,
+		defaults.network.provider,
+	)
+	return await contract.totalSupply()
+}
+
+const getERC20Decimals = async (tokenAddress) => {
+	const contract = new ethers.Contract(
+		tokenAddress,
+		humanStandardToken,
+		defaults.network.provider,
+	)
+	return await contract.decimals()
+}
+
 const resolveUnknownERC20 = async (tokenAddress, logoURI = '') => {
 	let token
 	const contract = new ethers.Contract(
@@ -62,5 +80,5 @@ const resolveUnknownERC20 = async (tokenAddress, logoURI = '') => {
 
 export {
 	approveERC20ToSpend, getERC20BalanceOf, resolveUnknownERC20,
-	getERC20Allowance,
+	getERC20Allowance, getERC20TotalSupply, getERC20Decimals,
 }
