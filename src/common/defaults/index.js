@@ -1,3 +1,4 @@
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { QueryClient } from 'react-query'
 import { ethers } from 'ethers'
 import tokenListSources from '../../tokenListSources.json'
@@ -104,6 +105,15 @@ defaults.network.erc20.maxApproval = '302503999000000000299700000'
 defaults.api = {}
 defaults.api.staleTime = 100000
 defaults.api.client = new QueryClient()
+
+defaults.api.graphql = {}
+defaults.api.graphql.uri = {}
+defaults.api.graphql.uri.uniswapV2 = (
+	defaults.network.chainId === 1 ? 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2' :
+		undefined
+)
+defaults.api.graphql.cache = new InMemoryCache()
+defaults.api.graphql.pollInterval = 100000
 
 defaults.api.etherscanUrl = (
 	defaults.network.chainId === 1 ? 'https://etherscan.io' :
