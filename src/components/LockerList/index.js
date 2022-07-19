@@ -4,6 +4,7 @@ import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
 import { usePhase1Allocation } from '../../hooks'
 import { utils } from 'ethers'
+import address from '../../common/address'
 
 const Card = (props) => {
 
@@ -15,6 +16,9 @@ const Card = (props) => {
 	}
 
 	const valuStyle = {
+		display: 'flex',
+		flexDirection: 'row',
+		gridGap: '0.4rem',
 		fontWeight: '600',
 		minHeight: '24px',
 	}
@@ -75,7 +79,7 @@ const Card = (props) => {
 									style={valuStyle}
 								>
 									{
-										prettifyNumber(1342400, 0, 2, 'US', 'compact')
+										`$${prettifyNumber(1342400, 0, 2, 'US', 'compact')}`
 									}
 								</Box>
 							</Skeleton>
@@ -100,6 +104,9 @@ const Card = (props) => {
 									{allocation.data &&
 										prettifyNumber(utils.formatEther(allocation?.data), 0, 0, 'US', 'compact')
 									}
+									<Image
+									 {...tokeIconStyle}
+									 src={`svg/tokens/${address.goerli.halo}/index.svg`}/>
 								</Box>
 							</Skeleton>
 							<Box
