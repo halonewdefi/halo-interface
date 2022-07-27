@@ -1,4 +1,4 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { InMemoryCache, ApolloClient } from '@apollo/client'
 import { QueryClient } from 'react-query'
 import { ethers } from 'ethers'
 import tokenListSources from '../../tokenListSources.json'
@@ -112,7 +112,14 @@ defaults.api.graphql.uri.uniswapV2 = (
 	defaults.network.chainId === 1 ? 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2' :
 		undefined
 )
+
 defaults.api.graphql.cache = new InMemoryCache()
+defaults.api.graphql.client = {}
+defaults.api.graphql.client.uniswapV2 = new ApolloClient({
+	uri: 'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2',
+	cache: defaults.api.graphql.cache,
+})
+defaults.api.graphql.client.default = defaults.api.graphql.client.uniswapV2
 defaults.api.graphql.pollInterval = 100000
 
 defaults.api.etherscanUrl = (

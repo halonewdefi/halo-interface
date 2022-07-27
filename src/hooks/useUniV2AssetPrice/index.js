@@ -63,7 +63,7 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 
 		}, {
 			staleTime: staleTime,
-			enabled: !!token0,
+			enabled: !!token1,
 		},
 	)
 

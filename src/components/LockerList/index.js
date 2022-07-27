@@ -1,17 +1,12 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
-import { usePhase1Allocation, useUniLPTokenPrice } from '../../hooks'
+import { usePhase1Allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance } from '../../hooks'
 import { utils } from 'ethers'
 import address from '../../common/address'
 
 const Card = (props) => {
-
-	const allocation = usePhase1Allocation()
-	const t = useUniLPTokenPrice(props.address)
-
-	console.log(t)
 
 	const tokeIconStyle = {
 		h: 'auto',
@@ -30,6 +25,19 @@ const Card = (props) => {
 		fontSize: '0.899rem',
 		minHeight: '24px',
 	}
+
+	const allocation = usePhase1Allocation()
+	const t = useUniLPTokenPrice(props.address)
+	const { data: p } = useUniEthPrice()
+	const { data: b } = useERC20Balance(props.address, defaults.address.phase1)
+	const [tvl, setTvl] = useState('loading')
+
+	useEffect(() => {
+		if (t && p && b) {
+			setTvl(Number(utils.formatUnits(b, 18)) * (Number(utils.formatEther(t)) * Number(p.pairs?.[0]?.token0Price)))
+		}
+		return () => setTvl('loading')
+	}, [t, p, b])
 
 	return (
 		<Flex
@@ -76,13 +84,13 @@ const Card = (props) => {
 					>
 						<>
 							<Skeleton
-								isLoaded={true}
+								isLoaded={tvl === 'loading' ? false : true }
 							>
 								<Box
 									style={valuStyle}
 								>
 									{
-										`$${prettifyNumber(1342400, 0, 2, 'US', 'compact')}`
+										`$${prettifyNumber(tvl, 0, 2, 'US', 'compact')}`
 									}
 								</Box>
 							</Skeleton>

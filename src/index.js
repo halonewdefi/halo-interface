@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import theme from './themes/halo'
 import App from './App'
 import { defaults } from './common'
+import { ApolloProvider } from '@apollo/client'
 import { QueryClientProvider } from 'react-query'
 import reportWebVitals from './reportWebVitals'
 import * as serviceWorker from './serviceWorker'
@@ -11,9 +12,11 @@ import * as serviceWorker from './serviceWorker'
 ReactDOM.render(
 	<StrictMode>
 		<ColorModeScript initialColorMode={theme.config.initialColorMode} />
-		<QueryClientProvider client={defaults.api.client}>
-			<App />
-		</QueryClientProvider>
+		<ApolloProvider client={defaults.api.graphql.client.default}>
+			<QueryClientProvider client={defaults.api.client}>
+				<App />
+			</QueryClientProvider>
+		</ApolloProvider>
 	</StrictMode>,
 	document.getElementById('root'),
 )
