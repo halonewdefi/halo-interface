@@ -9,6 +9,7 @@ export default {
 		dialog: {
 			padding: '8px 0 0',
 			background: mode('bg.light', 'bg.dark')(props),
+			border: mode('0', '1px solid #5d5d5e33')(props),
 			color: mode('type.body.dark', 'type.body.light')(props),
 			margin: 0,
 			borderRadius: {
