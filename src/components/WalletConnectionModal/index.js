@@ -71,8 +71,8 @@ export const WalletConnectionModal = props => {
 				<ModalOverlay />
 				<ModalContent overflow='hidden'>
 					<ModalHeader>Connect Wallet</ModalHeader>
-					<ModalCloseButton top='1.29rem' />
-					<ModalBody minH='138px'>
+					<ModalCloseButton top={defaults.layout.modal.closeButton.top} />
+					<ModalBody minH={defaults.layout.modal.body.minH}>
 						<Box
 							p='3px 1.5rem 1.5rem'>
 							<Grid

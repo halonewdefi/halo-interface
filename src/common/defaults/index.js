@@ -166,6 +166,12 @@ defaults.layout.container.md.width = '840px'
 defaults.layout.container.sm = {}
 defaults.layout.container.sm.width = '768px'
 
+defaults.layout.modal = {}
+defaults.layout.modal.body = {}
+defaults.layout.modal.body.minH = '138px'
+defaults.layout.modal.closeButton = {}
+defaults.layout.modal.closeButton.top = '1.29rem'
+
 defaults.toast = {}
 defaults.toast.duration = 5000
 defaults.toast.txHashDuration = 8000

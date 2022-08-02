@@ -1,13 +1,21 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
 import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance } from '../../hooks'
 import { utils } from 'ethers'
+import { LockModal } from '../LockModal'
 import address from '../../common/address'
-import { usePhase1endTime } from '../../hooks/usePhase1endTime'
 
 const Card = (props) => {
+
+	Card.propTypes = {
+		address: PropTypes.string.isRequired,
+		deposit: PropTypes.func.isRequired,
+		pair: PropTypes.string.isRequired,
+		token0: PropTypes.string.isRequired,
+		token1: PropTypes.string.isRequired,
+	}
 
 	const tokeIconStyle = {
 		h: 'auto',
@@ -50,6 +58,7 @@ const Card = (props) => {
 			p='1.2rem .8rem'
 			justifyContent='space-between'
 			layerStyle='card'
+			onClick={() => props.deposit(props.pair)}
 		>
 			<Flex
 				flexDir='row'
@@ -136,20 +145,41 @@ const Card = (props) => {
 
 export const LockersList = (props) => {
 
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [header, setHeader] = useState('')
+
+	const openLockModal = (h) => {
+		setIsModalOpen(true)
+		setHeader(h)
+	}
+
+	const closeLockModal = () => {
+		setIsModalOpen(false)
+		setHeader('')
+	}
+
 	return (
-		<Flex
-			flexDir='row'
-			flexWrap='wrap'
-			gridGap='1.7rem'
-			{...props}>
-			{defaults?.lockdropPairs?.map(p => <Card
-				pair={p.pair}
-				address={p.address}
-				token0={p.token0}
-				token1={p.token1}
-				key={p.address}
-			/>)
-			}
-		</Flex>
+		<>
+			<Flex
+				flexDir='row'
+				flexWrap='wrap'
+				gridGap='1.7rem'
+				{...props}>
+				{defaults?.lockdropPairs?.map(p => <Card
+					pair={p.pair}
+					address={p.address}
+					token0={p.token0}
+					token1={p.token1}
+					key={p.address}
+					deposit={openLockModal}
+				/>)
+				}
+			</Flex>
+			<LockModal
+				header={header}
+				isOpen={isModalOpen}
+				onClose={() => closeLockModal()}
+			/>
+		</>
 	)
 }
