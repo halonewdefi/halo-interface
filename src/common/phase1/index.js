@@ -17,13 +17,22 @@ const deposit = async (payableAmount, pairAddress, amount0, amount1, lockPeriodI
 	)
 }
 
-const getAllocation = async (provider) => {
+const getAllocation = async () => {
 	const contract = new ethers.Contract(
 		defaults.address.phase1,
 		phase1abi,
-		provider,
+		defaults.network.provider,
 	)
 	return await contract.HALO_PER_PAIR()
 }
 
-export { deposit, getAllocation }
+const getEndTime = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase1,
+		phase1abi,
+		defaults.network.provider,
+	)
+	return await contract.endTime()
+}
+
+export { deposit, getAllocation, getEndTime }

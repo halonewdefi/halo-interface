@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
-import { usePhase1Allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance } from '../../hooks'
+import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance } from '../../hooks'
 import { utils } from 'ethers'
 import address from '../../common/address'
+import { usePhase1endTime } from '../../hooks/usePhase1endTime'
 
 const Card = (props) => {
 
@@ -26,7 +27,7 @@ const Card = (props) => {
 		minHeight: '24px',
 	}
 
-	const allocation = usePhase1Allocation()
+	const allocation = usePhase1allocation()
 	const t = useUniLPTokenPrice(props.address)
 	const { data: p } = useUniEthPrice()
 	const { data: b } = useERC20Balance(props.address, defaults.address.phase1)
