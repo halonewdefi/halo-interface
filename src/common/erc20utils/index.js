@@ -47,38 +47,49 @@ const getERC20Decimals = async (tokenAddress) => {
 	return await contract.decimals()
 }
 
-const resolveUnknownERC20 = async (tokenAddress, logoURI = '') => {
-	let token
+const getERC20Symbol = async (tokenAddress) => {
+	const contract = new ethers.Contract(
+		tokenAddress,
+		humanStandardToken,
+		defaults.network.provider,
+	)
+	return await contract.symbol()
+}
+
+const getERC20Name = async (tokenAddress) => {
+	const contract = new ethers.Contract(
+		tokenAddress,
+		humanStandardToken,
+		defaults.network.provider,
+	)
+	return await contract.name()
+}
+
+const resolveUnknownERC20 = async (tokenAddress) => {
 	const contract = new ethers.Contract(
 		tokenAddress,
 		humanStandardToken,
 		defaults.network.provider,
 	)
 	const address = await contract.resolvedAddress
-	const name = await contract.name().then(r => { return r }).catch(err => console.log(err))
-	const symbol = await contract.symbol().then(r => { return r }).catch(err => console.log(err))
-	const decimals = await contract.decimals().then(r => { return r.toNumber() }).catch(err => console.log(err))
+	const name = await contract.name()
+	const symbol = await contract.symbol()
+	const decimals = await contract.decimals()
 
-	if (
-		address &&
-		name &&
-		symbol &&
-		decimals &&
-		defaults.network.chainId
-	) {
-		token = {
-			'chainId':defaults.network.chainId,
-			'address':address,
-			'name':name,
-			'symbol':symbol,
-			'decimals':decimals,
-			'logoURI':logoURI,
-		}
+	const token = {
+		'chainId':defaults.network.chainId,
+		'address':address ? address : tokenAddress,
+		'name':name ? name : '',
+		'symbol':symbol === 'WETH' ? 'ETH' : symbol ? symbol : '',
+		'decimals':decimals ? decimals : '',
+		'logoURI':`svg/tokens/${address ? address : tokenAddress}/index.svg`,
 	}
+
 	return token
 }
 
 export {
 	approveERC20ToSpend, getERC20BalanceOf, resolveUnknownERC20,
 	getERC20Allowance, getERC20TotalSupply, getERC20Decimals,
+	getERC20Symbol, getERC20Name,
 }

@@ -10,11 +10,8 @@ import address from '../../common/address'
 const Card = (props) => {
 
 	Card.propTypes = {
-		address: PropTypes.string.isRequired,
+		p: PropTypes.object.isRequired,
 		deposit: PropTypes.func.isRequired,
-		pair: PropTypes.string.isRequired,
-		token0: PropTypes.string.isRequired,
-		token1: PropTypes.string.isRequired,
 	}
 
 	const tokeIconStyle = {
@@ -36,9 +33,9 @@ const Card = (props) => {
 	}
 
 	const allocation = usePhase1allocation()
-	const t = useUniLPTokenPrice(props.address)
+	const t = useUniLPTokenPrice(props.p.address)
 	const { data: p } = useUniEthPrice()
-	const { data: b } = useERC20Balance(props.address, defaults.address.phase1)
+	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
 	const [tvl, setTvl] = useState('loading')
 
 	useEffect(() => {
@@ -58,7 +55,7 @@ const Card = (props) => {
 			p='1.2rem .8rem'
 			justifyContent='space-between'
 			layerStyle='card'
-			onClick={() => props.deposit(props.pair)}
+			onClick={() => props.deposit(props.p)}
 		>
 			<Flex
 				flexDir='row'
@@ -70,16 +67,16 @@ const Card = (props) => {
 					gridGap='.34rem'
 				>
 					<Image
-						src={`/svg/tokens/${props.token0}/index.svg`}
+						src={`/svg/tokens/${props.p.token0}/index.svg`}
 						{...tokeIconStyle}
 					/>
 					<Image
-						src={`/svg/tokens/${props.token1}/index.svg`}
+						src={`/svg/tokens/${props.p.token1}/index.svg`}
 						{...tokeIconStyle}
 					/>
 				</Flex>
 				<Box as='h4'>
-					{props.pair}
+					{props.p.pair}
 				</Box>
 			</Flex>
 
@@ -146,16 +143,16 @@ const Card = (props) => {
 export const LockersList = (props) => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [header, setHeader] = useState('')
+	const [pair, setPair] = useState({})
 
-	const openLockModal = (h) => {
+	const openLockModal = (p) => {
 		setIsModalOpen(true)
-		setHeader(h)
+		setPair(p)
 	}
 
 	const closeLockModal = () => {
 		setIsModalOpen(false)
-		setHeader('')
+		setPair({})
 	}
 
 	return (
@@ -166,17 +163,14 @@ export const LockersList = (props) => {
 				gridGap='1.7rem'
 				{...props}>
 				{defaults?.lockdropPairs?.map(p => <Card
-					pair={p.pair}
-					address={p.address}
-					token0={p.token0}
-					token1={p.token1}
+					p={p}
 					key={p.address}
 					deposit={openLockModal}
 				/>)
 				}
 			</Flex>
 			<LockModal
-				header={header}
+				p={pair}
 				isOpen={isModalOpen}
 				onClose={() => closeLockModal()}
 			/>

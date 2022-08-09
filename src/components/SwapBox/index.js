@@ -5,7 +5,7 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import { ethers } from 'ethers'
 import { defaults } from '../../common'
 
-export const SwapBox = (props) => {
+export const SwapBox = () => {
 
 	const [value0, setValue0] = useState(0)
 	const [value1, setValue1] = useState(0)

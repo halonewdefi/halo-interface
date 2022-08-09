@@ -1,10 +1,7 @@
 export default {
 	baseStyle: {
-		color: 'white',
+		opacity: '0.333',
 	},
 	variants: {
-		inverted: () => ({
-			color: 'black',
-		}),
 	},
 }

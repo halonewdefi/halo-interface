@@ -55,7 +55,7 @@ export default {
 					background: 'white',
 				},
 				_focus: {
-					borderColor: '#ff8ac0',
+					borderColor: 'accent.dark.100',
 					background: 'white',
 				},
 			},
