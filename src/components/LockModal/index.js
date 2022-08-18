@@ -14,6 +14,7 @@ import {
 	Image,
 	InputRightElement,
 	Spinner,
+	Button,
 } from '@chakra-ui/react'
 import { defaults } from '../../common'
 import { useUnknownERC20Resolve } from '../../hooks'
@@ -41,6 +42,7 @@ export const LockModal = (props) => {
 		variant: 'blank',
 		flex: '1',
 		placeholder: '0.0',
+		paddingRight: '7.6rem',
 	}
 
 	const rightElementStyle = {
@@ -84,12 +86,13 @@ export const LockModal = (props) => {
 								as='h4'
 								{...headingStyle}
 							>
-								Assets
+								Amounts
 							</Box>
 							<Flex
 								flexDir='column'
 								flexWrap='wrap'
 								gap='9px'
+								mb='1rem'
 							>
 								<InputGroup {...groupStyle}>
 									<Input {...inputStyle}/>
@@ -130,6 +133,38 @@ export const LockModal = (props) => {
 									</InputRightElement>
 								</InputGroup>
 							</Flex>
+							<Flex
+								flexDir='column'
+								flexWrap='wrap'
+								mb='1rem'
+								bg='#7D786E26'
+								p='1rem'
+								borderRadius='0.5rem'
+								gap='0.3rem'
+							>
+								<Box
+									as='h4'
+									m='0'
+									p='0'
+									{...headingStyle}
+								>
+									Allow USDC
+								</Box>
+								<Box
+									as='p'
+									ml='4px'
+								>
+									In order to be able to lock, it&apos;s neccesary to allow interaction with USDC token.
+								</Box>
+								<Button
+									w='100%'
+									variant='solid'
+								>Allow USDC</Button>
+							</Flex>
+							<Button
+								w='100%'
+								disabled
+							>Lock assets</Button>
 						</Box>
 					</ModalBody>
 				</ModalContent>

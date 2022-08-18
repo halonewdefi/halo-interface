@@ -8,6 +8,9 @@ export default {
 			${mode('var(--chakra-colors-accent-dark-100)',
 			'var(--chakra-colors-accent-light-100)')(props)}`,
 		},
+		_disabled: {
+			opacity: '0.95',
+		},
 	}),
 	variants: {
 		solid: (props) => ({
@@ -16,17 +19,20 @@ export default {
 			borderWidth: '1px',
 			borderStyle: 'solid',
 			borderColor: mode('#0000001a', '#ffffff0f')(props),
-			background: mode('accent.light.100',
+			background: mode('accent.light.10',
 				'accent.dark.100')(props),
 			_hover: {
-				background: mode('accent.light.50',
+				background: mode('accent.light.20',
 					'accent.dark.50')(props),
 				color: mode('type.body.dark',
 					'type.body.light')(props),
 			},
 			_active: {
-				background: mode('accent.light.200',
+				background: mode('accent.light.50',
 					'accent.dark.200')(props),
+			},
+			_disabled: {
+				background: '#0000001a',
 			},
 		}),
 		solidTransparent: (props) => ({

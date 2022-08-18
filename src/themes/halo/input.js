@@ -1,3 +1,5 @@
+import { mode } from '@chakra-ui/theme-tools'
+
 export default {
 	variants: {
 		transparent: () => ({
@@ -31,7 +33,6 @@ export default {
 				background: '#13070e',
 				borderStyle: 'solid',
 				borderWidth: '2px',
-				borderColor: 'accent.100',
 				_placeholder: {
 					color: '#fff',
 				},
@@ -44,19 +45,23 @@ export default {
 				},
 			},
 		}),
-		blank: () => ({
+		blank: (props) => ({
 			field: {
 				borderRadius: '0.8rem',
-				background: 'white',
+				background: mode('white', '#ffffff0a')(props),
 				borderStyle: 'solid',
 				borderWidth: '2px',
-				borderColor: 'accent.100',
+				color: mode('black', 'white')(props),
+				borderColor: mode('', '#6d639454')(props),
+				_placeholder: {
+					color: mode('#000', '#fff')(props),
+				},
 				_hover: {
-					background: 'white',
+					background: mode('white', '#ffffff0a')(props),
 				},
 				_focus: {
-					borderColor: 'accent.dark.100',
-					background: 'white',
+					borderColor: mode('accent.dark.100', 'accent.light.100')(props),
+					background: mode('white', '#ffffff0a')(props),
 				},
 			},
 		}),
