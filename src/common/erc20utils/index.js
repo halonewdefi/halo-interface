@@ -11,11 +11,11 @@ const approveERC20ToSpend = async (tokenAddress, spenderAddress, amount, provide
 	return await contract.approve(spenderAddress, amount)
 }
 
-const getERC20Allowance = async (tokenAddress, ownerAddress, spenderAddress, provider) => {
+const getERC20Allowance = async (tokenAddress, spenderAddress, ownerAddress) => {
 	const contract = new ethers.Contract(
 		tokenAddress,
 		humanStandardToken,
-		provider,
+		defaults.network.provider,
 	)
 	return await contract.allowance(ownerAddress, spenderAddress)
 }

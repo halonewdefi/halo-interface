@@ -17,7 +17,7 @@ import {
 	Button,
 } from '@chakra-ui/react'
 import { defaults } from '../../common'
-import { useUnknownERC20Resolve } from '../../hooks'
+import { useUnknownERC20Resolve, useERC20Allowance } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -28,6 +28,8 @@ export const LockModal = (props) => {
 
 	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
 	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
+	const token0Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
+	const token1Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
 
 	const headingStyle = {
 		marginLeft: '4px',
@@ -133,34 +135,60 @@ export const LockModal = (props) => {
 									</InputRightElement>
 								</InputGroup>
 							</Flex>
-							<Flex
-								flexDir='column'
-								flexWrap='wrap'
-								mb='1rem'
-								bg='#7D786E26'
-								p='1rem'
-								borderRadius='0.5rem'
-								gap='0.3rem'
-							>
-								<Box
-									as='h4'
-									m='0'
-									p='0'
-									{...headingStyle}
+							{(
+								((token0Allowance?.data <= 0) ||
+								(token1Allowance?.data <= 0)) &&
+								(token0Resolved.data && token1Resolved.data)
+							 ) &&
+								<Flex
+									flexDir='column'
+									flexWrap='wrap'
+									mb='1rem'
+									bg='#7D786E26'
+									p='1rem'
+									borderRadius='0.5rem'
+									gap='0.3rem'
 								>
-									Allow USDC
-								</Box>
-								<Box
-									as='p'
-									ml='4px'
-								>
-									In order to be able to lock, it&apos;s neccesary to allow interaction with USDC token.
-								</Box>
-								<Button
-									w='100%'
-									variant='solid'
-								>Allow USDC</Button>
-							</Flex>
+									<Box
+										as='h4'
+										m='0'
+										p='0'
+										{...headingStyle}
+									>
+										{`Allow ${token0Allowance?.data <= 0 ?
+											token0Resolved.data?.symbol :
+											token1Resolved.data?.symbol}
+										`}
+									</Box>
+									<Box
+										as='p'
+										ml='4px'
+									>
+										{`In order to be able to lock, it's neccesary to allow interaction with ${token0Allowance?.data <= 0 ?
+											token0Resolved.data?.symbol :
+											token1Resolved.data?.symbol} token.`}
+									</Box>
+									<Button
+										w='100%'
+										variant='solid'
+									>
+										<Image
+											{...tokenImageStyle}
+											src={token0Allowance?.data <= 0 ?
+												token0Resolved.data?.logoURI :
+												token1Resolved.data?.logoURI}
+										/>
+									Allow
+										<Box
+											ml='5px'
+											{...tokenSymbolStyle}>
+											{token0Allowance?.data <= 0 ?
+												token0Resolved.data?.symbol :
+												token1Resolved.data?.symbol}
+										</Box>
+									</Button>
+								</Flex>
+							}
 							<Button
 								w='100%'
 								disabled
