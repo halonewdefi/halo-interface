@@ -74,8 +74,6 @@ export const LockModal = (props) => {
 		textTransform: 'capitalize',
 	}
 
-	console.log(token0Allowance)
-
 	return (
 		<>
 			<Modal
@@ -172,8 +170,8 @@ export const LockModal = (props) => {
 									(
 										((token0Allowance?.data?.lte(0)) ||
 										(token1Allowance?.data?.lte(0))) ||
-										((token0Allowance?.data?.lt(token0Value)) ||
-										(token1Allowance?.data?.lt(token1Value)))
+										((token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval))) ||
+										(token1Allowance?.data?.lt(token1Value) && token1Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval))))
 									)
 							 ) &&
 								<Flex
@@ -191,8 +189,8 @@ export const LockModal = (props) => {
 										p='0'
 										{...headingStyle}
 									>
-										{`Allow ${token0Allowance?.data?.lte(0) ||
-										  token0Allowance?.data?.lt(token0Value) ?
+										{`Allow ${token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
+										  token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
 											token0Resolved.data?.symbol :
 											token1Resolved.data?.symbol}
 										`}
@@ -201,8 +199,8 @@ export const LockModal = (props) => {
 										as='p'
 										ml='4px'
 									>
-										{`In order to be able to lock, it's neccesary to allow interaction with ${token0Allowance?.data?.lte(0) ||
-										  token0Allowance?.data?.lt(token0Value) ?
+										{`In order to be able to lock, it's neccesary to allow interaction with ${token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
+										  token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
 											token0Resolved.data?.symbol :
 											token1Resolved.data?.symbol} token.`}
 									</Box>
@@ -214,8 +212,8 @@ export const LockModal = (props) => {
 											setWorking(true)
 											const provider = new ethers.providers.Web3Provider(wallet.ethereum)
 											approveERC20ToSpend(
-												token0Allowance?.data?.lte(0) ||
-												token0Allowance?.data?.lt(token0Value) ? token0Resolved.data?.address : token1Resolved.data?.address,
+												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
+												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ? token0Resolved.data?.address : token1Resolved.data?.address,
 												defaults.address.phase1,
 												defaults.network.erc20.maxApproval,
 												provider,
@@ -235,8 +233,8 @@ export const LockModal = (props) => {
 										<Image
 											{...tokenImageStyle}
 											src={
-												token0Allowance?.data?.lte(0) ||
-												token0Allowance?.data?.lt(token0Value) ?
+												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
+												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
 													token0Resolved.data?.logoURI :
 													token1Resolved.data?.logoURI
 											}
@@ -247,8 +245,8 @@ export const LockModal = (props) => {
 											{...tokenSymbolStyle}
 										>
 											{
-												token0Allowance?.data?.lte(0) ||
-												token0Allowance?.data?.lt(token0Value) ?
+												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
+												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
 													token0Resolved.data?.symbol :
 													token1Resolved.data?.symbol
 											}
