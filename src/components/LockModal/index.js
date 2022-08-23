@@ -219,7 +219,10 @@ export const LockModal = (props) => {
 							}
 							<Button
 								w='100%'
-								disabled
+								disabled={
+									!((token0Allowance?.data > 0) &&
+									(token1Allowance?.data > 0))
+								}
 							>Lock assets</Button>
 						</Box>
 					</ModalBody>
