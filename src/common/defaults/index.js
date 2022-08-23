@@ -100,7 +100,7 @@ defaults.network.blockTime.hour = defaults.network.blockTime.minute * 60
 defaults.network.blockTime.day = defaults.network.blockTime.hour * 24
 
 defaults.network.erc20 = {}
-defaults.network.erc20.maxApproval = '302503999000000000299700000'
+defaults.network.erc20.maxApproval = '0x8000000000000000000000000000000000000000000000000000000000000000'
 
 defaults.api = {}
 defaults.api.staleTime = 100000

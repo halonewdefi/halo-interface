@@ -17,9 +17,9 @@ import {
 	Button,
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
-import { defaults, handleTokenInput } from '../../common'
+import { useWallet } from 'use-wallet'
+import { defaults, handleTokenInput, approveERC20ToSpend } from '../../common'
 import { useUnknownERC20Resolve, useERC20Allowance } from '../../hooks'
-
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -31,11 +31,13 @@ export const LockModal = (props) => {
 	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
 	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
 	const token0Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
-	const token1Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
+	const token1Allowance = useERC20Allowance(props.p.token1, defaults.address.phase1)
 	const [token0Amount, setToken0Amount] = useState('')
-	const [token0value, setToken0Value] = useState(ethers.BigNumber.from(0))
+	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
-	const [token1value, setToken1Value] = useState(ethers.BigNumber.from(0))
+	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
+	const [working, setWorking] = useState(false)
+	const wallet = useWallet()
 
 	const headingStyle = {
 		marginLeft: '4px',
@@ -71,6 +73,8 @@ export const LockModal = (props) => {
 		fontWeight: 'bold',
 		textTransform: 'capitalize',
 	}
+
+	console.log(token0Allowance)
 
 	return (
 		<>
@@ -164,9 +168,13 @@ export const LockModal = (props) => {
 								</InputGroup>
 							</Flex>
 							{(
-								((token0Allowance?.data <= 0) ||
-								(token1Allowance?.data <= 0)) &&
-								(token0Resolved.data && token1Resolved.data)
+								(token0Resolved.data && token1Resolved.data) &&
+									(
+										((token0Allowance?.data?.lte(0)) ||
+										(token1Allowance?.data?.lte(0))) ||
+										((token0Allowance?.data?.lt(token0Value)) ||
+										(token1Allowance?.data?.lt(token1Value)))
+									)
 							 ) &&
 								<Flex
 									flexDir='column'
@@ -183,7 +191,8 @@ export const LockModal = (props) => {
 										p='0'
 										{...headingStyle}
 									>
-										{`Allow ${token0Allowance?.data <= 0 ?
+										{`Allow ${token0Allowance?.data?.lte(0) ||
+										  token0Allowance?.data?.lt(token0Value) ?
 											token0Resolved.data?.symbol :
 											token1Resolved.data?.symbol}
 										`}
@@ -192,27 +201,57 @@ export const LockModal = (props) => {
 										as='p'
 										ml='4px'
 									>
-										{`In order to be able to lock, it's neccesary to allow interaction with ${token0Allowance?.data <= 0 ?
+										{`In order to be able to lock, it's neccesary to allow interaction with ${token0Allowance?.data?.lte(0) ||
+										  token0Allowance?.data?.lt(token0Value) ?
 											token0Resolved.data?.symbol :
 											token1Resolved.data?.symbol} token.`}
 									</Box>
 									<Button
 										w='100%'
 										variant='solid'
+										isLoading={working}
+										onClick={() => {
+											setWorking(true)
+											const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+											approveERC20ToSpend(
+												token0Allowance?.data?.lte(0) ||
+												token0Allowance?.data?.lt(token0Value) ? token0Resolved.data?.address : token1Resolved.data?.address,
+												defaults.address.phase1,
+												defaults.network.erc20.maxApproval,
+												provider,
+											)
+												.then((tx) => {
+													tx.wait(defaults.network.tx.confirmations)
+														.then(() => {
+															token0Allowance?.refetch()
+															token1Allowance?.refetch()
+															setWorking(false)
+														})
+														.catch(() => setWorking(false))
+												})
+												.catch(() => setWorking(false))
+										}}
 									>
 										<Image
 											{...tokenImageStyle}
-											src={token0Allowance?.data <= 0 ?
-												token0Resolved.data?.logoURI :
-												token1Resolved.data?.logoURI}
+											src={
+												token0Allowance?.data?.lte(0) ||
+												token0Allowance?.data?.lt(token0Value) ?
+													token0Resolved.data?.logoURI :
+													token1Resolved.data?.logoURI
+											}
 										/>
-									Allow
+											Allow
 										<Box
 											ml='5px'
-											{...tokenSymbolStyle}>
-											{token0Allowance?.data <= 0 ?
-												token0Resolved.data?.symbol :
-												token1Resolved.data?.symbol}
+											{...tokenSymbolStyle}
+										>
+											{
+												token0Allowance?.data?.lte(0) ||
+												token0Allowance?.data?.lt(token0Value) ?
+													token0Resolved.data?.symbol :
+													token1Resolved.data?.symbol
+											}
 										</Box>
 									</Button>
 								</Flex>
@@ -220,10 +259,14 @@ export const LockModal = (props) => {
 							<Button
 								w='100%'
 								disabled={
-									!((token0Allowance?.data > 0) &&
-									(token1Allowance?.data > 0))
+									!((token0Allowance?.data?.gt(0) &&
+										token0Allowance?.data?.gt(token0Value)) &&
+									(token1Allowance?.data?.gt(0) &&
+										token1Allowance?.data?.gt(token1Value)))
 								}
-							>Lock assets</Button>
+							>
+								Lock assets
+							</Button>
 						</Box>
 					</ModalBody>
 				</ModalContent>
