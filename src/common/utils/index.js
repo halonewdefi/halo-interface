@@ -200,9 +200,31 @@ const openNewTabURL = (url) => {
 	if (newWindow) newWindow.opener = null
 }
 
+const handleTokenInput = (setAmount, setValue, e, token) => {
+	if (isNaN(e.target.value)) {
+		setAmount(prev => prev)
+	}
+	else {
+		setAmount(String(e.target.value))
+		if(Number(e.target.value) >= 0) {
+			try {
+				setValue(
+					ethers.utils.parseUnits(String(e.target.value),
+						token.data?.decimals),
+				)
+			}
+			catch(err) {
+				if (err.code === 'NUMERIC_FAULT') {
+					// value too small
+				}
+			}
+		}
+	}
+}
 export {
 	prettifyAddress, prettifyCurrency, prettifyNumber, getPercentage, getSecondsToGo,
 	promiseAllProgress, searchFor, isEthereumAddress, addUnknownTokenToList, getCombinedTokenListFromSources,
 	getTokenByAddress, getStartOfTheDayTimeStamp, getMerkleProofForAccount, getMerkleLeaf,
 	calculateDifference, getDateFromSeconds, getDateFromTimestamp, openNewTabURL,
+	handleTokenInput,
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
 	Modal,
@@ -16,8 +16,10 @@ import {
 	Spinner,
 	Button,
 } from '@chakra-ui/react'
-import { defaults } from '../../common'
+import { ethers } from 'ethers'
+import { defaults, handleTokenInput } from '../../common'
 import { useUnknownERC20Resolve, useERC20Allowance } from '../../hooks'
+
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -30,6 +32,10 @@ export const LockModal = (props) => {
 	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
 	const token0Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
 	const token1Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
+	const [token0Amount, setToken0Amount] = useState('')
+	const [token0value, setToken0Value] = useState(ethers.BigNumber.from(0))
+	const [token1Amount, setToken1Amount] = useState('')
+	const [token1value, setToken1Value] = useState(ethers.BigNumber.from(0))
 
 	const headingStyle = {
 		marginLeft: '4px',
@@ -97,7 +103,18 @@ export const LockModal = (props) => {
 								mb='1rem'
 							>
 								<InputGroup {...groupStyle}>
-									<Input {...inputStyle}/>
+									<Input
+										{...inputStyle}
+										value={token0Amount}
+										onChange={(e) =>
+											handleTokenInput(
+												setToken0Amount,
+												setToken0Value,
+												e,
+												token0Resolved,
+											)
+										}
+									/>
 									<InputRightElement {...rightElementStyle}>
 										{token0Resolved.isLoading &&
 											<Spinner />
@@ -116,7 +133,18 @@ export const LockModal = (props) => {
 									</InputRightElement>
 								</InputGroup>
 								<InputGroup {...groupStyle}>
-									<Input {...inputStyle}/>
+									<Input
+										{...inputStyle}
+										value={token1Amount}
+										onChange={(e) =>
+											handleTokenInput(
+												setToken1Amount,
+												setToken1Value,
+												e,
+												token1Resolved,
+											)
+										}
+									/>
 									<InputRightElement {...rightElementStyle}>
 										{token1Resolved.isLoading &&
 											<Spinner />

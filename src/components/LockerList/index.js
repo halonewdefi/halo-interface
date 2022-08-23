@@ -5,7 +5,6 @@ import { defaults, prettifyNumber } from '../../common'
 import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance } from '../../hooks'
 import { utils } from 'ethers'
 import { LockModal } from '../LockModal'
-import address from '../../common/address'
 
 const Card = (props) => {
 
@@ -124,7 +123,7 @@ const Card = (props) => {
 									}
 									<Image
 									 {...tokeIconStyle}
-									 src={`svg/tokens/${address.goerli.halo}/index.svg`}/>
+									 src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
 								</Box>
 							</Skeleton>
 							<Box
