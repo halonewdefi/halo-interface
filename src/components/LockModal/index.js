@@ -19,7 +19,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend } from '../../common'
-import { useUnknownERC20Resolve, useERC20Allowance } from '../../hooks'
+import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQunatity } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -38,6 +38,9 @@ export const LockModal = (props) => {
 	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
+
+	const uniV2TokenQunatity = useUniV2TokenQunatity(props.p.address, 0, 0)
+	console.log(uniV2TokenQunatity)
 
 	const headingStyle = {
 		marginLeft: '4px',

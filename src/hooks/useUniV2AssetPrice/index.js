@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 
 export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = defaults.api.staleTime) => {
 
-	const { data: token0 } = useQuery(`${pairAddress}_token0`,
+	const { data: token0, refetch: token0Refetch } = useQuery(`${pairAddress}_token0`,
 		async () => {
 
 			if (pairAddress) {
@@ -22,7 +22,7 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 		},
 	)
 
-	const { data: token1 } = useQuery(`${pairAddress}_token1`,
+	const { data: token1, refetch: token1Refetch } = useQuery(`${pairAddress}_token1`,
 		async () => {
 
 			if (pairAddress) {
@@ -37,7 +37,7 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 		},
 	)
 
-	const { data: token0decimals } = useQuery(`${token0}_decimals`,
+	const { data: token0Decimals, refetch: token0DecimalsRefetch } = useQuery(`${token0}_decimals`,
 		async () => {
 
 			if (token0) {
@@ -52,7 +52,7 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 		},
 	)
 
-	const { data: token1decimals } = useQuery(`${token1}_decimals`,
+	const { data: token1Decimals, refetch: token1DecimalsRefetch } = useQuery(`${token1}_decimals`,
 		async () => {
 
 			if (token1) {
@@ -68,26 +68,42 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 	)
 
 	const [price, setPrice] = useState(BigNumber.from(0))
-	const token0balance = useERC20Balance(token0, pairAddress)
-	const token1balance = useERC20Balance(token1, pairAddress)
+	const token0Balance = useERC20Balance(token0, pairAddress)
+	const token1Balance = useERC20Balance(token1, pairAddress)
+
+	const refetchAll = () => {
+		token0Refetch()
+		token1Refetch()
+		token0DecimalsRefetch()
+		token1DecimalsRefetch()
+		token0Balance.refetch()
+		token1Balance.refetch()
+	}
 
 	useEffect(() => {
-		if (token0balance?.data &&
-			token1balance?.data &&
-			token0decimals &&
-			token0decimals) {
+		if (token0Balance?.data &&
+			token1Balance?.data &&
+			token0Decimals &&
+			token0Decimals) {
 			if (!swapTokens) {
-				setPrice((utils.formatUnits(token1balance?.data, token1decimals)) / (utils.formatUnits(token0balance?.data, token0decimals)))
+				setPrice((utils.formatUnits(token1Balance?.data, token1Decimals)) / (utils.formatUnits(token0Balance?.data, token0Decimals)))
 			}
 			else {
-				setPrice((utils.formatUnits(token0balance?.data, token0decimals)) / (utils.formatUnits(token1balance?.data, token1decimals)))
+				setPrice((utils.formatUnits(token0Balance?.data, token0Decimals)) / (utils.formatUnits(token1Balance?.data, token1Decimals)))
 			}
 		}
-	}, [token0balance?.data,
-		token1balance?.data,
-		token0decimals,
-		token1decimals,
-		swapTokens])
+	}, [
+		token0Balance?.data,
+		token1Balance?.data,
+		token0Decimals,
+		token1Decimals,
+		swapTokens,
+	])
 
-	return [price, token0balance, token1balance]
+	return {
+		price: price,
+		token0Balance: token0Balance,
+		token1Balance: token1Balance,
+		refetchAll: refetchAll,
+	}
 }

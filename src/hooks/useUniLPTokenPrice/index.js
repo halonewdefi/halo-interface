@@ -79,10 +79,13 @@ export const useUniLPTokenPrice = (pairAddress, staleTime = defaults.api.staleTi
 				},
 				orderDirection: desc
 			) {
-				token1Price
+				token0Price
 			}
 		}
-	`)
+	`, {
+		client: defaults.api.graphql.client.uniswapV2,
+		pollInterval: defaults.api.graphql.pollInterval,
+	})
 
 	const { data: token1price } = useApolloQuery(gql`
 		query {
@@ -114,6 +117,7 @@ export const useUniLPTokenPrice = (pairAddress, staleTime = defaults.api.staleTi
 			}
 
 		}, {
+			refetchInterval: staleTime,
 			staleTime: staleTime,
 			enabled: !!pairAddress,
 		},
