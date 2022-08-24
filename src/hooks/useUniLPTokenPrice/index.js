@@ -117,7 +117,7 @@ export const useUniLPTokenPrice = (pairAddress, staleTime = defaults.api.staleTi
 			}
 
 		}, {
-			refetchInterval: staleTime,
+			refetchInterval: defaults.api.refetchInterval,
 			staleTime: staleTime,
 			enabled: !!pairAddress,
 		},

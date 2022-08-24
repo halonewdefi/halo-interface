@@ -103,6 +103,7 @@ defaults.network.erc20 = {}
 defaults.network.erc20.maxApproval = '0x8000000000000000000000000000000000000000000000000000000000000000'
 
 defaults.api = {}
+defaults.api.refetchInterval = 100000
 defaults.api.staleTime = 100000
 defaults.api.client = new QueryClient()
 
