@@ -13,6 +13,12 @@ const Card = (props) => {
 		deposit: PropTypes.func.isRequired,
 	}
 
+	const allocation = usePhase1allocation()
+	const t = useUniLPTokenPrice(props.p.address)
+	const { data: p } = useUniEthPrice()
+	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
+	const [tvl, setTvl] = useState('loading')
+
 	const tokeIconStyle = {
 		h: 'auto',
 		w: '24px',
@@ -31,15 +37,13 @@ const Card = (props) => {
 		minHeight: '24px',
 	}
 
-	const allocation = usePhase1allocation()
-	const t = useUniLPTokenPrice(props.p.address)
-	const { data: p } = useUniEthPrice()
-	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
-	const [tvl, setTvl] = useState('loading')
-
 	useEffect(() => {
 		if (t && p && b) {
-			setTvl(Number(utils.formatUnits(b, 18)) * (Number(utils.formatEther(t)) * Number(p.pairs?.[0]?.token0Price)))
+			setTvl(
+				Number(utils.formatUnits(b, 18)) *
+				(Number(utils.formatEther(t)) *
+				Number(p.pairs?.[0]?.token0Price)),
+			)
 		}
 		return () => setTvl('loading')
 	}, [t, p, b])
@@ -139,7 +143,7 @@ const Card = (props) => {
 	)
 }
 
-export const LockersList = (props) => {
+export const LockerList = (props) => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [pair, setPair] = useState({})
