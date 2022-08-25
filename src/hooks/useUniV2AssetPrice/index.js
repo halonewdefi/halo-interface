@@ -2,10 +2,10 @@ import { useQuery } from 'react-query'
 import { getToken0, getToken1 } from '../../common/uniswapV2Pair'
 import { defaults, getERC20Decimals } from '../../common'
 import { useERC20Balance } from '../useERC20Balance'
-import { BigNumber, utils } from 'ethers'
+import { utils } from 'ethers'
 import { useEffect, useState } from 'react'
 
-export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = defaults.api.staleTime) => {
+export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = defaults.api.staleTime, refetchInterval = defaults.api.refetchInterval) => {
 
 	const { data: token0, refetch: token0Refetch } = useQuery(`${pairAddress}_token0`,
 		async () => {
@@ -67,9 +67,11 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 		},
 	)
 
-	const [price, setPrice] = useState(BigNumber.from(0))
-	const token0Balance = useERC20Balance(token0, pairAddress)
-	const token1Balance = useERC20Balance(token1, pairAddress)
+	const [price, setPrice] = useState(0)
+	const [token0Price, setToken0Price] = useState(0)
+	const [token1Price, setToken1Price] = useState(0)
+	const token0Balance = useERC20Balance(token0, pairAddress, refetchInterval)
+	const token1Balance = useERC20Balance(token1, pairAddress, refetchInterval)
 
 	const refetchAll = () => {
 		token0Refetch()
@@ -85,11 +87,15 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 			token1Balance?.data &&
 			token0Decimals &&
 			token0Decimals) {
+			const a = Number(((utils.formatUnits(token1Balance?.data, token1Decimals)) / (utils.formatUnits(token0Balance?.data, token0Decimals))).toFixed(token1Decimals))
+			const b = Number(((utils.formatUnits(token0Balance?.data, token0Decimals)) / (utils.formatUnits(token1Balance?.data, token1Decimals))).toFixed(token0Decimals))
+			setToken0Price(a)
+			setToken1Price(b)
 			if (!swapTokens) {
-				setPrice((utils.formatUnits(token1Balance?.data, token1Decimals)) / (utils.formatUnits(token0Balance?.data, token0Decimals)))
+				setPrice(a)
 			}
 			else {
-				setPrice((utils.formatUnits(token0Balance?.data, token0Decimals)) / (utils.formatUnits(token1Balance?.data, token1Decimals)))
+				setPrice(b)
 			}
 		}
 	}, [
@@ -102,6 +108,8 @@ export const useUniV2AssetPrice = (pairAddress, swapTokens = false, staleTime = 
 
 	return {
 		price: price,
+		token0Price: token0Price,
+		token1Price: token1Price,
 		token0Balance: token0Balance,
 		token1Balance: token1Balance,
 		refetchAll: refetchAll,

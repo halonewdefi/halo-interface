@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
 	Modal,
@@ -19,7 +19,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend } from '../../common'
-import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQunatity } from '../../hooks'
+import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -36,11 +36,11 @@ export const LockModal = (props) => {
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
 	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
+	const uniV2TokenQuantity = useUniV2TokenQuantity(props.p.address,
+		token0Value, token1Value,
+		token0Resolved.data?.decimals, token1Resolved.data?.decimals)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
-
-	const uniV2TokenQunatity = useUniV2TokenQunatity(props.p.address, 0, 0)
-	console.log(uniV2TokenQunatity)
 
 	const headingStyle = {
 		marginLeft: '4px',
@@ -76,6 +76,26 @@ export const LockModal = (props) => {
 		fontWeight: 'bold',
 		textTransform: 'capitalize',
 	}
+
+	useEffect(() => {
+		if (token0Value.eq(uniV2TokenQuantity.token0Quantity) &&
+		token0Amount.length > 0) {
+			setToken1Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token1Quantity, token1Resolved.data?.decimals))
+		}
+	}, [
+		uniV2TokenQuantity.token1Quantity,
+		uniV2TokenQuantity.token1Price,
+	])
+
+	useEffect(() => {
+		if (token1Value.eq(uniV2TokenQuantity.token1Quantity) &&
+		token1Amount.length > 0) {
+			setToken0Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token0Quantity, token0Resolved.data?.decimals))
+		}
+	}, [
+		uniV2TokenQuantity.token0Quantity,
+		uniV2TokenQuantity.token0Price,
+	])
 
 	return (
 		<>
