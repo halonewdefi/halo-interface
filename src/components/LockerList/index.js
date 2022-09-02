@@ -117,7 +117,7 @@ const Card = (props) => {
 					>
 						<>
 							<Skeleton
-								isLoaded={!allocation.isLoading}
+								isLoaded={allocation.data}
 							>
 								<Box
 									style={valuStyle}

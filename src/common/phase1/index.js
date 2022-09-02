@@ -23,7 +23,7 @@ const getAllocation = async () => {
 		phase1abi,
 		defaults.network.provider,
 	)
-	return await contract.HALO_PER_PAIR()
+	return await contract.Halo_PER_PAIR()
 }
 
 const getEndTime = async () => {
