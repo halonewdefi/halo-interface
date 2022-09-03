@@ -57,7 +57,7 @@ export const LockModal = (props) => {
 		variant: 'blank',
 		flex: '1',
 		placeholder: '0.0',
-		paddingRight: '7.6rem',
+		paddingRight: '6.4rem',
 	}
 
 	const rightElementStyle = {
