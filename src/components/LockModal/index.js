@@ -178,12 +178,48 @@ export const LockModal = (props) => {
 								>
 									<Button
 										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken0Amount(
+												ethers.utils.formatUnits(
+													token0Balance?.data?.div(100).mul(25),
+													token0Resolved.data?.decimals,
+												),
+											)
+											setToken0Value(
+												token0Balance?.data?.div(100).mul(25),
+											)
+										}}
 									>25%</Button>
 									<Button
 										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken0Amount(
+												ethers.utils.formatUnits(
+													token0Balance?.data?.div(100).mul(50),
+													token0Resolved.data?.decimals,
+												),
+											)
+											setToken0Value(
+												token0Balance?.data?.div(100).mul(50),
+											)
+										}}
 									>50%</Button>
 									<Button
 										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken0Amount(
+												ethers.utils.formatUnits(
+													token0Balance?.data?.div(100).mul(75),
+													token0Resolved.data?.decimals,
+												),
+											)
+											setToken0Value(
+												token0Balance?.data?.div(100).mul(75),
+											)
+										}}
 									>75%</Button>
 									<Button
 										{...ncButtonStyle}
@@ -198,7 +234,6 @@ export const LockModal = (props) => {
 											setToken0Value(
 												token0Balance?.data,
 											)
-											console.log(uniV2TokenQuantity)
 										}}
 									>Max</Button>
 								</Flex>
@@ -239,12 +274,48 @@ export const LockModal = (props) => {
 								>
 									<Button
 										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken1Amount(
+												ethers.utils.formatUnits(
+													token1Balance?.data?.div(100).mul(50),
+													token1Resolved.data?.decimals,
+												),
+											)
+											setToken1Value(
+												token1Balance?.data?.div(100).mul(50),
+											)
+										}}
 									>25%</Button>
 									<Button
 										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken1Amount(
+												ethers.utils.formatUnits(
+													token1Balance?.data?.div(100).mul(50),
+													token1Resolved.data?.decimals,
+												),
+											)
+											setToken1Value(
+												token1Balance?.data?.div(100).mul(50),
+											)
+										}}
 									>50%</Button>
 									<Button
 										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken1Amount(
+												ethers.utils.formatUnits(
+													token1Balance?.data?.div(100).mul(75),
+													token1Resolved.data?.decimals,
+												),
+											)
+											setToken1Value(
+												token1Balance?.data?.div(100).mul(75),
+											)
+										}}
 									>75%</Button>
 									<Button
 										{...ncButtonStyle}
@@ -259,8 +330,6 @@ export const LockModal = (props) => {
 											setToken1Value(
 												token1Balance?.data,
 											)
-											console.log(uniV2TokenQuantity)
-
 										}}
 									>Max</Button>
 								</Flex>

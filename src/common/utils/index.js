@@ -221,6 +221,7 @@ const handleTokenInput = (setAmount, setValue, e, token) => {
 		}
 	}
 }
+
 export {
 	prettifyAddress, prettifyCurrency, prettifyNumber, getPercentage, getSecondsToGo,
 	promiseAllProgress, searchFor, isEthereumAddress, addUnknownTokenToList, getCombinedTokenListFromSources,
