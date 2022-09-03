@@ -27,6 +27,7 @@ export const useUniV2TokenQuantity = (
 
 	const [token0Quantity, setToken0Quantity] = useState(token0Amount)
 	const [token1Quantity, setToken1Quantity] = useState(token1Amount)
+	const [vSync, setVsync] = useState(false)
 
 	useEffect(() => {
 		token0Balance.refetch()
@@ -38,7 +39,8 @@ export const useUniV2TokenQuantity = (
 
 	useEffect(() => {
 		if (token0Amount &&
-			token0Price) {
+			token0Price &&
+			!vSync) {
 			try {
 				setToken0Quantity(
 					token0Amount,
@@ -62,7 +64,8 @@ export const useUniV2TokenQuantity = (
 
 	useEffect(() => {
 		if (token1Amount &&
-			token1Price) {
+			token1Price &&
+			!vSync) {
 			try {
 				setToken1Quantity(
 					token1Amount,
@@ -89,5 +92,8 @@ export const useUniV2TokenQuantity = (
 		token1Quantity: token1Quantity,
 		token0Price: token0Price,
 		token1Price: token1Price,
+		setToken0Quantity,
+		setToken1Quantity,
+		setVsync,
 	}
 }

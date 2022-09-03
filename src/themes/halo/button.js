@@ -70,6 +70,19 @@ export default {
 					'#0f0f0f')(props),
 			},
 		}),
+		outline: (props) => ({
+			width: 'auto',
+			height: 'auto',
+			padding: '6px',
+			fontSize: '0.8rem',
+			lineHeight: '1',
+			background: '#fdfdfd',
+			border: '2px solid #98989933',
+			borderRadius: '10px',
+			_hover: {
+				background: '#f7f6f5',
+			},
+		}),
 		link: (props) => ({
 			color: mode('type.link.dark',
 				'type.link.light')(props),

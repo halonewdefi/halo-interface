@@ -19,7 +19,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend } from '../../common'
-import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity } from '../../hooks'
+import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -32,6 +32,8 @@ export const LockModal = (props) => {
 	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
 	const token0Allowance = useERC20Allowance(props.p.token0, defaults.address.phase1)
 	const token1Allowance = useERC20Allowance(props.p.token1, defaults.address.phase1)
+	const token0Balance = useERC20Balance(props.p.token0)
+	const token1Balance = useERC20Balance(props.p.token1)
 	const [token0Amount, setToken0Amount] = useState('')
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
@@ -77,10 +79,22 @@ export const LockModal = (props) => {
 		textTransform: 'capitalize',
 	}
 
+	const ncGroupStyle = {
+		flexDir: 'row',
+		justifyContent: 'right',
+		gap: '6px',
+	}
+
+	const ncButtonStyle = {
+		variant: 'outline',
+		size:'sm',
+	}
+
 	useEffect(() => {
-		if (token0Value.eq(uniV2TokenQuantity.token0Quantity) &&
-		token0Amount.length > 0) {
+		if (token0Value.eq(uniV2TokenQuantity.token0Quantity)) {
+			uniV2TokenQuantity.setVsync(true)
 			setToken1Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token1Quantity, token1Resolved.data?.decimals))
+			setToken1Value(uniV2TokenQuantity?.token1Quantity)
 		}
 	}, [
 		uniV2TokenQuantity.token1Quantity,
@@ -88,9 +102,10 @@ export const LockModal = (props) => {
 	])
 
 	useEffect(() => {
-		if (token1Value.eq(uniV2TokenQuantity.token1Quantity) &&
-		token1Amount.length > 0) {
+		if (token1Value.eq(uniV2TokenQuantity.token1Quantity)) {
+			uniV2TokenQuantity.setVsync(true)
 			setToken0Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token0Quantity, token0Resolved.data?.decimals))
+			setToken0Value(uniV2TokenQuantity?.token0Quantity)
 		}
 	}, [
 		uniV2TokenQuantity.token0Quantity,
@@ -131,14 +146,15 @@ export const LockModal = (props) => {
 									<Input
 										{...inputStyle}
 										value={token0Amount}
-										onChange={(e) =>
+										onChange={(e) => {
+											uniV2TokenQuantity.setVsync(false)
 											handleTokenInput(
 												setToken0Amount,
 												setToken0Value,
 												e,
 												token0Resolved,
 											)
-										}
+										}}
 									/>
 									<InputRightElement {...rightElementStyle}>
 										{token0Resolved.isLoading &&
@@ -157,18 +173,49 @@ export const LockModal = (props) => {
 										}
 									</InputRightElement>
 								</InputGroup>
+								<Flex
+									{...ncGroupStyle}
+								>
+									<Button
+										{...ncButtonStyle}
+									>25%</Button>
+									<Button
+										{...ncButtonStyle}
+									>50%</Button>
+									<Button
+										{...ncButtonStyle}
+									>75%</Button>
+									<Button
+										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken0Amount(
+												ethers.utils.formatUnits(
+													token0Balance?.data,
+													token0Resolved.data?.decimals,
+												),
+											)
+											setToken0Value(
+												token0Balance?.data,
+											)
+											console.log(uniV2TokenQuantity)
+										}}
+									>Max</Button>
+								</Flex>
+
 								<InputGroup {...groupStyle}>
 									<Input
 										{...inputStyle}
 										value={token1Amount}
-										onChange={(e) =>
+										onChange={(e) => {
+											uniV2TokenQuantity.setVsync(false)
 											handleTokenInput(
 												setToken1Amount,
 												setToken1Value,
 												e,
 												token1Resolved,
 											)
-										}
+										}}
 									/>
 									<InputRightElement {...rightElementStyle}>
 										{token1Resolved.isLoading &&
@@ -187,6 +234,36 @@ export const LockModal = (props) => {
 										}
 									</InputRightElement>
 								</InputGroup>
+								<Flex
+									{...ncGroupStyle}
+								>
+									<Button
+										{...ncButtonStyle}
+									>25%</Button>
+									<Button
+										{...ncButtonStyle}
+									>50%</Button>
+									<Button
+										{...ncButtonStyle}
+									>75%</Button>
+									<Button
+										{...ncButtonStyle}
+										onClick={() => {
+											uniV2TokenQuantity.setVsync(false)
+											setToken1Amount(
+												ethers.utils.formatUnits(
+													token1Balance?.data,
+													token1Resolved.data?.decimals,
+												),
+											)
+											setToken1Value(
+												token1Balance?.data,
+											)
+											console.log(uniV2TokenQuantity)
+
+										}}
+									>Max</Button>
+								</Flex>
 							</Flex>
 							{(
 								(token0Resolved.data && token1Resolved.data) &&
