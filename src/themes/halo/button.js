@@ -76,11 +76,12 @@ export default {
 			padding: '6px',
 			fontSize: '0.8rem',
 			lineHeight: '1',
-			background: '#fdfdfd',
-			border: '2px solid #98989933',
+			background: mode('#fdfdfd', '#1f1f1f')(props),
+			border: mode('2px solid #98989933',
+				'2px solid #9898994f')(props),
 			borderRadius: '10px',
 			_hover: {
-				background: '#f7f6f5',
+				background: mode('#f7f6f5', '#262626')(props),
 			},
 		}),
 		link: (props) => ({
