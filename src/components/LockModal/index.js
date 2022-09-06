@@ -19,6 +19,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend } from '../../common'
+import { deposit } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance } from '../../hooks'
 
 export const LockModal = (props) => {
@@ -41,6 +42,7 @@ export const LockModal = (props) => {
 	const uniV2TokenQuantity = useUniV2TokenQuantity(props.p.address,
 		token0Value, token1Value,
 		token0Resolved.data?.decimals, token1Resolved.data?.decimals)
+	const [lockPeriodInDays] = useState(7776000)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
 
@@ -88,6 +90,43 @@ export const LockModal = (props) => {
 	const ncButtonStyle = {
 		variant: 'outline',
 		size:'sm',
+	}
+
+	const lock = () => {
+		try {
+			if (
+				(uniV2TokenQuantity.token0Quantity?.gt(0) && uniV2TokenQuantity.token1Quantity?.gt(0)) &&
+				(token0Balance.data?.gte(uniV2TokenQuantity.token0Quantity)) &&
+				(token1Balance.data?.gte(uniV2TokenQuantity.token1Quantity)) &&
+				!(working)
+			) {
+				setWorking(true)
+				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+				deposit(
+					props.p.address,
+					uniV2TokenQuantity.token0Quantity,
+					uniV2TokenQuantity.token1Quantity,
+					lockPeriodInDays,
+					provider,
+				)
+					.then((tx) => {
+						tx.wait(
+							defaults.network.tx.confirmations,
+						).then((r) => {
+							setWorking(false)
+							token0Balance?.refetch()
+							token1Balance?.refetch()
+						})
+					})
+					.catch(error => {
+						setWorking(false)
+						console.log(error)
+					})
+			}
+		}
+		catch (error) {
+			console.log(error)
+		}
 	}
 
 	useEffect(() => {
@@ -447,6 +486,9 @@ export const LockModal = (props) => {
 									(token1Allowance?.data?.gt(0) &&
 										token1Allowance?.data?.gt(token1Value)))
 								}
+								isLoading={working}
+								loadingText='Locking'
+								onClick={() => lock(wallet.account)}
 							>
 								Lock assets
 							</Button>
