@@ -15,6 +15,11 @@ import {
 	InputRightElement,
 	Spinner,
 	Button,
+	Slider,
+	SliderTrack,
+	SliderFilledTrack,
+	SliderThumb,
+	SliderMark,
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
@@ -42,7 +47,8 @@ export const LockModal = (props) => {
 	const uniV2TokenQuantity = useUniV2TokenQuantity(props.p.address,
 		token0Value, token1Value,
 		token0Resolved.data?.decimals, token1Resolved.data?.decimals)
-	const [lockPeriodInDays] = useState(7776000)
+	const [lockPeriod, setLockPeriod] = useState(0)
+	const [lockPeriodInDays, setLockPeriodInDays] = useState(7776000)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
 
@@ -90,6 +96,15 @@ export const LockModal = (props) => {
 	const ncButtonStyle = {
 		variant: 'outline',
 		size:'sm',
+	}
+
+	const markLabelStyle = {
+		mt: '2',
+		ml: '-3.5',
+		fontSize: 'sm',
+		textAlign: 'center',
+		cursor: 'pointer',
+		pointerEvents: 'all !important',
 	}
 
 	const lock = () => {
@@ -150,6 +165,12 @@ export const LockModal = (props) => {
 		uniV2TokenQuantity.token0Quantity,
 		uniV2TokenQuantity.token0Price,
 	])
+
+	useEffect(() => {
+		if (lockPeriod === 0) setLockPeriodInDays(7776000)
+		if (lockPeriod === 1) setLockPeriodInDays(15552000)
+		if (lockPeriod === 2) setLockPeriodInDays(31536000)
+	}, [lockPeriod])
 
 	return (
 		<>
@@ -389,6 +410,60 @@ export const LockModal = (props) => {
 									>Max</Button>
 								</Flex>
 							</Flex>
+							<Box
+								as='h4'
+								{...headingStyle}
+							>
+								Lock Period
+							</Box>
+							<Flex
+								flexFlow='column'
+								minH='45px'
+								padding='1.5px 18px'
+								marginBottom='3.5rem'
+							>
+								<Slider
+									defaultValue={0}
+									min={0}
+									max={2}
+									step={1}
+									value={lockPeriod}
+									onChange={(n) => setLockPeriod(n)}
+								>
+									<Box
+										mt='15px'
+										p='0 10px'
+									>
+										<SliderMark
+											pointerEvents='all'
+											value={0}
+											onClick={() => setLockPeriod(0)}
+											{...markLabelStyle}>
+											90<br/>days
+										</SliderMark>
+										<SliderMark
+											value={1}
+											onClick={() => setLockPeriod(1)}
+											{...markLabelStyle}
+										>
+											180<br/>days
+										</SliderMark>
+										<SliderMark
+											value={2}
+											onClick={() => setLockPeriod(2)}
+											cursor='pointer'
+											{...markLabelStyle}
+										>
+											365<br/>days
+										</SliderMark>
+									</Box>
+									<SliderTrack bg='red.100'>
+										<Box position='relative' right={10} />
+										<SliderFilledTrack bg='accent.dark.150' />
+									</SliderTrack>
+									<SliderThumb boxSize={6} />
+								</Slider>
+							</Flex>
 							{(
 								(token0Resolved.data && token1Resolved.data) &&
 									(
@@ -484,7 +559,8 @@ export const LockModal = (props) => {
 									!((token0Allowance?.data?.gt(0) &&
 										token0Allowance?.data?.gt(token0Value)) &&
 									(token1Allowance?.data?.gt(0) &&
-										token1Allowance?.data?.gt(token1Value)))
+										token1Allowance?.data?.gt(token1Value)) &&
+									!(working))
 								}
 								isLoading={working}
 								loadingText='Locking'

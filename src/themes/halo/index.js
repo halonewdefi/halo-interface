@@ -18,6 +18,7 @@ import modal from './modal'
 import tag from './tag'
 import popover from './popover'
 import layers from './layers'
+import slider from './slider'
 
 const overrides = {
 	config: {
@@ -36,7 +37,10 @@ const overrides = {
 				color: '#000',
 			},
 			'.chakra-alert button:focus': {
-				boxShadow: '0 0 0 3px #7b7ce0',
+				_focus: {
+					boxShadow: `0 0 0 3px ${mode('var(--chakra-colors-accent-dark-100)',
+						'var(--chakra-colors-accent-light-100)')(props)}`,
+				},
 			},
 			'h1, h2, h3, h4, h5, h6, h7': {
 				fontFamily: 'Heading',
@@ -86,6 +90,7 @@ const overrides = {
 		Switch: switchComp,
 		Tag: tag,
 		Popover: popover,
+		Slider: slider,
 	},
 	layerStyles: layers,
 }
