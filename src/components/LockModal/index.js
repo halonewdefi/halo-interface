@@ -413,13 +413,14 @@ export const LockModal = (props) => {
 							<Box
 								as='h4'
 								{...headingStyle}
+								margin='0px 0 -2px 4px'
 							>
 								Lock Period
 							</Box>
 							<Flex
 								flexFlow='column'
 								minH='45px'
-								padding='1.5px 18px'
+								padding='0px 18px 1.5px'
 								marginBottom='3.5rem'
 							>
 								<Slider
