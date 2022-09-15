@@ -20,6 +20,7 @@ import {
 	SliderFilledTrack,
 	SliderThumb,
 	SliderMark,
+	useColorModeValue,
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
@@ -49,6 +50,7 @@ export const LockModal = (props) => {
 		token0Resolved.data?.decimals, token1Resolved.data?.decimals)
 	const [lockPeriod, setLockPeriod] = useState(0)
 	const [lockPeriodInDays, setLockPeriodInDays] = useState(7776000)
+	const [multiplier, setMultiplier] = useState(4)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
 
@@ -80,6 +82,11 @@ export const LockModal = (props) => {
 		height: '24px',
 		borderRadius: '50%',
 		mr: '5px',
+	}
+
+	const extrasStyle = {
+		color: useColorModeValue('type.body.dark', 'type.body.light'),
+		p: '3px',
 	}
 
 	const tokenSymbolStyle = {
@@ -127,7 +134,7 @@ export const LockModal = (props) => {
 					.then((tx) => {
 						tx.wait(
 							defaults.network.tx.confirmations,
-						).then((r) => {
+						).then(() => {
 							setWorking(false)
 							token0Balance?.refetch()
 							token1Balance?.refetch()
@@ -167,9 +174,18 @@ export const LockModal = (props) => {
 	])
 
 	useEffect(() => {
-		if (lockPeriod === 0) setLockPeriodInDays(7776000)
-		if (lockPeriod === 1) setLockPeriodInDays(15552000)
-		if (lockPeriod === 2) setLockPeriodInDays(31536000)
+		if (lockPeriod === 0) {
+			setLockPeriodInDays(7776000)
+			setMultiplier(4)
+		}
+		if (lockPeriod === 1) {
+			setLockPeriodInDays(15552000)
+			setMultiplier(9)
+		}
+		if (lockPeriod === 2) {
+			setLockPeriodInDays(31536000)
+			setMultiplier(19)
+		}
 	}, [lockPeriod])
 
 	return (
@@ -464,6 +480,39 @@ export const LockModal = (props) => {
 									</SliderTrack>
 									<SliderThumb boxSize={6} />
 								</Slider>
+							</Flex>
+							<Flex
+								flexDir='row'
+							>
+								<Box
+									as='h4'
+									mb='1rem'
+									w='48%'
+									{...headingStyle}
+								>
+									REWARD
+									<Flex
+										{...extrasStyle}
+									>
+										200
+										<Image
+											h='auto'
+											w='24px'
+											src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
+									</Flex>
+								</Box>
+								<Box
+									as='h4'
+									mb='1rem'
+									{...headingStyle}
+								>
+									Multiplier
+									<Flex
+										{...extrasStyle}
+									>
+										{`${multiplier}x`}
+									</Flex>
+								</Box>
 							</Flex>
 							{(
 								(token0Resolved.data && token1Resolved.data) &&
