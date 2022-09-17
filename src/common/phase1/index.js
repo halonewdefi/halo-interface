@@ -34,4 +34,23 @@ const getEndTime = async () => {
 	return await contract.endTime()
 }
 
-export { deposit, getAllocation, getEndTime }
+const getTotalWeightOfLockedPositions = async (pair) => {
+	const contract = new ethers.Contract(
+		defaults.address.phase1,
+		phase1abi,
+		defaults.network.provider,
+	)
+	return await contract._totalWeightOfLockedPositions(pair)
+}
+
+const quoteHalo = async (pair, address) => {
+	const contract = new ethers.Contract(
+		defaults.address.phase1,
+		phase1abi,
+		defaults.network.provider,
+	)
+	return await contract.quoteHalo(pair, address)
+}
+
+export { deposit, getAllocation, getEndTime,
+	getTotalWeightOfLockedPositions, quoteHalo }
