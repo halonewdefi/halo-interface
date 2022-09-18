@@ -52,5 +52,16 @@ const quoteHalo = async (pair, address) => {
 	return await contract.quoteHalo(pair, address)
 }
 
+const getPositions = async (pair, address) => {
+	const contract = new ethers.Contract(
+		defaults.address.phase1,
+		phase1abi,
+		defaults.network.provider,
+	)
+	return await contract.positions(pair, address)
+}
+
+
 export { deposit, getAllocation, getEndTime,
-	getTotalWeightOfLockedPositions, quoteHalo }
+	getTotalWeightOfLockedPositions, quoteHalo,
+	getPositions }

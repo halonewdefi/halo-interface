@@ -2,7 +2,11 @@ import { useQuery } from 'react-query'
 import { getEndTime } from '../../common/phase1'
 import { defaults } from '../../common'
 
-export const usePhase1endTime = (type, staleTime = defaults.api.staleTime) => {
+export const usePhase1endTime = (
+	type,
+	staleTime = defaults.api.staleTime,
+	refetchInterval = false,
+) => {
 
 	const t = useQuery(`${defaults.address.phase1}_endTime`,
 		async () => {
@@ -11,6 +15,7 @@ export const usePhase1endTime = (type, staleTime = defaults.api.staleTime) => {
 			}
 		}, {
 			staleTime: staleTime,
+			refetchInterval: refetchInterval,
 		},
 	)
 

@@ -20,6 +20,15 @@ const getToken1 = async (pairAddress) => {
 	return await contract.token1()
 }
 
+const getReserves = async (pairAddress) => {
+	const contract = new ethers.Contract(
+		pairAddress,
+		UniswapV2Pair,
+		defaults.network.provider,
+	)
+	return await contract.getReserves()
+}
+
 export {
-	getToken0, getToken1,
+	getToken0, getToken1, getReserves,
 }

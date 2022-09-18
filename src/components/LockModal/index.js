@@ -28,7 +28,7 @@ import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
 import { deposit } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
-	useQuoteHalo } from '../../hooks'
+	useQuoteHalo, useUniV2LPTokenQuantity, usePreQuoteHalo } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -48,12 +48,25 @@ export const LockModal = (props) => {
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
 	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
-	const uniV2TokenQuantity = useUniV2TokenQuantity(props.p.address,
+	const uniV2TokenQuantity = useUniV2TokenQuantity(
+		props.p.address,
 		token0Value, token1Value,
-		token0Resolved.data?.decimals, token1Resolved.data?.decimals)
+		token0Resolved.data?.decimals,
+		token1Resolved.data?.decimals,
+	)
+	const uniV2LPTokenQuantity = useUniV2LPTokenQuantity(
+		props.p.address,
+		uniV2TokenQuantity.token0Quantity,
+		uniV2TokenQuantity.token1Quantity,
+	)
 	const [lockPeriod, setLockPeriod] = useState(0)
 	const [lockPeriodInDays, setLockPeriodInDays] = useState(7776000)
 	const [multiplier, setMultiplier] = useState(4)
+	const preQuoteHalo = usePreQuoteHalo(
+		uniV2LPTokenQuantity.lpTokenQuantity,
+		multiplier,
+		props.p.address,
+	)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
 
@@ -116,8 +129,6 @@ export const LockModal = (props) => {
 		cursor: 'pointer',
 		pointerEvents: 'all !important',
 	}
-
-	console.log(rewardAmount)
 
 	const lock = () => {
 		try {
@@ -507,8 +518,20 @@ export const LockModal = (props) => {
 											minW='50%'
 											isLoaded={!!rewardAmount.data}
 										>
-											{rewardAmount.data &&
-												prettifyNumber(ethers.utils.formatEther(rewardAmount.data), 0, 4, 'US', 'compact')
+											{(rewardAmount.data &&
+												preQuoteHalo) &&
+													<>
+														{rewardAmount.data.gte(preQuoteHalo) &&
+															<>
+																{prettifyNumber(ethers.utils.formatEther(rewardAmount.data), 0, 4, 'US', 'compact')}
+															</>
+														}
+														{preQuoteHalo.gt(rewardAmount.data) &&
+															<>
+																{prettifyNumber(ethers.utils.formatEther(preQuoteHalo), 0, 4, 'US', 'compact')}
+															</>
+														}
+													</>
 											}
 											<Image
 												h='auto'
