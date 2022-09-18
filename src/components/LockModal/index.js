@@ -21,12 +21,14 @@ import {
 	SliderThumb,
 	SliderMark,
 	useColorModeValue,
+	Skeleton,
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
-import { defaults, handleTokenInput, approveERC20ToSpend } from '../../common'
+import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
 import { deposit } from '../../common/phase1'
-import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance } from '../../hooks'
+import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
+	useQuoteHalo } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -41,6 +43,7 @@ export const LockModal = (props) => {
 	const token1Allowance = useERC20Allowance(props.p.token1, defaults.address.phase1)
 	const token0Balance = useERC20Balance(props.p.token0)
 	const token1Balance = useERC20Balance(props.p.token1)
+	const rewardAmount = useQuoteHalo(props.p.address)
 	const [token0Amount, setToken0Amount] = useState('')
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
@@ -114,6 +117,8 @@ export const LockModal = (props) => {
 		pointerEvents: 'all !important',
 	}
 
+	console.log(rewardAmount)
+
 	const lock = () => {
 		try {
 			if (
@@ -136,6 +141,7 @@ export const LockModal = (props) => {
 							defaults.network.tx.confirmations,
 						).then(() => {
 							setWorking(false)
+							rewardAmount?.refetch()
 							token0Balance?.refetch()
 							token1Balance?.refetch()
 						})
@@ -494,11 +500,21 @@ export const LockModal = (props) => {
 									<Flex
 										{...extrasStyle}
 									>
-										200
-										<Image
-											h='auto'
-											w='24px'
-											src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
+										<Skeleton
+											display='flex'
+											flexDir='row'
+											gap='0.2rem'
+											minW='50%'
+											isLoaded={!!rewardAmount.data}
+										>
+											{rewardAmount.data &&
+												prettifyNumber(ethers.utils.formatEther(rewardAmount.data), 0, 4, 'US', 'compact')
+											}
+											<Image
+												h='auto'
+												w='24px'
+												src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
+										</Skeleton>
 									</Flex>
 								</Box>
 								<Box

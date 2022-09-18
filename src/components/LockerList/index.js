@@ -27,7 +27,7 @@ const Card = (props) => {
 	const valuStyle = {
 		display: 'flex',
 		flexDirection: 'row',
-		gridGap: '0.4rem',
+		gridGap: '0.2rem',
 		fontWeight: '600',
 		minHeight: '24px',
 	}
@@ -95,14 +95,11 @@ const Card = (props) => {
 						<>
 							<Skeleton
 								isLoaded={tvl === 'loading' ? false : true }
+								style={valuStyle}
 							>
-								<Box
-									style={valuStyle}
-								>
-									{
-										`$${prettifyNumber(tvl, 0, 2, 'US', 'compact')}`
-									}
-								</Box>
+								{
+									`$${prettifyNumber(tvl, 0, 2, 'US', 'compact')}`
+								}
 							</Skeleton>
 							<Box
 								style={descStyle}
@@ -118,17 +115,14 @@ const Card = (props) => {
 						<>
 							<Skeleton
 								isLoaded={allocation.data}
+								style={valuStyle}
 							>
-								<Box
-									style={valuStyle}
-								>
-									{allocation.data &&
-										prettifyNumber(utils.formatEther(allocation?.data), 0, 0, 'US', 'compact')
-									}
-									<Image
-									 {...tokeIconStyle}
-									 src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
-								</Box>
+								{allocation.data &&
+									prettifyNumber(utils.formatEther(allocation.data), 0, 0, 'US', 'compact')
+								}
+								<Image
+									{...tokeIconStyle}
+									src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
 							</Skeleton>
 							<Box
 								style={descStyle}
