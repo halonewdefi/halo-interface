@@ -63,6 +63,9 @@ export const useUniV2LPTokenQuantity = (
 				if (q) {
 					setQuantity(q)
 				}
+				else {
+					setQuantity(0)
+				}
 			}
 			catch (error) {
 				console.log(error)

@@ -28,7 +28,7 @@ import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
 import { deposit } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
-	useQuoteHalo, useUniV2LPTokenQuantity, usePreQuoteHalo } from '../../hooks'
+	useQuoteHalo, useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -44,10 +44,13 @@ export const LockModal = (props) => {
 	const token0Balance = useERC20Balance(props.p.token0)
 	const token1Balance = useERC20Balance(props.p.token1)
 	const rewardAmount = useQuoteHalo(props.p.address)
+	const phase1position = usePhase1Position(props.p.address)
+
 	const [token0Amount, setToken0Amount] = useState('')
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
 	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
+
 	const uniV2TokenQuantity = useUniV2TokenQuantity(
 		props.p.address,
 		token0Value, token1Value,
@@ -59,6 +62,7 @@ export const LockModal = (props) => {
 		uniV2TokenQuantity.token0Quantity,
 		uniV2TokenQuantity.token1Quantity,
 	)
+
 	const [lockPeriod, setLockPeriod] = useState(0)
 	const [lockPeriodInDays, setLockPeriodInDays] = useState(7776000)
 	const [multiplier, setMultiplier] = useState(4)
@@ -152,6 +156,7 @@ export const LockModal = (props) => {
 							defaults.network.tx.confirmations,
 						).then(() => {
 							setWorking(false)
+							phase1position.refetch()
 							rewardAmount?.refetch()
 							token0Balance?.refetch()
 							token1Balance?.refetch()
@@ -204,6 +209,22 @@ export const LockModal = (props) => {
 			setMultiplier(19)
 		}
 	}, [lockPeriod])
+
+	useEffect(() => {
+		if (phase1position.data) {
+			if (phase1position.data.multiplier?.toNumber() <= 4) {
+				setLockPeriod(0)
+			}
+			if (phase1position.data?.multiplier?.toNumber() === 9) {
+				setLockPeriod(1)
+			}
+			if (phase1position.data?.multiplier?.toNumber() === 19) {
+				setLockPeriod(2)
+			}
+		}
+	}, [
+		phase1position.data?.multiplier,
+	])
 
 	return (
 		<>

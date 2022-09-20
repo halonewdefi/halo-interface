@@ -3,7 +3,7 @@ import { defaults, getTotalWeightOfLockedPositions, getPositions } from '../../c
 import { usePhase1allocation } from '../usePhase1allocation'
 import { useEffect, useState } from 'react'
 import { useWallet } from 'use-wallet'
-import { BigNumber } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 export const usePreQuoteHalo = (
 	positionAmount,
@@ -18,7 +18,7 @@ export const usePreQuoteHalo = (
 
 	const { data: allocation } = usePhase1allocation()
 
-	const { data: totalWeightOfLockedPositions } = useQuery(`${defaults.address.phase1}_totalWeightOfLockedPositions`,
+	const { data: totalWeightOfLockedPositions } = useQuery(`${pair}_totalWeightOfLockedPositions`,
 		async () => {
 			if (defaults.address.phase1) {
 				return await getTotalWeightOfLockedPositions(pair)
@@ -47,18 +47,22 @@ export const usePreQuoteHalo = (
 	useEffect(() => {
 		if (allocation &&
 			totalWeightOfLockedPositions &&
-			positionAmount &&
 			positionMultiplier &&
 			position?.amount
 		) {
 			try {
-				const a = allocation.mul(position.amount.add(positionAmount)).mul(positionMultiplier)
-				const q = a.div(totalWeightOfLockedPositions)
-				if (q.gte(allocation)) {
-					setPreQuote(allocation)
+				if (positionAmount > 0) {
+					const a = allocation.mul(position.amount.add(ethers.BigNumber.from(positionAmount?.toFixed(0)))).mul(positionMultiplier)
+					const q = a.div(totalWeightOfLockedPositions > 0 ? totalWeightOfLockedPositions : 1)
+					if (q.gte(allocation)) {
+						setPreQuote(allocation)
+					}
+					else {
+						setPreQuote(q)
+					}
 				}
 				else {
-					setPreQuote(q)
+					setPreQuote(ethers.BigNumber.from(0))
 				}
 			}
 			catch (error) {
