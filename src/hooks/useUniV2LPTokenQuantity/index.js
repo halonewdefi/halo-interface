@@ -57,8 +57,8 @@ export const useUniV2LPTokenQuantity = (
 			token1Amount) {
 			try {
 				const q = Math.min(
-					token0Amount.mul(totalSupply) / reserves._reserve0,
-					token1Amount.mul(totalSupply) / reserves._reserve1,
+					token0Amount.mul(totalSupply) / reserves?.[0],
+					token1Amount.mul(totalSupply) / reserves?.[1],
 				)
 				if (q) {
 					setQuantity(q)

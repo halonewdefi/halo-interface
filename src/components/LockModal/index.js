@@ -211,20 +211,19 @@ export const LockModal = (props) => {
 
 	useEffect(() => {
 		if (phase1position.data) {
-			if (phase1position.data.multiplier?.toNumber() <= 4) {
+			if (phase1position.data?.[1]?.toNumber() <= 4) {
 				setLockPeriod(0)
 			}
-			if (phase1position.data?.multiplier?.toNumber() === 9) {
+			if (phase1position.data?.[1]?.toNumber() === 9) {
 				setLockPeriod(1)
 			}
-			if (phase1position.data?.multiplier?.toNumber() === 19) {
+			if (phase1position.data?.[1]?.toNumber() === 19) {
 				setLockPeriod(2)
 			}
 		}
 	}, [
-		phase1position.data?.multiplier,
+		phase1position.data?.[1],
 	])
-
 
 	return (
 		<>
@@ -539,7 +538,7 @@ export const LockModal = (props) => {
 											minW='50%'
 											isLoaded={
 												!!(preQuoteHalo.preQuote && ((preQuoteHalo.preQuote > 0 && uniV2LPTokenQuantity.lpTokenQuantity >= 0) ||
-												(preQuoteHalo.preQuote && phase1position?.data?.multiplier == 0)))
+												(preQuoteHalo.preQuote && phase1position.data?.[1] == 0)))
 											}>
 											{preQuoteHalo.preQuote &&
 													<>
