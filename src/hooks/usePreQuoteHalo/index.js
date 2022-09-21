@@ -18,7 +18,9 @@ export const usePreQuoteHalo = (
 
 	const { data: allocation } = usePhase1allocation()
 
-	const { data: totalWeightOfLockedPositions } = useQuery(`${pair}_totalWeightOfLockedPositions`,
+	const { data: totalWeightOfLockedPositions,
+		refetch: refetchTotalWeightOfLockedPositions,
+	 } = useQuery(`${pair}_totalWeightOfLockedPositions`,
 		async () => {
 			if (defaults.address.phase1) {
 				return await getTotalWeightOfLockedPositions(pair)
@@ -30,7 +32,9 @@ export const usePreQuoteHalo = (
 		},
 	)
 
-	const { data: position } = useQuery(`${pair}_positionof_${address ? address : wallet?.account}`,
+	const { data: position,
+		refetch: refetchPosition,
+	} = useQuery(`${pair}_positionof_${address ? address : wallet?.account}`,
 		async () => {
 			if (defaults.address.phase1) {
 				return await getPositions(pair, address ? address : wallet?.account)
@@ -51,24 +55,20 @@ export const usePreQuoteHalo = (
 			position?.amount
 		) {
 			try {
-				if (positionAmount > 0) {
-					const a = allocation.mul(position.amount.add(ethers.BigNumber.from(positionAmount?.toFixed(0)))).mul(positionMultiplier)
-					const q = a.div(totalWeightOfLockedPositions > 0 ? totalWeightOfLockedPositions : 1)
-					if (q.gte(allocation)) {
-						setPreQuote(allocation)
-					}
-					else {
-						setPreQuote(q)
-					}
+				const a = allocation.mul(position.amount.add(ethers.BigNumber.from(positionAmount?.toFixed(0)))).mul(positionMultiplier)
+				const q = a.div(totalWeightOfLockedPositions > 0 ? totalWeightOfLockedPositions : 1)
+				if (q.gte(allocation)) {
+					setPreQuote(allocation)
 				}
 				else {
-					setPreQuote(ethers.BigNumber.from(0))
+					setPreQuote(q)
 				}
 			}
 			catch (error) {
 				console.log(error)
 			}
 		}
+		return () => setPreQuote(ethers.BigNumber.from(0))
 	}, [
 		allocation,
 		totalWeightOfLockedPositions,
@@ -76,5 +76,9 @@ export const usePreQuoteHalo = (
 		positionMultiplier,
 	])
 
-	return preQuote
+	return {
+		preQuote,
+		refetchTotalWeightOfLockedPositions,
+		refetchPosition,
+	}
 }

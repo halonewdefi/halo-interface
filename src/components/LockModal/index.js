@@ -28,7 +28,7 @@ import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
 import { deposit } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
-	useQuoteHalo, useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position } from '../../hooks'
+	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -43,7 +43,6 @@ export const LockModal = (props) => {
 	const token1Allowance = useERC20Allowance(props.p.token1, defaults.address.phase1)
 	const token0Balance = useERC20Balance(props.p.token0)
 	const token1Balance = useERC20Balance(props.p.token1)
-	const rewardAmount = useQuoteHalo(props.p.address)
 	const phase1position = usePhase1Position(props.p.address)
 
 	const [token0Amount, setToken0Amount] = useState('')
@@ -157,9 +156,9 @@ export const LockModal = (props) => {
 						).then(() => {
 							setWorking(false)
 							phase1position.refetch()
-							rewardAmount?.refetch()
-							token0Balance?.refetch()
-							token1Balance?.refetch()
+							preQuoteHalo.refetchTotalWeightOfLockedPositions()
+							token0Balance.refetch()
+							token1Balance.refetch()
 						})
 					})
 					.catch(error => {
@@ -225,6 +224,7 @@ export const LockModal = (props) => {
 	}, [
 		phase1position.data?.multiplier,
 	])
+
 
 	return (
 		<>
@@ -537,19 +537,15 @@ export const LockModal = (props) => {
 											flexDir='row'
 											gap='0.2rem'
 											minW='50%'
-											isLoaded={!!rewardAmount.data}
-										>
-											{(rewardAmount.data &&
-												preQuoteHalo) &&
+											isLoaded={
+												!!(preQuoteHalo.preQuote && ((preQuoteHalo.preQuote > 0 && uniV2LPTokenQuantity.lpTokenQuantity >= 0) ||
+												(preQuoteHalo.preQuote && phase1position?.data?.multiplier == 0)))
+											}>
+											{preQuoteHalo.preQuote &&
 													<>
-														{rewardAmount.data.gte(preQuoteHalo) &&
+														{
 															<>
-																{prettifyNumber(ethers.utils.formatEther(rewardAmount.data), 0, 4, 'US', 'compact')}
-															</>
-														}
-														{preQuoteHalo.gt(rewardAmount.data) &&
-															<>
-																{prettifyNumber(ethers.utils.formatEther(preQuoteHalo), 0, 4, 'US', 'compact')}
+																{prettifyNumber(ethers.utils.formatEther(preQuoteHalo.preQuote), 0, 4, 'US', 'compact')}
 															</>
 														}
 													</>
@@ -666,7 +662,9 @@ export const LockModal = (props) => {
 							<Button
 								w='100%'
 								disabled={
-									!((token0Allowance?.data?.gt(0) &&
+									!(uniV2TokenQuantity.token0Quantity?.gt(0) &&
+										uniV2TokenQuantity.token1Quantity?.gt(0) &&
+									(token0Allowance?.data?.gt(0) &&
 										token0Allowance?.data?.gt(token0Value)) &&
 									(token1Allowance?.data?.gt(0) &&
 										token1Allowance?.data?.gt(token1Value)) &&
