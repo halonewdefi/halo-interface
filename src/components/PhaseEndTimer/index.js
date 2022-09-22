@@ -89,7 +89,6 @@ export const PhaseEndTimer = (props) => {
 		<Flex
 			flexDir='row'
 			w='100%'
-			p='0.8rem 1.3rem'
 			justifyContent='space-between'
 		>
 			<Flex
