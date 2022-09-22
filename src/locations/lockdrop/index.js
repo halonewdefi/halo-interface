@@ -7,6 +7,11 @@ export const Lockdrop = () => {
 	return (
 		<>
 			<Hero/>
+			<Box
+				layerStyle='hr'
+				margin='0 auto 3rem auto'
+				width='96%'
+			/>
 			<Flex
 				flexDir='column'
 				w='100%'

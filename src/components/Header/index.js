@@ -44,24 +44,24 @@ export const Header = (props) => {
 			>
 				{useBreakpointValue({
 					base: '',
-					md: <>
-						{pages.map(p =>
-							<Link
-								key={p.name}
-								to={p.link}
-							>
-								<Button
-									variant='link'
-									style={{
-										...(location.pathname === '/' && p.name === 'Home' && current),
-										...(p.link === location.pathname && current),
-									}}
-								>
-									{p.text}
-								</Button>
-							</Link>)
-						}
-					</>,
+					// md: <>
+					// 	{pages.map(p =>
+					// 		<Link
+					// 			key={p.name}
+					// 			to={p.link}
+					// 		>
+					// 			<Button
+					// 				variant='link'
+					// 				style={{
+					// 					...(location.pathname === '/' && p.name === 'Home' && current),
+					// 					...(p.link === location.pathname && current),
+					// 				}}
+					// 			>
+					// 				{p.text}
+					// 			</Button>
+					// 		</Link>)
+					// 	}
+					// </>,
 				})}
 			</Flex>
 			<Flex

@@ -1,6 +1,7 @@
 export * from './useERC20Balance'
 export * from './useTimeToBlock'
 export * from './usePhase1allocation'
+export * from './usePhase1endTime'
 export * from './useUniV2AssetPrice'
 export * from './useUniLPTokenPrice'
 export * from './useUniEthPrice'
