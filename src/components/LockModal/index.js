@@ -225,6 +225,8 @@ export const LockModal = (props) => {
 		phase1position.data?.[1],
 	])
 
+	console.log(phase1position)
+
 	return (
 		<>
 			<Modal

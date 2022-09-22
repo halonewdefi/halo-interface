@@ -1,11 +1,12 @@
 import React from 'react'
 import { Flex, Box } from '@chakra-ui/react'
-import { LockerList } from '../../components'
+import { Hero, LockerList } from '../../components'
 
 export const Lockdrop = () => {
 
 	return (
 		<>
+			<Hero/>
 			<Flex
 				flexDir='column'
 				w='100%'

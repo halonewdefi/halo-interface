@@ -1,6 +1,7 @@
 export * from './BurgerMenu'
 export * from './ColorModeSwitcher'
 export * from './Header'
+export * from './Hero'
 export * from './Logo'
 export * from './Logotype'
 export * from './TokenJazzicon'

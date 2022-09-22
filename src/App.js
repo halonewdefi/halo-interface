@@ -27,6 +27,7 @@ const App = () => {
 					<Flex
 						w='100%'
 						maxW={defaults.layout.container.xl.width}
+						flexDir='column'
 						m='0 auto'
 						p={defaults.layout.container.padding}>
 						<Switch>
