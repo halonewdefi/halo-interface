@@ -19,7 +19,9 @@ const App = () => {
 				>
 					<Logotype/>
 					<Header
-						width={defaults.layout.header.width}
+						w='100%'
+						m='0 auto'
+						maxW={defaults.layout.container.xl.width}
 						p={defaults.layout.header.padding}
 					/>
 					<Flex

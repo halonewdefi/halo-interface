@@ -52,7 +52,7 @@ export const Header = (props) => {
 							>
 								<Button
 									variant='link'
-									style={ {
+									style={{
 										...(location.pathname === '/' && p.name === 'Home' && current),
 										...(p.link === location.pathname && current),
 									}}
