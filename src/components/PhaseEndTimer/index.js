@@ -41,7 +41,7 @@ export const PhaseEndTimer = (props) => {
 						</Box>
 					</Skeleton>
 					<Box>
-						Days
+						{`Day${(days === 1) ? '' : 's'}`}
 					</Box>
 				</Flex>
 				<Flex
@@ -57,7 +57,7 @@ export const PhaseEndTimer = (props) => {
 						</Skeleton>
 					</Box>
 					<Box>
-						Hours
+						{`Hour${(hours === 1) ? '' : 's'}`}
 					</Box>
 				</Flex>
 				<Flex
@@ -73,7 +73,7 @@ export const PhaseEndTimer = (props) => {
 						</Skeleton>
 					</Box>
 					<Box>
-						Mins
+						{`Min${(minutes === 1) ? '' : 's'}`}
 					</Box>
 				</Flex>
 			</Flex>
