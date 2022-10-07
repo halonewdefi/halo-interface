@@ -5,12 +5,13 @@ import {
 	Skeleton,
 } from '@chakra-ui/react'
 import Countdown from 'react-countdown'
-import { usePhase1endTime } from '../../hooks/'
+import { usePhase, usePhaseEndTime } from '../../hooks/'
 
 export const PhaseEndTimer = (props) => {
 
-	const phase1endTime = usePhase1endTime()
-	const date = new Date(phase1endTime?.data?.toNumber() * 1000)
+	const phase = usePhase()
+	const phaseEndTime = usePhaseEndTime()
+	const date = new Date(phaseEndTime?.data?.toNumber() * 1000)
 
 	const time = ({ days, hours, minutes }) => {
 
@@ -32,7 +33,7 @@ export const PhaseEndTimer = (props) => {
 					{...unit}
 				>
 					<Skeleton
-						isLoaded={phase1endTime?.isSuccess}
+						isLoaded={phaseEndTime?.isSuccess}
 					>
 						<Box
 							{...unitValue}
@@ -51,7 +52,7 @@ export const PhaseEndTimer = (props) => {
 						{...unitValue}
 					>
 						<Skeleton
-							isLoaded={phase1endTime?.isSuccess}
+							isLoaded={phaseEndTime?.isSuccess}
 						>
 							{hours}
 						</Skeleton>
@@ -67,7 +68,7 @@ export const PhaseEndTimer = (props) => {
 						{...unitValue}
 					>
 						<Skeleton
-							isLoaded={phase1endTime?.isSuccess}
+							isLoaded={phaseEndTime?.isSuccess}
 						>
 							{minutes}
 						</Skeleton>
@@ -96,20 +97,24 @@ export const PhaseEndTimer = (props) => {
 				w='100%'
 				justifyContent='space-between'
 			>
-				<Flex
-					flexDir='column'
-					justifyContent='center'
+				<Skeleton
+					isLoaded={!!phase}
 				>
-					<Box
-						as='h4'
-						paddingTop='8px'
-						{...descStyle}>
-						Phase 1
-					</Box>
-					<Box
-						fontStyle='italic'
-					>Ends in</Box>
-				</Flex>
+					<Flex
+						flexDir='column'
+						justifyContent='center'
+					>
+						<Box
+							as='h4'
+							paddingTop='8px'
+							{...descStyle}>
+							{`Phase ${phase?.which}`}
+						</Box>
+						<Box
+							fontStyle='italic'
+						>Ends in</Box>
+					</Flex>
+				</Skeleton>
 
 				<Flex
 					flexDir='row'
