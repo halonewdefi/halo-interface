@@ -31,6 +31,7 @@ export const Header = (props) => {
 				'1px solid var(--chakra-colors-stroke-light)'), md: '0' }}
 			background={{ base: useColorModeValue('bg.light', 'bg.dark'), md: 'transparent' }}
 			bottom='0'
+			zIndex='9'
 			{...props}>
 			{useBreakpointValue({
 				base: <BurgerMenu pages={pages}/>,

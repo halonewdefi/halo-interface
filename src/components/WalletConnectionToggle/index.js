@@ -61,7 +61,7 @@ export const WalletConnectionToggle = props => {
 					size='md'
 					minWidth='initial'
 					fontSize={{ base: '0.65rem', sm: 'sm' }}
-					variant='solid'
+					variant={wallet.account ? 'solidAlt' : 'solid'}
 					aria-label='Wallet Connection Status'
 					isLoading={working}
 					onClick={toggle}

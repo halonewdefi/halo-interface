@@ -87,39 +87,53 @@ export const PhaseEndTimer = (props) => {
 
 	return (
 		<Flex
-			flexDir='row'
+			flexDir='column'
 			w='100%'
-			justifyContent='space-between'
+			p='1.222rem 0 2rem 0'
 		>
 			<Flex
-				flexDir='column'
-				justifyContent='center'
-			>
-				<Box
-					as='h4'
-					paddingTop='8px'
-					{...descStyle}>
-						Phase 1
-				</Box>
-				<Box
-					fontStyle='italic'
-				>Ends in</Box>
-			</Flex>
-
-			<Flex
 				flexDir='row'
+				w='100%'
+				justifyContent='space-between'
 			>
 				<Flex
+					flexDir='column'
+					justifyContent='center'
 				>
-					<Flex
-						flexDir='column'
-						justifyContent='center'
+					<Box
+						as='h4'
+						paddingTop='8px'
+						{...descStyle}>
+						Phase 1
+					</Box>
+					<Box
+						fontStyle='italic'
+					>Ends in</Box>
+				</Flex>
+
+				<Flex
+					flexDir='row'
+				>
+					<Skeleton
+						isLoaded={!isNaN(date)}
 					>
-						<Countdown
-							date={date}
-							renderer={time}
-						/>
-					</Flex>
+						<Flex
+							minW='156.083px'
+							h='48px'
+						>
+							<Flex
+								flexDir='column'
+								justifyContent='center'
+							>
+								{!isNaN(date) &&
+								<Countdown
+									date={date}
+									renderer={time}
+								/>
+								}
+							</Flex>
+						</Flex>
+					</Skeleton>
 				</Flex>
 			</Flex>
 		</Flex>

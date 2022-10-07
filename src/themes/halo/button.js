@@ -3,6 +3,7 @@ import { mode } from '@chakra-ui/theme-tools'
 export default {
 	baseStyle: (props) => ({
 		fontFamily: 'Button',
+		borderRadius: '0.34rem',
 		_focus: {
 			boxShadow: `0 0 0 3px
 			${mode('var(--chakra-colors-accent-dark-100)',
@@ -30,6 +31,28 @@ export default {
 			_active: {
 				background: mode('accent.light.50',
 					'accent.dark.200')(props),
+			},
+			_disabled: {
+				background: '#0000001a',
+			},
+		}),
+		solidAlt: (props) => ({
+			color: mode('type.link.dark',
+				'type.link.light')(props),
+			borderWidth: '1px',
+			borderStyle: 'solid',
+			borderColor: mode('#98989933', '#9898991c')(props),
+			background: mode('#d2d7dd61',
+				'#d2d7dd08')(props),
+			_hover: {
+				background: mode('#d2d7dd91',
+					'#d2d7dd0d')(props),
+				color: mode('type.body.dark',
+					'type.body.light')(props),
+			},
+			_active: {
+				background: mode('#fff5e1',
+					'#141414')(props),
 			},
 			_disabled: {
 				background: '#0000001a',

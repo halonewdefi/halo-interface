@@ -1,17 +1,20 @@
 import React from 'react'
 import { Flex, Box } from '@chakra-ui/react'
-import { Hero, LockerList } from '../../components'
+import {
+	PhaseEndTimer,
+	AccountOverview,
+	LockerList,
+	Divider,
+} from '../../components'
 
 export const Lockdrop = () => {
 
 	return (
 		<>
-			<Hero/>
-			<Box
-				layerStyle='hr'
-				margin='0 auto 3rem auto'
-				width='96%'
-			/>
+			<PhaseEndTimer/>
+			<Divider/>
+			<AccountOverview/>
+			<Divider hidden={true}/>
 			<Flex
 				flexDir='column'
 				w='100%'
