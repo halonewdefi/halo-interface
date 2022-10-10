@@ -10,12 +10,15 @@ import { useWallet } from 'use-wallet'
 import { prettifyAddress, prettifyNumber } from '../../common'
 import Jazzicon from '@metamask/jazzicon'
 import { defaults } from '../../common'
+import { useAggregatedAccValue } from '../../hooks'
+import { utils } from 'ethers'
 
 export const AccountOverview = (props) => {
 
 	const wallet = useWallet()
 	const prettyAccount = prettifyAddress(wallet?.account, 4)
 	const ref = useRef()
+	const accountValue = useAggregatedAccValue()
 
 	const descStyle = {
 		fontWeight: '600',
@@ -78,18 +81,22 @@ export const AccountOverview = (props) => {
 						flexDir='row'
 						gap='.2rem'
 					>
-						<Box
-							lineHeight='1'
-							fontSize='2.9rem'
-							wordBreak='break-all'
+						<Skeleton
+							isLoaded={!accountValue.working}
 						>
-							{prettifyNumber('2000000', 2, 2, 'US')}
-						</Box>
+							<Box
+								lineHeight='1'
+								fontSize='2.9rem'
+								wordBreak='break-all'
+							>
+								{prettifyNumber(utils.formatEther(accountValue.total), 2, 2, 'US')}
+							</Box>
+						</Skeleton>
 						<Image
 							{...tokeIconStyle}
 							src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
 					</Flex>
-					Account value
+						Account value
 				</Flex>
 				<Skeleton
 					isLoaded={!!wallet.account}

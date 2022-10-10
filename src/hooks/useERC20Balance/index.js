@@ -3,7 +3,12 @@ import { getERC20BalanceOf } from '../../common/erc20utils'
 import { defaults } from '../../common'
 import { useWallet } from 'use-wallet'
 
-export const useERC20Balance = (tokenAddress, address, staleTime = defaults.api.staleTime, refetchInterval = defaults.api.refetchInterval) => {
+export const useERC20Balance = (
+	tokenAddress,
+	address,
+	staleTime = defaults.api.staleTime,
+	refetchInterval = defaults.api.refetchInterval,
+) => {
 
 	const wallet = useWallet()
 

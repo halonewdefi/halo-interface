@@ -28,7 +28,7 @@ import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
 import { deposit } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
-	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position } from '../../hooks'
+	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position, useAggregatedAccValue } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -49,6 +49,8 @@ export const LockModal = (props) => {
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
 	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
+
+	const aggregatedAccValue = useAggregatedAccValue()
 
 	const uniV2TokenQuantity = useUniV2TokenQuantity(
 		props.p.address,
@@ -159,6 +161,7 @@ export const LockModal = (props) => {
 							preQuoteHalo.refetchTotalWeightOfLockedPositions()
 							token0Balance.refetch()
 							token1Balance.refetch()
+							aggregatedAccValue.refetch()
 						})
 					})
 					.catch(error => {
