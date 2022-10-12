@@ -1,6 +1,11 @@
 import { mode } from '@chakra-ui/theme-tools'
 
 export default {
+	baseStyle: {
+		field: {
+			borderWidth: '3px',
+		},
+	},
 	variants: {
 		transparent: () => ({
 			field: {
@@ -32,7 +37,6 @@ export default {
 				borderRadius: '0.8rem',
 				background: '#13070e',
 				borderStyle: 'solid',
-				borderWidth: '2px',
 				_placeholder: {
 					color: '#fff',
 				},
@@ -50,7 +54,6 @@ export default {
 				borderRadius: '0.8rem',
 				background: mode('white', '#ffffff0a')(props),
 				borderStyle: 'solid',
-				borderWidth: '2px',
 				color: mode('black', 'white')(props),
 				borderColor: mode('', '#6d639454')(props),
 				_placeholder: {

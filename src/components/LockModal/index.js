@@ -22,6 +22,7 @@ import {
 	SliderMark,
 	useColorModeValue,
 	Skeleton,
+	Switch,
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
@@ -49,6 +50,7 @@ export const LockModal = (props) => {
 	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
 	const [token1Amount, setToken1Amount] = useState('')
 	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
+	const [doWithdrawal, setDoWithdrawal] = useState(false)
 
 	const aggregatedAccValue = useAggregatedAccValue()
 
@@ -240,7 +242,7 @@ export const LockModal = (props) => {
 			>
 				<ModalOverlay />
 				<ModalContent overflow='hidden'>
-					<ModalHeader>{`Lock ${props.p.pair}`}</ModalHeader>
+					<ModalHeader>{`${props.p.pair}`}</ModalHeader>
 					<ModalCloseButton top={defaults.layout.modal.closeButton.top} />
 					<ModalBody minH={defaults.layout.modal.body.minH}>
 						<Box
@@ -466,6 +468,32 @@ export const LockModal = (props) => {
 									>Max</Button>
 								</Flex>
 							</Flex>
+							<Flex
+								flexFlow='column'
+								minH='45px'
+								marginBottom='1.2rem'
+							>
+								<Switch
+									variant='wide'
+									size='lg'
+									onChange={() => setDoWithdrawal(!doWithdrawal)}
+								>
+									<Box
+										w='50%'
+										as='span'
+										textAlign='center'
+									>
+											Deposit
+									</Box>
+									<Box
+										w='50%'
+										as='span'
+										textAlign='center'
+									>
+											Withdraw
+									</Box>
+								</Switch>
+							</Flex>
 							<Box
 								as='h4'
 								{...headingStyle}
@@ -676,7 +704,7 @@ export const LockModal = (props) => {
 								loadingText='Locking'
 								onClick={() => lock(wallet.account)}
 							>
-								Lock assets
+								{`${doWithdrawal ? 'Withdraw' : 'Deposit' } assets`}
 							</Button>
 						</Box>
 					</ModalBody>
