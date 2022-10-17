@@ -61,7 +61,18 @@ const getPositions = async (pair, address) => {
 	return await contract.positions(pair, address)
 }
 
+const withdraw = async (pairAddress, amount, provider) => {
+	const contract = new ethers.Contract(
+		defaults.address.phase1,
+		phase1abi,
+		provider.getSigner(0),
+	)
+	return await contract.withdraw(
+		pairAddress,
+		amount,
+	)
+}
 
 export { deposit, getAllocation, getEndTime,
 	getTotalWeightOfLockedPositions, quoteHalo,
-	getPositions }
+	getPositions, withdraw }

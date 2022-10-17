@@ -27,7 +27,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
-import { deposit } from '../../common/phase1'
+import { deposit, withdraw } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
 	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position, useAggregatedAccValue } from '../../hooks'
 
@@ -133,8 +133,8 @@ export const LockModal = (props) => {
 		ml: '-3.5',
 		fontSize: 'sm',
 		textAlign: 'center',
-		cursor: 'pointer',
-		pointerEvents: 'all !important',
+		cursor: !doWithdrawal ? 'pointer' : '',
+		pointerEvents: !doWithdrawal ? 'all !important' : '',
 	}
 
 	const lock = () => {
@@ -152,6 +152,44 @@ export const LockModal = (props) => {
 					uniV2TokenQuantity.token0Quantity,
 					uniV2TokenQuantity.token1Quantity,
 					lockPeriodInDays,
+					provider,
+				)
+					.then((tx) => {
+						tx.wait(
+							defaults.network.tx.confirmations,
+						).then(() => {
+							setWorking(false)
+							phase1position.refetch()
+							preQuoteHalo.refetchTotalWeightOfLockedPositions()
+							token0Balance.refetch()
+							token1Balance.refetch()
+							aggregatedAccValue.refetch()
+						})
+					})
+					.catch(error => {
+						setWorking(false)
+						console.log(error)
+					})
+			}
+		}
+		catch (error) {
+			console.log(error)
+		}
+	}
+
+	const withdrawal = () => {
+		try {
+			if (
+				(doWithdrawal) &&
+				(uniV2LPTokenQuantity.lpTokenQuantity) &&
+				(phase1position?.data[2] >= (uniV2LPTokenQuantity.lpTokenQuantity)) &&
+				!(working)
+			) {
+				setWorking(true)
+				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
+				withdraw(
+					props.p.address,
+					uniV2LPTokenQuantity.lpTokenQuantity.toFixed(0),
 					provider,
 				)
 					.then((tx) => {
@@ -470,12 +508,12 @@ export const LockModal = (props) => {
 							</Flex>
 							<Flex
 								flexFlow='column'
-								minH='45px'
-								marginBottom='1.2rem'
+								marginBottom='2rem'
 							>
 								<Switch
 									variant='wide'
 									size='lg'
+									isChecked={doWithdrawal}
 									onChange={() => setDoWithdrawal(!doWithdrawal)}
 								>
 									<Box
@@ -506,11 +544,13 @@ export const LockModal = (props) => {
 								minH='45px'
 								padding='0px 18px 1.5px'
 								marginBottom='3.5rem'
+								cursor={!doWithdrawal ? 'pointer' : 'not-allowed'}
 							>
 								<Slider
 									defaultValue={0}
 									min={0}
 									max={2}
+									disabled={!doWithdrawal ? false : true}
 									step={1}
 									value={lockPeriod}
 									onChange={(n) => setLockPeriod(n)}
@@ -520,23 +560,21 @@ export const LockModal = (props) => {
 										p='0 10px'
 									>
 										<SliderMark
-											pointerEvents='all'
 											value={0}
-											onClick={() => setLockPeriod(0)}
+											onClick={() => { if (!doWithdrawal) { setLockPeriod(0) }}}
 											{...markLabelStyle}>
 											90<br/>days
 										</SliderMark>
 										<SliderMark
 											value={1}
-											onClick={() => setLockPeriod(1)}
+											onClick={() => { if (!doWithdrawal) { setLockPeriod(1) }}}
 											{...markLabelStyle}
 										>
 											180<br/>days
 										</SliderMark>
 										<SliderMark
 											value={2}
-											onClick={() => setLockPeriod(2)}
-											cursor='pointer'
+											onClick={() => { if (!doWithdrawal) { setLockPeriod(2) }}}
 											{...markLabelStyle}
 										>
 											365<br/>days
@@ -701,8 +739,15 @@ export const LockModal = (props) => {
 									!(working))
 								}
 								isLoading={working}
-								loadingText='Locking'
-								onClick={() => lock(wallet.account)}
+								loadingText={ doWithdrawal ? 'Depositing' : 'Withdrawing'}
+								onClick={() => {
+									if (!doWithdrawal) {
+										lock()
+									}
+									else {
+										withdrawal()
+									}
+								}}
 							>
 								{`${doWithdrawal ? 'Withdraw' : 'Deposit' } assets`}
 							</Button>

@@ -55,7 +55,7 @@ export const usePreQuoteHalo = (
 			position?.[2]
 		) {
 			try {
-				const a = allocation.mul(position?.[2].add(ethers.BigNumber.from(positionAmount?.toFixed(0)))).mul(positionMultiplier)
+				const a = allocation.mul(position?.[2].add(ethers.BigNumber.from(positionAmount))).mul(positionMultiplier)
 				const q = a.div(totalWeightOfLockedPositions > 0 ? totalWeightOfLockedPositions : 1)
 				if (q.gte(allocation)) {
 					setPreQuote(allocation)

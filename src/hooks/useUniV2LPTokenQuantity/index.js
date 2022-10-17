@@ -56,15 +56,16 @@ export const useUniV2LPTokenQuantity = (
 			token0Amount &&
 			token1Amount) {
 			try {
-				const q = Math.min(
-					token0Amount.mul(totalSupply) / reserves?.[0],
-					token1Amount.mul(totalSupply) / reserves?.[1],
-				)
+				const a = token0Amount.mul(totalSupply).div(reserves?.[0])
+				const b = token1Amount.mul(totalSupply).div(reserves?.[1])
+				let q
+				if (a.lte(b)) q = a
+				if (b.lte(a)) q = b
 				if (q) {
 					setQuantity(q)
 				}
 				else {
-					setQuantity(0)
+					setQuantity(ethers.BigNumber.from(0))
 				}
 			}
 			catch (error) {

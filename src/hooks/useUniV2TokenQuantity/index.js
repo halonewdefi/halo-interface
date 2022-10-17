@@ -1,7 +1,7 @@
 import { useUniV2AssetPrice } from '../useUniV2AssetPrice'
 import { defaults } from '../../common'
 import { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 export const useUniV2TokenQuantity = (
 	pairAddress,
@@ -45,11 +45,11 @@ export const useUniV2TokenQuantity = (
 				setToken0Quantity(
 					token0Amount,
 				)
-				const mpl = ethers.utils.parseUnits(Number(ethers.utils.formatUnits(token0Amount, token0Decimals)).toFixed(token1Decimals), token1Decimals)
+				const mpl = ethers.utils.parseUnits(ethers.utils.formatUnits(token0Amount, token0Decimals), token1Decimals)
 				const rate = ethers.utils.parseUnits(token0Price.toFixed(token1Decimals), token1Decimals)
-				const res = (ethers.utils.formatUnits(rate.mul(mpl), token1Decimals) / Math.pow(10, token1Decimals)).toFixed(token1Decimals)
+				const res = rate.mul(mpl).div(BigNumber.from('10').pow(token1Decimals))
 				setToken1Quantity(
-					ethers.utils.parseUnits(res, token1Decimals),
+					res,
 				)
 			}
 			catch (error) {
@@ -70,11 +70,11 @@ export const useUniV2TokenQuantity = (
 				setToken1Quantity(
 					token1Amount,
 				)
-				const mpl = ethers.utils.parseUnits(Number(ethers.utils.formatUnits(token1Amount, token1Decimals)).toFixed(token0Decimals), token0Decimals)
+				const mpl = ethers.utils.parseUnits(ethers.utils.formatUnits(token1Amount, token1Decimals), token0Decimals)
 				const rate = ethers.utils.parseUnits(token1Price.toFixed(token0Decimals), token0Decimals)
-				const res = (ethers.utils.formatUnits(rate.mul(mpl), token0Decimals) / Math.pow(10, token0Decimals)).toFixed(token0Decimals)
+				const res = rate.mul(mpl).div(BigNumber.from('10').pow(token0Decimals))
 				setToken0Quantity(
-					ethers.utils.parseUnits(res, token0Decimals),
+					res,
 				)
 			}
 			catch (error) {

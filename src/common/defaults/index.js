@@ -88,7 +88,7 @@ defaults.network.autoConnect = true
 defaults.network.pollInterval = 100000
 
 defaults.network.tx = {}
-defaults.network.tx.confirmations = 2
+defaults.network.tx.confirmations = 1
 
 defaults.network.blockTime = {}
 defaults.network.blockTime.second = (

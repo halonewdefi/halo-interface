@@ -47,6 +47,9 @@ const overrides = {
 				color: mode('primary.blue.100', 'secondary.purple.100')(props),
 				textTransform: 'uppercase',
 			},
+			'.chakra-slider[disabled] .chakra-slider__thumb': {
+				background: mode('#8a8274', '#353535')(props),
+			},
 			h1: {
 				fontSize: '1.5rem',
 				margin: '0 0 .3rem',

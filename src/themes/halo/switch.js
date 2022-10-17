@@ -19,7 +19,7 @@ export default {
 		wide: (props) => ({
 			thumb: {
 				width: '50%',
-				bg: 'accent.light.10',
+				bg: mode('accent.light.10', 'accent.dark.100')(props),
 				_checked: {
 					transform: 'translateX(100%)',
 				},
@@ -38,7 +38,7 @@ export default {
 			},
 			track: {
 				width: '100%',
-				bg: '#ffffffd6',
+				bg: mode('#ffffffd6', '#262626')(props),
 				borderRadius: '0.34rem',
 				_checked: {
 					bg: 'bluish.300',
