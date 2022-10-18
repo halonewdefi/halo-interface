@@ -47,9 +47,9 @@ export const LockModal = (props) => {
 	const phase1position = usePhase1Position(props.p.address)
 
 	const [token0Amount, setToken0Amount] = useState('')
-	const [token0Value, setToken0Value] = useState(ethers.BigNumber.from(0))
+	const [token0Value, setToken0Value] = useState('')
 	const [token1Amount, setToken1Amount] = useState('')
-	const [token1Value, setToken1Value] = useState(ethers.BigNumber.from(0))
+	const [token1Value, setToken1Value] = useState('')
 	const [doWithdrawal, setDoWithdrawal] = useState(false)
 
 	const aggregatedAccValue = useAggregatedAccValue()
@@ -190,7 +190,7 @@ export const LockModal = (props) => {
 				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
 				withdraw(
 					props.p.address,
-					uniV2LPTokenQuantity.lpTokenQuantity.toFixed(0),
+					uniV2LPTokenQuantity.lpTokenQuantity,
 					provider,
 				)
 					.then((tx) => {
@@ -217,10 +217,15 @@ export const LockModal = (props) => {
 	}
 
 	useEffect(() => {
-		if (token0Value.eq(uniV2TokenQuantity.token0Quantity)) {
-			uniV2TokenQuantity.setVsync(true)
-			setToken1Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token1Quantity, token1Resolved.data?.decimals))
-			setToken1Value(uniV2TokenQuantity?.token1Quantity)
+		if (
+			uniV2TokenQuantity.token0Quantity &&
+			uniV2TokenQuantity.token1Quantity &&
+			token0Value) {
+			if (token0Value.eq(uniV2TokenQuantity.token0Quantity)) {
+				uniV2TokenQuantity.setVsync(true)
+				setToken1Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token1Quantity, token1Resolved.data?.decimals))
+				setToken1Value(uniV2TokenQuantity?.token1Quantity)
+			}
 		}
 	}, [
 		uniV2TokenQuantity.token1Quantity,
@@ -228,10 +233,14 @@ export const LockModal = (props) => {
 	])
 
 	useEffect(() => {
-		if (token1Value.eq(uniV2TokenQuantity.token1Quantity)) {
-			uniV2TokenQuantity.setVsync(true)
-			setToken0Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token0Quantity, token0Resolved.data?.decimals))
-			setToken0Value(uniV2TokenQuantity?.token0Quantity)
+		if (uniV2TokenQuantity.token0Quantity &&
+			uniV2TokenQuantity.token1Quantity &&
+			token1Value) {
+			if (token1Value.eq(uniV2TokenQuantity.token1Quantity)) {
+				uniV2TokenQuantity.setVsync(true)
+				setToken0Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token0Quantity, token0Resolved.data?.decimals))
+				setToken0Value(uniV2TokenQuantity?.token0Quantity)
+			}
 		}
 	}, [
 		uniV2TokenQuantity.token0Quantity,
@@ -269,7 +278,16 @@ export const LockModal = (props) => {
 		phase1position.data?.[1],
 	])
 
-	console.log(preQuoteHalo.preQuote)
+	useEffect(() => {
+		return () => {
+			setToken0Amount('')
+			setToken0Value('')
+			setToken1Amount('')
+			setToken1Value('')
+		}
+	}, [
+		props.p,
+	])
 
 	return (
 		<>
@@ -643,6 +661,7 @@ export const LockModal = (props) => {
 							</Flex>
 							{(
 								(token0Resolved.data && token1Resolved.data) &&
+								token0Value && token1Value &&
 									(
 										((token0Allowance?.data?.lte(0)) ||
 										(token1Allowance?.data?.lte(0))) ||
@@ -732,17 +751,21 @@ export const LockModal = (props) => {
 							}
 							<Button
 								w='100%'
-								disabled={
-									!(uniV2TokenQuantity.token0Quantity?.gt(0) &&
-										uniV2TokenQuantity.token1Quantity?.gt(0) &&
-									(token0Allowance?.data?.gt(0) &&
-										token0Allowance?.data?.gt(token0Value)) &&
-									(token1Allowance?.data?.gt(0) &&
-										token1Allowance?.data?.gt(token1Value)) &&
-									!(working))
-								}
 								isLoading={working}
-								loadingText={ doWithdrawal ? 'Depositing' : 'Withdrawing'}
+								loadingText={ !doWithdrawal ? 'Depositing' : 'Withdrawing'}
+								disabled={!(uniV2TokenQuantity.token0Quantity &&
+									uniV2TokenQuantity.token1Quantity &&
+									token0Value &&
+									token1Value &&
+									token0Amount &&
+									token1Amount) ||
+									(!(uniV2TokenQuantity.token0Quantity?.gt(0) &&
+									uniV2TokenQuantity.token1Quantity?.gt(0) &&
+								(token0Allowance?.data?.gt(0) &&
+									token0Allowance?.data?.gt(token0Value)) &&
+								(token1Allowance?.data?.gt(0) &&
+									token1Allowance?.data?.gt(token1Value)) &&
+								!(working)))}
 								onClick={() => {
 									if (!doWithdrawal) {
 										lock()

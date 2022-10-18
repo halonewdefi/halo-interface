@@ -56,13 +56,14 @@ export const usePreQuoteHalo = (
 			position?.[2]
 		) {
 			try {
-				console.log('here')
-				console.log(subtract)
 				const x = subtract === false ? position?.[2].add(ethers.BigNumber.from(positionAmount)) : position?.[2].sub(ethers.BigNumber.from(positionAmount))
 				const a = allocation.mul(x).mul(positionMultiplier)
 				const q = a.div(totalWeightOfLockedPositions > 0 ? totalWeightOfLockedPositions : 1)
 				if (q.gte(allocation)) {
 					setPreQuote(allocation)
+				}
+				else if (q.lte(BigNumber.from(0))) {
+					setPreQuote(BigNumber.from(0))
 				}
 				else {
 					setPreQuote(q)

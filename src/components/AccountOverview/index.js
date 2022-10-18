@@ -39,7 +39,9 @@ export const AccountOverview = (props) => {
 		}
 		return () => {
 			if (wallet.account) {
-				if (ref.current.getElementsByTagName('div')[0]) {
+				if (
+					ref.current !== null &&
+					ref.current.getElementsByTagName('div')[0]) {
 					ref.current.getElementsByTagName('div')[0].remove()
 				}
 			}

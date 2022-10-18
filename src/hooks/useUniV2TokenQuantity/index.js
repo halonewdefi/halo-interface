@@ -5,8 +5,8 @@ import { BigNumber, ethers } from 'ethers'
 
 export const useUniV2TokenQuantity = (
 	pairAddress,
-	token0Amount = ethers.BigNumber.from(0),
-	token1Amount = ethers.BigNumber.from(0),
+	token0Amount = '',
+	token1Amount = '',
 	token0Decimals = 0,
 	token1Decimals = 0,
 	staleTime = defaults.api.staleTime,
@@ -25,8 +25,8 @@ export const useUniV2TokenQuantity = (
 		refetchInterval,
 	)
 
-	const [token0Quantity, setToken0Quantity] = useState(token0Amount)
-	const [token1Quantity, setToken1Quantity] = useState(token1Amount)
+	const [token0Quantity, setToken0Quantity] = useState('')
+	const [token1Quantity, setToken1Quantity] = useState('')
 	const [vSync, setVsync] = useState(false)
 
 	useEffect(() => {
