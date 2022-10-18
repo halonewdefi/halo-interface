@@ -628,6 +628,7 @@ export const LockModal = (props) => {
 											minW='50%'
 											isLoaded={
 												!!(preQuoteHalo.preQuote && ((preQuoteHalo.preQuote > 0 && uniV2LPTokenQuantity.lpTokenQuantity >= 0) ||
+												(doWithdrawal && preQuoteHalo.preQuote == 0) ||
 												(preQuoteHalo.preQuote && phase1position.data?.[1] == 0)))
 											}>
 											{preQuoteHalo.preQuote &&
