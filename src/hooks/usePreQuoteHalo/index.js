@@ -9,7 +9,8 @@ export const usePreQuoteHalo = (
 	positionAmount,
 	positionMultiplier,
 	pair,
-	address,
+	subtract,
+	address = undefined,
 	staleTime = defaults.api.staleTime,
 	refetchInterval = defaults.api.refetchInterval,
 ) => {
@@ -55,7 +56,10 @@ export const usePreQuoteHalo = (
 			position?.[2]
 		) {
 			try {
-				const a = allocation.mul(position?.[2].add(ethers.BigNumber.from(positionAmount))).mul(positionMultiplier)
+				console.log('here')
+				console.log(subtract)
+				const x = subtract === false ? position?.[2].add(ethers.BigNumber.from(positionAmount)) : position?.[2].sub(ethers.BigNumber.from(positionAmount))
+				const a = allocation.mul(x).mul(positionMultiplier)
 				const q = a.div(totalWeightOfLockedPositions > 0 ? totalWeightOfLockedPositions : 1)
 				if (q.gte(allocation)) {
 					setPreQuote(allocation)
@@ -73,6 +77,7 @@ export const usePreQuoteHalo = (
 		totalWeightOfLockedPositions,
 		positionAmount,
 		positionMultiplier,
+		subtract,
 	])
 
 	return {

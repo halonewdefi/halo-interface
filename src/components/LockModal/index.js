@@ -73,6 +73,7 @@ export const LockModal = (props) => {
 		uniV2LPTokenQuantity.lpTokenQuantity,
 		multiplier,
 		props.p.address,
+		doWithdrawal,
 	)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
@@ -267,6 +268,8 @@ export const LockModal = (props) => {
 	}, [
 		phase1position.data?.[1],
 	])
+
+	console.log(preQuoteHalo.preQuote)
 
 	return (
 		<>
