@@ -103,8 +103,8 @@ defaults.network.erc20 = {}
 defaults.network.erc20.maxApproval = '0x8000000000000000000000000000000000000000000000000000000000000000'
 
 defaults.api = {}
-defaults.api.refetchInterval = 100000
-defaults.api.staleTime = 100000
+defaults.api.refetchInterval = 60000
+defaults.api.staleTime = 600000
 defaults.api.client = new QueryClient()
 
 defaults.api.graphql = {}
@@ -121,7 +121,7 @@ defaults.api.graphql.client.uniswapV2 = new ApolloClient({
 	cache: defaults.api.graphql.cache,
 })
 defaults.api.graphql.client.default = defaults.api.graphql.client.uniswapV2
-defaults.api.graphql.pollInterval = 100000
+defaults.api.graphql.pollInterval = 600000
 
 defaults.api.etherscanUrl = (
 	defaults.network.chainId === 1 ? 'https://etherscan.io' :

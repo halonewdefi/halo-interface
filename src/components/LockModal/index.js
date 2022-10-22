@@ -29,7 +29,7 @@ import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
 import { deposit, withdraw } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
-	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position, useAggregatedAccValue } from '../../hooks'
+	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position, useAggregatedAccValue, usePhase, useUniV2Liquidity } from '../../hooks'
 
 export const LockModal = (props) => {
 	LockModal.propTypes = {
@@ -44,6 +44,9 @@ export const LockModal = (props) => {
 	const token1Allowance = useERC20Allowance(props.p.token1, defaults.address.phase1)
 	const token0Balance = useERC20Balance(props.p.token0)
 	const token1Balance = useERC20Balance(props.p.token1)
+	const lpTokenBalance = useERC20Balance(props.p.address)
+
+	const phase = usePhase()
 	const phase1position = usePhase1Position(props.p.address)
 
 	const [token0Amount, setToken0Amount] = useState('')
@@ -57,13 +60,16 @@ export const LockModal = (props) => {
 	const uniV2TokenQuantity = useUniV2TokenQuantity(
 		props.p.address,
 		token0Value, token1Value,
-		token0Resolved.data?.decimals,
-		token1Resolved.data?.decimals,
+		token0Resolved?.data?.decimals,
+		token1Resolved?.data?.decimals,
 	)
 	const uniV2LPTokenQuantity = useUniV2LPTokenQuantity(
 		props.p.address,
 		uniV2TokenQuantity.token0Quantity,
 		uniV2TokenQuantity.token1Quantity,
+	)
+	const uniV2Liquidity = useUniV2Liquidity(
+		props.p.address,
 	)
 
 	const [lockPeriod, setLockPeriod] = useState(0)
@@ -160,7 +166,7 @@ export const LockModal = (props) => {
 							defaults.network.tx.confirmations,
 						).then(() => {
 							setWorking(false)
-							phase1position.refetch()
+							if (phase.which === 1) phase1position.refetch()
 							preQuoteHalo.refetchTotalWeightOfLockedPositions()
 							token0Balance.refetch()
 							token1Balance.refetch()
@@ -183,7 +189,7 @@ export const LockModal = (props) => {
 			if (
 				(doWithdrawal) &&
 				(uniV2LPTokenQuantity.lpTokenQuantity) &&
-				(phase1position?.data[2] >= (uniV2LPTokenQuantity.lpTokenQuantity)) &&
+				(phase1position?.data[2].gte(uniV2LPTokenQuantity.lpTokenQuantity)) &&
 				!(working)
 			) {
 				setWorking(true)
@@ -198,7 +204,7 @@ export const LockModal = (props) => {
 							defaults.network.tx.confirmations,
 						).then(() => {
 							setWorking(false)
-							phase1position.refetch()
+							if (phase.which === 1) phase1position.refetch()
 							preQuoteHalo.refetchTotalWeightOfLockedPositions()
 							token0Balance.refetch()
 							token1Balance.refetch()
@@ -223,7 +229,7 @@ export const LockModal = (props) => {
 			token0Value) {
 			if (token0Value.eq(uniV2TokenQuantity.token0Quantity)) {
 				uniV2TokenQuantity.setVsync(true)
-				setToken1Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token1Quantity, token1Resolved.data?.decimals))
+				setToken1Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token1Quantity, token1Resolved?.data?.decimals))
 				setToken1Value(uniV2TokenQuantity?.token1Quantity)
 			}
 		}
@@ -238,7 +244,7 @@ export const LockModal = (props) => {
 			token1Value) {
 			if (token1Value.eq(uniV2TokenQuantity.token1Quantity)) {
 				uniV2TokenQuantity.setVsync(true)
-				setToken0Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token0Quantity, token0Resolved.data?.decimals))
+				setToken0Amount(ethers.utils.formatUnits(uniV2TokenQuantity.token0Quantity, token0Resolved?.data?.decimals))
 				setToken0Value(uniV2TokenQuantity?.token0Quantity)
 			}
 		}
@@ -334,17 +340,17 @@ export const LockModal = (props) => {
 										}}
 									/>
 									<InputRightElement {...rightElementStyle}>
-										{token0Resolved.isLoading &&
+										{(token0Resolved?.isLoading || uniV2Liquidity.isLoading) &&
 											<Spinner />
 										}
-										{!token0Resolved.isLoading &&
+										{(!token0Resolved?.isLoading && !uniV2Liquidity.isLoading) &&
 											<>
 												<Image
 													{...tokenImageStyle}
-													src={token0Resolved.data?.logoURI}
+													src={token0Resolved?.data?.logoURI}
 												/>
 												<Box {...tokenSymbolStyle}>
-													{token0Resolved.data?.symbol}
+													{token0Resolved?.data?.symbol}
 												</Box>
 											</>
 										}
@@ -360,12 +366,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken0Amount(
 													ethers.utils.formatUnits(
-														token0Balance?.data?.div(100).mul(25),
-														token0Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(25) :
+															token0Balance?.data?.div(100).mul(25),
+														token0Resolved?.data?.decimals,
 													),
 												)
 												setToken0Value(
-													token0Balance?.data?.div(100).mul(25),
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(25) :
+														token0Balance?.data?.div(100).mul(25),
 												)
 											}
 										}}
@@ -377,12 +385,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken0Amount(
 													ethers.utils.formatUnits(
-														token0Balance?.data?.div(100).mul(50),
-														token0Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(50) :
+															token0Balance?.data?.div(100).mul(50),
+														token0Resolved?.data?.decimals,
 													),
 												)
 												setToken0Value(
-													token0Balance?.data?.div(100).mul(50),
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(50) :
+														token0Balance?.data?.div(100).mul(50),
 												)
 											}
 										}}
@@ -394,12 +404,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken0Amount(
 													ethers.utils.formatUnits(
-														token0Balance?.data?.div(100).mul(75),
-														token0Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(75) :
+															token0Balance?.data?.div(100).mul(75),
+														token0Resolved?.data?.decimals,
 													),
 												)
 												setToken0Value(
-													token0Balance?.data?.div(100).mul(75),
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(75) :
+														token0Balance?.data?.div(100).mul(75),
 												)
 											}
 										}}
@@ -411,12 +423,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken0Amount(
 													ethers.utils.formatUnits(
-														token0Balance?.data,
-														token0Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0 :
+															token0Balance?.data,
+														token0Resolved?.data?.decimals,
 													),
 												)
 												setToken0Value(
-													token0Balance?.data,
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0 :
+														token0Balance?.data,
 												)
 											}
 										}}
@@ -438,17 +452,17 @@ export const LockModal = (props) => {
 										}}
 									/>
 									<InputRightElement {...rightElementStyle}>
-										{token1Resolved.isLoading &&
+										{(token1Resolved?.isLoading || uniV2Liquidity?.isLoading) &&
 											<Spinner />
 										}
-										{!token1Resolved.isLoading &&
+										{(!token1Resolved?.isLoading && !uniV2Liquidity?.isLoading) &&
 											<>
 												<Image
 													{...tokenImageStyle}
-													src={token1Resolved.data?.logoURI}
+													src={token1Resolved?.data?.logoURI}
 												/>
 												<Box {...tokenSymbolStyle}>
-													{token1Resolved.data?.symbol}
+													{token1Resolved?.data?.symbol}
 												</Box>
 											</>
 										}
@@ -464,12 +478,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken1Amount(
 													ethers.utils.formatUnits(
-														token1Balance?.data?.div(100).mul(50),
-														token1Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(25) :
+															token1Balance?.data?.div(100).mul(25),
+														token1Resolved?.data?.decimals,
 													),
 												)
 												setToken1Value(
-													token1Balance?.data?.div(100).mul(50),
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(25) :
+														token1Balance?.data?.div(100).mul(25),
 												)
 											}
 										}}
@@ -481,12 +497,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken1Amount(
 													ethers.utils.formatUnits(
-														token1Balance?.data?.div(100).mul(50),
-														token1Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(50) :
+															token1Balance?.data?.div(100).mul(50),
+														token1Resolved?.data?.decimals,
 													),
 												)
 												setToken1Value(
-													token1Balance?.data?.div(100).mul(50),
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(50) :
+														token1Balance?.data?.div(100).mul(50),
 												)
 											}
 										}}
@@ -498,12 +516,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken1Amount(
 													ethers.utils.formatUnits(
-														token1Balance?.data?.div(100).mul(75),
-														token1Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(75) :
+															token1Balance?.data?.div(100).mul(75),
+														token1Resolved?.data?.decimals,
 													),
 												)
 												setToken1Value(
-													token1Balance?.data?.div(100).mul(75),
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(75) :
+														token1Balance?.data?.div(100).mul(75),
 												)
 											}
 										}}
@@ -515,12 +535,14 @@ export const LockModal = (props) => {
 												uniV2TokenQuantity.setVsync(false)
 												setToken1Amount(
 													ethers.utils.formatUnits(
-														token1Balance?.data,
-														token1Resolved.data?.decimals,
+														doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1 :
+															token1Balance?.data,
+														token1Resolved?.data?.decimals,
 													),
 												)
 												setToken1Value(
-													token1Balance?.data,
+													doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1 :
+														token1Balance?.data,
 												)
 											}
 										}}
@@ -661,7 +683,7 @@ export const LockModal = (props) => {
 								</Box>
 							</Flex>
 							{(
-								(token0Resolved.data && token1Resolved.data) &&
+								(token0Resolved?.data && token1Resolved?.data) &&
 								token0Value && token1Value &&
 									(
 										((token0Allowance?.data?.lte(0)) ||
@@ -687,8 +709,8 @@ export const LockModal = (props) => {
 									>
 										{`Allow ${token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
 										  token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
-											token0Resolved.data?.symbol :
-											token1Resolved.data?.symbol}
+											token0Resolved?.data?.symbol :
+											token1Resolved?.data?.symbol}
 										`}
 									</Box>
 									<Box
@@ -697,8 +719,8 @@ export const LockModal = (props) => {
 									>
 										{`In order to be able to lock, it's neccesary to allow interaction with ${token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
 										  token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
-											token0Resolved.data?.symbol :
-											token1Resolved.data?.symbol} token.`}
+											token0Resolved?.data?.symbol :
+											token1Resolved?.data?.symbol} token.`}
 									</Box>
 									<Button
 										w='100%'
@@ -709,7 +731,7 @@ export const LockModal = (props) => {
 											const provider = new ethers.providers.Web3Provider(wallet.ethereum)
 											approveERC20ToSpend(
 												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
-												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ? token0Resolved.data?.address : token1Resolved.data?.address,
+												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ? token0Resolved?.data?.address : token1Resolved?.data?.address,
 												defaults.address.phase1,
 												defaults.network.erc20.maxApproval,
 												provider,
@@ -731,8 +753,8 @@ export const LockModal = (props) => {
 											src={
 												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
 												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
-													token0Resolved.data?.logoURI :
-													token1Resolved.data?.logoURI
+													token0Resolved?.data?.logoURI :
+													token1Resolved?.data?.logoURI
 											}
 										/>
 											Allow
@@ -743,8 +765,8 @@ export const LockModal = (props) => {
 											{
 												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
 												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
-													token0Resolved.data?.symbol :
-													token1Resolved.data?.symbol
+													token0Resolved?.data?.symbol :
+													token1Resolved?.data?.symbol
 											}
 										</Box>
 									</Button>
@@ -756,12 +778,20 @@ export const LockModal = (props) => {
 								loadingText={ !doWithdrawal ? 'Depositing' : 'Withdrawing'}
 								disabled={!(uniV2TokenQuantity.token0Quantity &&
 									uniV2TokenQuantity.token1Quantity &&
+									uniV2LPTokenQuantity.lpTokenQuantity &&
+									token1Balance.data &&
+									token1Balance.data &&
+									lpTokenBalance.data &&
 									token0Value &&
 									token1Value &&
 									token0Amount &&
 									token1Amount) ||
 									(!(uniV2TokenQuantity.token0Quantity?.gt(0) &&
 									uniV2TokenQuantity.token1Quantity?.gt(0) &&
+									uniV2LPTokenQuantity.lpTokenQuantity.gt(0) &&
+									(token0Value?.lte(token0Balance.data) &&
+									token1Value.lte(token1Balance.data)) ||
+									(uniV2LPTokenQuantity.lpTokenQuantity.lte(lpTokenBalance.data)) &&
 								(token0Allowance?.data?.gt(0) &&
 									token0Allowance?.data?.gt(token0Value)) &&
 								(token1Allowance?.data?.gt(0) &&
