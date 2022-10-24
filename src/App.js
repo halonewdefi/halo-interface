@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { ChakraProvider, Flex } from '@chakra-ui/react'
 import theme from './themes/halo'
 import { UseWalletProvider } from 'use-wallet'
-import { Header, Logotype } from './components'
+import { Header, Logomark } from './components'
 import { defaults } from './common'
 import { Lockdrop } from './locations'
 
@@ -17,7 +17,7 @@ const App = () => {
 					connectors={defaults.network.connectors}
 					autoConnect={defaults.network.autoConnect}
 				>
-					<Logotype/>
+					<Logomark/>
 					<Header
 						w='100%'
 						m='0 auto'

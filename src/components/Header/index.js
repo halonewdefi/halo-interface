@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { Flex, Button, useBreakpointValue, useColorModeValue } from '@chakra-ui/react'
-import { Logo, WalletConnectionToggle, ColorModeSwitcher } from '../../components'
+import { Logotype, WalletConnectionToggle, ColorModeSwitcher } from '../../components'
 import { defaults } from '../../common'
 import { BurgerMenu } from '../BurgerMenu'
 
@@ -35,7 +35,7 @@ export const Header = (props) => {
 			{...props}>
 			{useBreakpointValue({
 				base: <BurgerMenu pages={pages}/>,
-				md: <Logo />,
+				md: <Logotype />,
 			})}
 			<Flex
 				gridGap='12.3px'
