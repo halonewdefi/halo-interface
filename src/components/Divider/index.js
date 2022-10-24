@@ -8,11 +8,14 @@ export const Divider = (props) => {
 		hidden: PropTypes.bool.isRequired,
 	}
 
+	const { hidden, ...rest } = props
+
 	return (
 		<Box
-			layerStyle={props.hidden ? '' : 'hr'}
+			layerStyle={hidden ? '' : 'hr'}
 			margin='0 auto 3rem auto'
 			width='96%'
+			{...rest}
 		/>
 	)
 }

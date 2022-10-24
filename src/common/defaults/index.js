@@ -182,4 +182,12 @@ defaults.toast.position = 'top'
 defaults.tooltip = {}
 defaults.tooltip.delay = 800
 
+defaults.external = {}
+defaults.external.media = {}
+defaults.external.media.twitter = '#'
+defaults.external.media.discord = '#'
+defaults.external.media.telegram = '#'
+defaults.external.media.medium = '#'
+defaults.external.media.mail = 'info@halo.swap'
+
 export { defaults }

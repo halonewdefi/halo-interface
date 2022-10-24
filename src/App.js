@@ -6,6 +6,7 @@ import { UseWalletProvider } from 'use-wallet'
 import { Header, Logomark } from './components'
 import { defaults } from './common'
 import { Lockdrop } from './locations'
+import { Footer } from './components/Footer'
 
 const App = () => {
 
@@ -39,6 +40,10 @@ const App = () => {
 							} />
 						</Switch>
 					</Flex>
+					<Footer
+						maxW={defaults.layout.container.xl.width}
+						p={defaults.layout.header.padding}
+					/>
       	</UseWalletProvider>
 			</ChakraProvider>
 		</Router>
