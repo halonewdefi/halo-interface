@@ -23,6 +23,7 @@ import {
 	useColorModeValue,
 	Skeleton,
 	Switch,
+	useColorMode,
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
@@ -83,6 +84,7 @@ export const LockModal = (props) => {
 	)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
+	const { colorMode } = useColorMode()
 
 	const headingStyle = {
 		marginLeft: '4px',
@@ -142,6 +144,12 @@ export const LockModal = (props) => {
 		textAlign: 'center',
 		cursor: !doWithdrawal ? 'pointer' : '',
 		pointerEvents: !doWithdrawal ? 'all !important' : '',
+	}
+
+	const depositedRowStyle = {
+		justifyContent: 'space-between',
+		borderRadius: '0.34rem',
+		padding: '4px 5px',
 	}
 
 	const lock = () => {
@@ -772,6 +780,66 @@ export const LockModal = (props) => {
 									</Button>
 								</Flex>
 							}
+							<Box
+								as='h4'
+								{...headingStyle}
+							>
+								Deposited
+							</Box>
+							<Skeleton
+								flexFlow='column'
+								marginBottom='1.34rem'
+								gridGap='0.35rem'
+								isLoaded={(!token0Resolved.isLoading && !uniV2Liquidity.isLoading)}
+							>
+								<Flex
+									{...depositedRowStyle}
+									background={colorMode === 'light' ? '#eddcbc' : '#212121'}
+								>
+									<Flex>
+										<Image
+											{...tokenImageStyle}
+											src={token0Resolved?.data?.logoURI}
+										/>
+										<Box {...tokenSymbolStyle}>
+											{token0Resolved?.data?.symbol}
+										</Box>
+									</Flex>
+									<Flex>
+										{token0Resolved.data &&
+											prettifyNumber(
+												ethers.utils.formatUnits(
+													uniV2Liquidity.token0,
+													token0Resolved.data?.decimals,
+												),
+												2, 10, 'US')
+										}
+									</Flex>
+								</Flex>
+								<Flex
+									{...depositedRowStyle}
+								>
+									<Flex>
+										<Image
+											{...tokenImageStyle}
+											src={token1Resolved?.data?.logoURI}
+										/>
+										<Box {...tokenSymbolStyle}>
+											{token1Resolved?.data?.symbol}
+										</Box>
+									</Flex>
+									<Flex>
+										{token1Resolved.data &&
+											prettifyNumber(
+												ethers.utils.formatUnits(
+													uniV2Liquidity.token0,
+													token0Resolved.data?.decimals,
+												),
+												2, 2, 'US')
+										}
+									</Flex>
+								</Flex>
+							</Skeleton>
 							<Button
 								w='100%'
 								isLoading={working}
