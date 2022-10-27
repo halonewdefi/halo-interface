@@ -5,12 +5,15 @@ import { getToken0, getToken1 } from '../../common/uniswapV2Pair'
 import { ethers } from 'ethers'
 import { useERC20Balance } from '../useERC20Balance'
 import { usePhase1Position } from '../usePhase1Position'
+import { useWallet } from 'use-wallet'
 
 export const useUniV2Liquidity = (
 	pairAddress,
 	staleTime = defaults.api.staleTime,
 	refetchInterval = defaults.api.refetchInterval,
 ) => {
+
+	const wallet = useWallet()
 
 	const { data: totalSupply, refetch: totalSupplyRefetch, isLoading: totalSupplyIsLoading } = useQuery(`${pairAddress}_totalSupply`,
 		async () => {
@@ -87,10 +90,16 @@ export const useUniV2Liquidity = (
 				console.log(error)
 			}
 		}
+		return () => {
+			setAmount0(ethers.BigNumber.from('0'))
+			setAmount1(ethers.BigNumber.from('0'))
+		}
 	}, [
 		totalSupply,
 		balance0.data,
 		balance1.data,
+		phase1position.data,
+		wallet.account,
 	])
 
 	return {

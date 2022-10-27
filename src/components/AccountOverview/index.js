@@ -4,7 +4,6 @@ import {
 	Box,
 	Image,
 	Skeleton,
-	Button,
 } from '@chakra-ui/react'
 import { useWallet } from 'use-wallet'
 import { prettifyAddress, prettifyNumber } from '../../common'
@@ -27,7 +26,7 @@ export const AccountOverview = (props) => {
 
 	const tokeIconStyle = {
 		h: 'auto',
-		w: '38px',
+		w: '36px',
 		paddingTop: '8px',
 	}
 
@@ -115,13 +114,6 @@ export const AccountOverview = (props) => {
 					</Flex>
 				</Skeleton>
 			</Flex>
-			<Button
-				size='md'
-				variant='solid'
-				disabled={wallet.account ? false : true}
-			>
-    		Claim rewards
-			</Button>
 		</Flex>
 	)
 }

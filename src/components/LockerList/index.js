@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
-import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance } from '../../hooks'
+import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance,
+	useUniV2Liquidity, useUnknownERC20Resolve } from '../../hooks'
 import { utils } from 'ethers'
 import { LockModal } from '../LockModal'
 
@@ -19,9 +20,20 @@ const Card = (props) => {
 	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
 	const [tvl, setTvl] = useState('loading')
 
-	const tokeIconStyle = {
+	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
+	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
+	const uniV2Liquidity = useUniV2Liquidity(
+		props.p.address,
+	)
+
+	const tokeIconStyleMain = {
 		h: 'auto',
 		w: '24px',
+	}
+
+	const tokeIconStyleAlt = {
+		h: 'auto',
+		w: '16px',
 	}
 
 	const valuStyle = {
@@ -71,11 +83,11 @@ const Card = (props) => {
 				>
 					<Image
 						src={`/svg/tokens/${props.p.token0}/index.svg`}
-						{...tokeIconStyle}
+						{...tokeIconStyleMain}
 					/>
 					<Image
 						src={`/svg/tokens/${props.p.token1}/index.svg`}
-						{...tokeIconStyle}
+						{...tokeIconStyleMain}
 					/>
 				</Flex>
 				<Box as='h4'>
@@ -87,7 +99,7 @@ const Card = (props) => {
 				flexDir='row'
 			>
 				<Flex
-					gridGap='1.333rem'
+					gridGap='1.1rem'
 				>
 					<Flex
 						flexDir='column'
@@ -121,7 +133,7 @@ const Card = (props) => {
 									prettifyNumber(utils.formatEther(allocation.data), 0, 0, 'US', 'compact')
 								}
 								<Image
-									{...tokeIconStyle}
+									{...tokeIconStyleAlt}
 									src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
 							</Skeleton>
 							<Box
@@ -131,6 +143,72 @@ const Card = (props) => {
 							</Box>
 						</>
 					</Flex>
+
+					{uniV2Liquidity.token0.gt(0) &&
+						<Flex
+							flexDir='column'
+						>
+							<>
+								<Skeleton
+									isLoaded={
+										!(token0Resolved.isLoading && uniV2Liquidity.token0.gt(0))
+									}
+									style={valuStyle}
+								>
+									{token0Resolved.data &&
+										prettifyNumber(
+											utils.formatUnits(
+												uniV2Liquidity.token0,
+												token0Resolved.data?.decimals,
+											),
+											0, 0, 'US', 'compact')
+									}
+									<Image
+										src={`/svg/tokens/${props.p.token0}/index.svg`}
+										{...tokeIconStyleAlt}
+									/>
+								</Skeleton>
+								<Box
+									style={descStyle}
+								>
+									Deposited
+								</Box>
+							</>
+						</Flex>
+					}
+
+					{uniV2Liquidity.token1.gt(0) &&
+						<Flex
+							flexDir='column'
+						>
+							<>
+								<Skeleton
+									isLoaded={
+										!(token1Resolved.isLoading && uniV2Liquidity.token1.gt(0))
+									}
+									style={valuStyle}
+								>
+									{token0Resolved.data &&
+										prettifyNumber(
+											utils.formatUnits(
+												uniV2Liquidity.token1,
+												token1Resolved.data?.decimals,
+											),
+											0, 0, 'US', 'compact')
+									}
+									<Image
+										src={`/svg/tokens/${props.p.token1}/index.svg`}
+										{...tokeIconStyleAlt}
+									/>
+								</Skeleton>
+								<Box
+									style={descStyle}
+								>
+									Deposited
+								</Box>
+							</>
+						</Flex>
+					}
 				</Flex>
 			</Flex>
 		</Flex>

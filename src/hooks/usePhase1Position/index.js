@@ -12,19 +12,19 @@ export const usePhase1Position = (
 
 	const wallet = useWallet()
 
-	const position = useQuery(`${pair}_positionof_${address ? address : wallet?.account}`,
+	const position = useQuery(`${pair}_positionof_${address ? address : wallet.account}`,
 		async () => {
 			if ((address || wallet?.account) &&
 				pair) {
 				return await getPositions(
 					pair,
-					address ? address : wallet?.account,
+					address ? address : wallet.account,
 				)
 			}
 		}, {
 			staleTime: staleTime,
 			refetchInterval: refetchInterval,
-			enabled: ((address || !!wallet?.account)) && !!pair,
+			enabled: (address || !!wallet.account) && !!pair,
 		},
 	)
 
