@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 import { getEndTime as getPhase1EndTime } from '../../common/phase1'
-import { getEndTime as getPhase2EndTime } from '../../common/phase2'
+import { getEndTime as getPhase2EndTime, getStartTime } from '../../common/phase2'
 import { defaults } from '../../common'
 
 export const usePhase = (
@@ -10,46 +10,67 @@ export const usePhase = (
 
 	const n = new Date()
 
-	const p1 = useQuery(`${defaults.address.phase1}_endTime`,
-		async () => {
-			if (defaults.address.phase1) {
-				return await getPhase1EndTime()
-			}
-		}, {
-			staleTime: staleTime,
-			refetchInterval: refetchInterval,
-		},
-	)
+	// const p1endTime = useQuery(`${defaults.address.phase1}_endTime`,
+	// 	async () => {
+	// 		return await getPhase1EndTime()
+	// 	}, {
+	// 		staleTime: staleTime,
+	// 		refetchInterval: refetchInterval,
+	//		enabled: !!defaults.address.phase1,
+	// 	},
+	// )
 
-	const p2 = useQuery(`${defaults.address.phase2}_endTime`,
-		async () => {
-			if (defaults.address.phase2) {
-				return await getPhase2EndTime()
-			}
-		}, {
-			staleTime: staleTime,
-			refetchInterval: refetchInterval,
-		},
-	)
+	// const p2startTime = useQuery(`${defaults.address.phase2}_startTime`,
+	// 	async () => {
+	// 		return await getStartTime()
+	// 	}, {
+	// 		staleTime: staleTime,
+	// 		refetchInterval: refetchInterval,
+	//		enabled: !!defaults.address.phase2,
+	// 	},
+	// )
 
-	if (p1.data) {
-		if (new Date(p1.data * 1000) > n) {
+	// const p3startTime = useQuery(`${defaults.address.phase3}_startTime`,
+	// 	async () => {
+	// 		return await getPhase3StartTime()
+	// 	}, {
+	// 		staleTime: staleTime,
+	// 		refetchInterval: refetchInterval,
+	//		enabled: !!defaults.address.phase3,
+	// 	},
+	// )
+
+	const p1endTime = {
+		data: 1667007803,
+	}
+	const p2startTime = {
+		data: 1967007803,
+	}
+	const p3startTime = {
+		data: 1967007803,
+	}
+
+
+	if (p1endTime.data) {
+		if (new Date(p1endTime.data * 1000) >= n) {
 			return {
 				which: 1,
 				address: defaults.address.phase1,
 			}
 		}
-		else if (p2.data) {
-			if (new Date(p2.data * 1000) > n) {
+		else if (p2startTime.data) {
+			if (new Date(p2startTime.data * 1000) >= n) {
 				return {
 					which: 2,
 					address: defaults.address.phase2,
 				}
 			}
-			else {
-				return {
-					which: 3,
-					address: '0x0',
+			else if (p3startTime.data) {
+				if (new Date(p3startTime.data * 1000) >= n) {
+					return {
+						which: 3,
+						address: defaults.address.phase3,
+					}
 				}
 			}
 		}
