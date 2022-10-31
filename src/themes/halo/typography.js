@@ -6,7 +6,7 @@ export default {
 		fontVariantLigatures: 'none',
 	},
 	subheading: {
-		paddingLeft: '2px',
+		paddingLeft: '1.3px',
 		marginBottom: '1rem',
 	},
 	p: {

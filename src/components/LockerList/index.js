@@ -218,36 +218,70 @@ const Card = (props) => {
 
 export const LockerList = (props) => {
 
-	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [phase1LockModalOpen, setPhase1LockModalOpen] = useState(false)
+	const [phase2LockModalOpen, setPhase2LockModalOpen] = useState(false)
 	const [pair, setPair] = useState({})
 
 	const openLockModal = (p) => {
-		setIsModalOpen(true)
+		if (p.phase === 1) setPhase1LockModalOpen(true)
+		if (p.phase === 2) setPhase2LockModalOpen(true)
 		setPair(p)
 	}
 
 	const closeLockModal = () => {
-		setIsModalOpen(false)
+		setPhase1LockModalOpen(false)
+		setPhase2LockModalOpen(false)
 		setPair({})
+	}
+
+	const rowStyle = {
+		flexDir:'row',
+		flexWrap:'wrap',
+		gridGap:'1.7rem',
+		mb:'3rem',
 	}
 
 	return (
 		<>
+			<Box as='h2'>Lockdrop Phase 2</Box>
+			<Box as='div' textStyle='subheading'>Contribute protocol liquidity to earn.</Box>
 			<Flex
-				flexDir='row'
-				flexWrap='wrap'
-				gridGap='1.7rem'
+				{...rowStyle}
 				{...props}>
-				{defaults?.lockdropPairs?.map(p => <Card
-					p={p}
-					key={p.address}
-					deposit={openLockModal}
-				/>)
+				{defaults
+					?.lockdropPairs
+					?.filter(p => p.phase === 2)
+					.map(p => <Card
+						p={p}
+						key={p.address}
+						deposit={openLockModal}
+					/>)
 				}
 			</Flex>
 			<Phase1LockModal
 				p={pair}
-				isOpen={isModalOpen}
+				isOpen={phase1LockModalOpen}
+				onClose={() => closeLockModal()}
+			/>
+			<Box as='h2'>Lockdrop Phase 1 </Box>
+			<Box as='div' textStyle='subheading'>Earn for bootstraping initial liquidity.</Box>
+			<Flex
+				{...rowStyle}
+				mb='0'
+				{...props}>
+				{defaults
+					?.lockdropPairs
+					?.filter(p => p.phase === 1)
+					.map(p => <Card
+						p={p}
+						key={p.address}
+						deposit={openLockModal}
+					/>)
+				}
+			</Flex>
+			<Phase1LockModal
+				p={pair}
+				isOpen={phase1LockModalOpen}
 				onClose={() => closeLockModal()}
 			/>
 		</>

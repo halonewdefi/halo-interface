@@ -19,8 +19,6 @@ export const Lockdrop = () => {
 				flexDir='column'
 				w='100%'
 			>
-				<Box as='h1'>Lockdrop</Box>
-				<Box as='div' textStyle='subheading'>Earn for contributing to protocol liquidity.</Box>
 				<LockerList/>
 			</Flex>
 		</>
