@@ -2,6 +2,9 @@ import { mode } from '@chakra-ui/theme-tools'
 
 export default {
 	baseStyle: (props) => ({
+		_disabled: {
+			opacity: '1',
+		},
 		track: {
 			background: mode('#b3ac9e;', '#868686')(props),
 		},

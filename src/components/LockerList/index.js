@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
 import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance,
-	useUniV2Liquidity, useUnknownERC20Resolve } from '../../hooks'
+	useUniV2Liquidity, useUnknownERC20Resolve, usePhase } from '../../hooks'
 import { utils } from 'ethers'
-import { LockModal } from '../LockModal'
+import { Phase1LockModal } from '../Phase1LockModal'
 
 const Card = (props) => {
 
@@ -19,6 +19,7 @@ const Card = (props) => {
 	const { data: p } = useUniEthPrice()
 	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
 	const [tvl, setTvl] = useState('loading')
+	const phase = usePhase()
 
 	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
 	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
@@ -244,7 +245,7 @@ export const LockerList = (props) => {
 				/>)
 				}
 			</Flex>
-			<LockModal
+			<Phase1LockModal
 				p={pair}
 				isOpen={isModalOpen}
 				onClose={() => closeLockModal()}

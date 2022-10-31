@@ -50,7 +50,6 @@ export const usePhase = (
 		data: 1967007803,
 	}
 
-
 	if (p1endTime.data) {
 		if (new Date(p1endTime.data * 1000) >= n) {
 			return {
