@@ -20,5 +20,22 @@ const getStartTime = async () => {
 	return await contract.startTime()
 }
 
+const getAllocationForHalo = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase2,
+		phase2abi,
+		defaults.network.provider,
+	)
+	return await contract.ALLOCATION_FOR_Halo()
+}
 
-export { getEndTime, getStartTime }
+const getAllocationForUSDC = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase2,
+		phase2abi,
+		defaults.network.provider,
+	)
+	return await contract.ALLOCATION_FOR_USDC()
+}
+
+export { getEndTime, getStartTime, getAllocationForHalo, getAllocationForUSDC }

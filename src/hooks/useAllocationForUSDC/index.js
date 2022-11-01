@@ -1,19 +1,19 @@
 import { useQuery } from 'react-query'
-import { getAllocation } from '../../common/phase1'
+import { getAllocationForUSDC } from '../../common'
 import { defaults } from '../../common'
 
-export const usePhase1allocation = (
+export const useAllocationForUSDC = (
 	staleTime = defaults.api.staleTime,
 	refetchInterval = false,
 ) => {
 
-	const allocation = useQuery(`${defaults.address.phase1}_HALO_PER_PAIR`,
+	const allocation = useQuery(`${defaults.address.phase2}_ALLOCATION_FOR_USDC`,
 		async () => {
-			return await getAllocation()
+			return await getAllocationForUSDC()
 		}, {
 			staleTime: staleTime,
 			refetchInterval: refetchInterval,
-			enabled: !!defaults.address.phase1,
+			enabled: !!defaults.address.phase2,
 		},
 	)
 

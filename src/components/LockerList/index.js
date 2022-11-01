@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
 import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance,
-	useUniV2Liquidity, useUnknownERC20Resolve, usePhase } from '../../hooks'
+	useUniV2Liquidity, useUnknownERC20Resolve, usePhase, useAllocationForHalo,
+	useAllocationForUSDC } from '../../hooks'
 import { utils } from 'ethers'
 import { Phase1LockModal } from '../Phase1LockModal'
 
@@ -15,11 +16,12 @@ const Card = (props) => {
 	}
 
 	const allocation = usePhase1allocation()
+	const allocationForHalo = useAllocationForHalo()
+	const allocationForUSDC = useAllocationForUSDC()
 	const t = useUniLPTokenPrice(props.p.address)
 	const { data: p } = useUniEthPrice()
 	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
 	const [tvl, setTvl] = useState('loading')
-	const phase = usePhase()
 
 	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
 	const token1Resolved = useUnknownERC20Resolve(props.p.token1)
@@ -131,11 +133,34 @@ const Card = (props) => {
 					>
 						<>
 							<Skeleton
-								isLoaded={allocation.data}
+								isLoaded={
+									props.p.phase === 1 ? allocation.data :
+										props.p.phase === 2 && props.p.pair === 'HALO' ? allocationForHalo.data :
+											props.p.pair === 'USDC' ? allocationForUSDC.data :
+												false
+								}
 								style={valuStyle}
 							>
-								{allocation.data &&
-									prettifyNumber(utils.formatEther(allocation.data), 0, 0, 'US', 'compact')
+								{props.p.phase === 1 &&
+									<>
+										{allocation.data &&
+											prettifyNumber(utils.formatEther(allocation.data), 0, 4, 'US', 'compact')
+										}
+									</>
+								}
+								{props.p.phase === 2 && props.p.pair === 'HALO' &&
+									<>
+										{allocationForHalo.data &&
+											prettifyNumber(utils.formatEther(allocationForHalo.data), 0, 4, 'US', 'compact')
+										}
+									</>
+								}
+								{props.p.phase === 2 && props.p.pair === 'USDC' &&
+									<>
+										{allocationForUSDC.data &&
+											prettifyNumber(utils.formatEther(allocationForUSDC.data), 0, 4, 'US', 'compact')
+										}
+									</>
 								}
 								<Image
 									{...tokeIconStyleAlt}
