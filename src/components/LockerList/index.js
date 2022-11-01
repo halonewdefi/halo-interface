@@ -82,14 +82,18 @@ const Card = (props) => {
 					flexDir='row'
 					gridGap='.34rem'
 				>
-					<Image
-						src={`/svg/tokens/${props.p.token0}/index.svg`}
-						{...tokeIconStyleMain}
-					/>
-					<Image
-						src={`/svg/tokens/${props.p.token1}/index.svg`}
-						{...tokeIconStyleMain}
-					/>
+					{props.p.token0 &&
+						<Image
+							src={`/svg/tokens/${props.p.token0}/index.svg`}
+							{...tokeIconStyleMain}
+						/>
+					}
+					{props.p.token1 &&
+						<Image
+							src={`/svg/tokens/${props.p.token1}/index.svg`}
+							{...tokeIconStyleMain}
+						/>
+					}
 				</Flex>
 				<Box as='h4'>
 					{props.p.pair}
