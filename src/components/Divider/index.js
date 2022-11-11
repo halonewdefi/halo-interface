@@ -5,7 +5,7 @@ import { Box } from '@chakra-ui/react'
 export const Divider = (props) => {
 
 	Divider.propTypes = {
-		hidden: PropTypes.bool.isRequired,
+		hidden: PropTypes.bool,
 	}
 
 	const { hidden, ...rest } = props

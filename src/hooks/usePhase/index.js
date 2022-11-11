@@ -71,6 +71,9 @@ export const usePhase = (
 						address: defaults.address.phase3,
 					}
 				}
+				else {
+					return 0
+				}
 			}
 		}
 	}

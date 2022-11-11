@@ -285,7 +285,7 @@ export const LockerList = (props) => {
 							?.filter(p => p.phase === 2)
 							.map(p => <Card
 								p={p}
-								key={p.address}
+								key={p.pair}
 								deposit={openLockModal}
 							/>)
 						}
@@ -308,7 +308,7 @@ export const LockerList = (props) => {
 					?.filter(p => p.phase === 1)
 					.map(p => <Card
 						p={p}
-						key={p.address}
+						key={p.pair}
 						deposit={openLockModal}
 					/>)
 				}

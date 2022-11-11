@@ -131,10 +131,10 @@ export const PhaseEndTimer = (props) => {
 								justifyContent='center'
 							>
 								{!isNaN(date) &&
-								<Countdown
-									date={date}
-									renderer={time}
-								/>
+									<Countdown
+										date={date}
+										renderer={time}
+									/>
 								}
 							</Flex>
 						</Flex>
