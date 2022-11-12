@@ -4,9 +4,9 @@ import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
 import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance,
 	useUniV2Liquidity, useUnknownERC20Resolve, usePhase, useAllocationForHalo,
-	useAllocationForUSDC } from '../../hooks'
+	useAllocationForUSDC, usePhase2Position } from '../../hooks'
 import { utils } from 'ethers'
-import { Phase1LockModal } from '../Phase1LockModal'
+import { Phase1LockModal, Phase2LockModal } from '../../components'
 
 const Card = (props) => {
 
@@ -28,6 +28,7 @@ const Card = (props) => {
 	const uniV2Liquidity = useUniV2Liquidity(
 		props.p.address,
 	)
+	const phase2position = usePhase2Position(props.p)
 
 	const tokeIconStyleMain = {
 		h: 'auto',
@@ -239,6 +240,40 @@ const Card = (props) => {
 							</>
 						</Flex>
 					}
+
+					{props.p.phase === 2 &&
+						phase2position.data?.[2].gt(0) &&
+						<Flex
+							flexDir='column'
+						>
+							<>
+								<Skeleton
+									isLoaded={
+										!(token0Resolved.isLoading && phase2position.data[2].gt(0))
+									}
+									style={valuStyle}
+								>
+									{token0Resolved.data &&
+										prettifyNumber(
+											utils.formatUnits(
+												phase2position.data[2],
+												token0Resolved.data?.decimals,
+											),
+											0, 0, 'US', 'compact')
+									}
+									<Image
+										src={`/svg/tokens/${props.p.token0}/index.svg`}
+										{...tokeIconStyleAlt}
+									/>
+								</Skeleton>
+								<Box
+									style={descStyle}
+								>
+									Deposited
+								</Box>
+							</>
+						</Flex>
+					}
 				</Flex>
 			</Flex>
 		</Flex>
@@ -297,7 +332,7 @@ export const LockerList = (props) => {
 					/>
 				</>
 			}
-			<Box as='h2'>Lockdrop Phase 1 </Box>
+			<Box as='h2'>Lockdrop Phase 1</Box>
 			<Box as='div' textStyle='subheading'>Earn for bootstraping initial liquidity.</Box>
 			<Flex
 				{...rowStyle}
@@ -313,6 +348,11 @@ export const LockerList = (props) => {
 					/>)
 				}
 			</Flex>
+			<Phase2LockModal
+				p={pair}
+				isOpen={phase2LockModalOpen}
+				onClose={() => closeLockModal()}
+			/>
 			<Phase1LockModal
 				p={pair}
 				isOpen={phase1LockModalOpen}

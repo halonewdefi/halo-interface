@@ -738,6 +738,66 @@ export const Phase1LockModal = (props) => {
 									</Flex>
 								</Box>
 							</Flex>
+							<Box
+								as='h4'
+								{...headingStyle}
+							>
+								Deposited
+							</Box>
+							<Skeleton
+								flexFlow='column'
+								marginBottom='1.34rem'
+								gridGap='0.35rem'
+								isLoaded={(!token0Resolved.isLoading && !uniV2Liquidity.isLoading)}
+							>
+								<Flex
+									{...depositedRowStyle}
+									background={colorMode === 'light' ? '#eddcbc' : '#212121'}
+								>
+									<Flex>
+										<Image
+											{...tokenImageStyle}
+											src={token0Resolved?.data?.logoURI}
+										/>
+										<Box {...tokenSymbolStyle}>
+											{token0Resolved?.data?.symbol}
+										</Box>
+									</Flex>
+									<Flex>
+										{token0Resolved.data &&
+											prettifyNumber(
+												ethers.utils.formatUnits(
+													uniV2Liquidity.token0,
+													token0Resolved.data?.decimals,
+												),
+												2, 10, 'US')
+										}
+									</Flex>
+								</Flex>
+								<Flex
+									{...depositedRowStyle}
+								>
+									<Flex>
+										<Image
+											{...tokenImageStyle}
+											src={token1Resolved?.data?.logoURI}
+										/>
+										<Box {...tokenSymbolStyle}>
+											{token1Resolved?.data?.symbol}
+										</Box>
+									</Flex>
+									<Flex>
+										{token1Resolved.data &&
+											prettifyNumber(
+												ethers.utils.formatUnits(
+													uniV2Liquidity.token0,
+													token0Resolved.data?.decimals,
+												),
+												2, 2, 'US')
+										}
+									</Flex>
+								</Flex>
+							</Skeleton>
 							{(
 								(token0Resolved?.data && token1Resolved?.data) &&
 								token0Value && token1Value &&
@@ -823,70 +883,13 @@ export const Phase1LockModal = (props) => {
 									</Button>
 								</Flex>
 							}
-							<Box
-								as='h4'
-								{...headingStyle}
-							>
-								Deposited
-							</Box>
-							<Skeleton
-								flexFlow='column'
-								marginBottom='1.34rem'
-								gridGap='0.35rem'
-								isLoaded={(!token0Resolved.isLoading && !uniV2Liquidity.isLoading)}
-							>
-								<Flex
-									{...depositedRowStyle}
-									background={colorMode === 'light' ? '#eddcbc' : '#212121'}
-								>
-									<Flex>
-										<Image
-											{...tokenImageStyle}
-											src={token0Resolved?.data?.logoURI}
-										/>
-										<Box {...tokenSymbolStyle}>
-											{token0Resolved?.data?.symbol}
-										</Box>
-									</Flex>
-									<Flex>
-										{token0Resolved.data &&
-											prettifyNumber(
-												ethers.utils.formatUnits(
-													uniV2Liquidity.token0,
-													token0Resolved.data?.decimals,
-												),
-												2, 10, 'US')
-										}
-									</Flex>
-								</Flex>
-								<Flex
-									{...depositedRowStyle}
-								>
-									<Flex>
-										<Image
-											{...tokenImageStyle}
-											src={token1Resolved?.data?.logoURI}
-										/>
-										<Box {...tokenSymbolStyle}>
-											{token1Resolved?.data?.symbol}
-										</Box>
-									</Flex>
-									<Flex>
-										{token1Resolved.data &&
-											prettifyNumber(
-												ethers.utils.formatUnits(
-													uniV2Liquidity.token0,
-													token0Resolved.data?.decimals,
-												),
-												2, 2, 'US')
-										}
-									</Flex>
-								</Flex>
-							</Skeleton>
 							{phase.which === 1 &&
 								<Button
 									w='100%'
-									isLoading={working}
+									isLoading={(token0Allowance?.data?.gt(0) &&
+										token0Allowance?.data?.gt(token0Value ? token0Value : 0)) ||
+										(token1Allowance?.data?.gt(0) &&
+										token1Allowance?.data?.gt(token1Value ? token1Value : 0)) ? working : false}
 									loadingText={ !doWithdrawal ? 'Depositing' : 'Withdrawing'}
 									disabled={!(uniV2TokenQuantity.token0Quantity &&
 										uniV2TokenQuantity.token1Quantity &&

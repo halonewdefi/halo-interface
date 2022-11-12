@@ -38,13 +38,11 @@ module.exports = {
 		},
 		{
 			pair: 'HALO',
-			address: '0xDB7A43b768Dbf8081cF6Cd6fac16811bFbA7D66a',
 			token0: '0x25A292B95a68D7a74ac803eA51Be17A78f68d001',
 			phase: 2,
 		},
 		{
 			pair: 'USDC',
-			address: '0xDB7A43b768Dbf8081cF6Cd6fac16811bFbA7D66a',
 			token0: '0x0c49C62EA040676D34f3c1fb34bA0198d1d678a2',
 			phase: 2,
 		},

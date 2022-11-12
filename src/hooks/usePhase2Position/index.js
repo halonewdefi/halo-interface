@@ -1,9 +1,9 @@
 import { useQuery } from 'react-query'
-import { getPositions } from '../../common/phase1'
+import { getPositions } from '../../common/phase2'
 import { defaults } from '../../common'
 import { useWallet } from 'use-wallet'
 
-export const usePhase1Position = (
+export const usePhase2Position = (
 	pair,
 	address = undefined,
 	staleTime = defaults.api.staleTime,
@@ -12,19 +12,18 @@ export const usePhase1Position = (
 
 	const wallet = useWallet()
 
-	const position = useQuery(`${pair}_positionof_${address ? address : wallet.account}`,
+	const position = useQuery(`${pair.token0}_phase2_positionof_${address ? address : wallet.account}`,
 		async () => {
-			if ((address || wallet?.account) &&
-				pair) {
+			if (pair.token0) {
 				return await getPositions(
-					pair,
+					pair.token0,
 					address ? address : wallet.account,
 				)
 			}
 		}, {
 			staleTime: staleTime,
 			refetchInterval: refetchInterval,
-			enabled: (address || !!wallet.account) && !!pair,
+			enabled: (address || !!wallet.account) && !!pair.token0,
 		},
 	)
 
