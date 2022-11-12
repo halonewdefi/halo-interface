@@ -272,30 +272,34 @@ export const Phase1LockModal = (props) => {
 	])
 
 	useEffect(() => {
-		if (lockPeriod === 0) {
-			setLockPeriodInDays(7776000)
-			setMultiplier(4)
-		}
-		if (lockPeriod === 1) {
-			setLockPeriodInDays(15552000)
-			setMultiplier(9)
-		}
-		if (lockPeriod === 2) {
-			setLockPeriodInDays(31536000)
-			setMultiplier(19)
+		if(props.p.pair) {
+			if (lockPeriod === 0) {
+				setLockPeriodInDays(7776000)
+				setMultiplier(4)
+			}
+			if (lockPeriod === 1) {
+				setLockPeriodInDays(15552000)
+				setMultiplier(9)
+			}
+			if (lockPeriod === 2) {
+				setLockPeriodInDays(31536000)
+				setMultiplier(19)
+			}
 		}
 	}, [lockPeriod])
 
 	useEffect(() => {
-		if (phase1position.data) {
-			if (phase1position.data?.[1]?.toNumber() <= 4) {
-				setLockPeriod(0)
-			}
-			if (phase1position.data?.[1]?.toNumber() === 9) {
-				setLockPeriod(1)
-			}
-			if (phase1position.data?.[1]?.toNumber() === 19) {
-				setLockPeriod(2)
+		if (props.p.pair) {
+			if (phase1position.data) {
+				if (phase1position.data?.[1]?.toNumber() <= 4) {
+					setLockPeriod(0)
+				}
+				if (phase1position.data?.[1]?.toNumber() === 9) {
+					setLockPeriod(1)
+				}
+				if (phase1position.data?.[1]?.toNumber() === 19) {
+					setLockPeriod(2)
+				}
 			}
 		}
 	}, [

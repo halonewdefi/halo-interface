@@ -28,7 +28,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
-import { depositStable } from '../../common/phase2'
+import { depositStable, withdrawStable } from '../../common/phase2'
 import { useUnknownERC20Resolve, useERC20Allowance, useERC20Balance,
 	useAggregatedAccValue, usePhase, usePhase2Position } from '../../hooks'
 
@@ -45,7 +45,6 @@ export const Phase2LockModal = (props) => {
 
 	const phase = usePhase()
 	const phase2position = usePhase2Position(props.p)
-
 	const [token0Amount, setToken0Amount] = useState('')
 	const [token0Value, setToken0Value] = useState('')
 	const [doWithdrawal, setDoWithdrawal] = useState(false)
@@ -54,7 +53,7 @@ export const Phase2LockModal = (props) => {
 
 	const [lockPeriod, setLockPeriod] = useState(0)
 	const [lockPeriodInDays, setLockPeriodInDays] = useState(7776000)
-	const [multiplier, setMultiplier] = useState(4)
+	const [multiplier, setMultiplier] = useState(0)
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
 	const { colorMode } = useColorMode()
@@ -176,24 +175,24 @@ export const Phase2LockModal = (props) => {
 			) {
 				setWorking(true)
 				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-				// withdraw(
-				// 	props.p.address,
-				// 	provider,
-				// )
-				// 	.then((tx) => {
-				// 		tx.wait(
-				// 			defaults.network.tx.confirmations,
-				// 		).then(() => {
-				// 			setWorking(false)
-				// 			// if (phase.which === 2) phase2position.refetch()
-				// 			token0Balance.refetch()
-				// 			aggregatedAccValue.refetch()
-				// 		})
-				// 	})
-				// 	.catch(error => {
-				// 		setWorking(false)
-				// 		console.log(error)
-				// 	})
+				withdrawStable(
+					token0Value,
+					provider,
+				)
+					.then((tx) => {
+						tx.wait(
+							defaults.network.tx.confirmations,
+						).then(() => {
+							setWorking(false)
+							phase2position.refetch()
+							token0Balance.refetch()
+							aggregatedAccValue.refetch()
+						})
+					})
+					.catch(error => {
+						setWorking(false)
+						console.log(error)
+					})
 			}
 		}
 		catch (error) {
@@ -202,30 +201,40 @@ export const Phase2LockModal = (props) => {
 	}
 
 	useEffect(() => {
-		if (lockPeriod === 0) {
-			setLockPeriodInDays(7776000)
-			setMultiplier(4)
+		if (props.p.pair) {
+			if (lockPeriod === 0) {
+				setLockPeriodInDays(7776000)
+				setMultiplier(props.p.pair === 'HALO' ? 1 : 4)
+			}
+			if (lockPeriod === 1) {
+				setLockPeriodInDays(15552000)
+				setMultiplier(props.p.pair === 'HALO' ? 3 : 9)
+			}
+			if (lockPeriod === 2) {
+				setLockPeriodInDays(31536000)
+				setMultiplier(props.p.pair === 'HALO' ? 7 : 19)
+			}
 		}
-		if (lockPeriod === 1) {
-			setLockPeriodInDays(15552000)
-			setMultiplier(9)
-		}
-		if (lockPeriod === 2) {
-			setLockPeriodInDays(31536000)
-			setMultiplier(19)
-		}
-	}, [lockPeriod])
+	}, [
+		props.p.pair,
+		lockPeriod,
+	])
 
 	useEffect(() => {
-		if (phase2position.data) {
-			if (phase2position.data?.[1]?.toNumber() <= (4 || 1)) {
-				setLockPeriod(0)
-			}
-			if (phase2position.data?.[1]?.toNumber() === (9 || 3)) {
-				setLockPeriod(1)
-			}
-			if (phase2position.data?.[1]?.toNumber() === (19 || 7)) {
-				setLockPeriod(2)
+		if (props.p.pair) {
+			if (phase2position.data) {
+				if (phase2position.data?.[1]?.toNumber() === (0)) {
+					setLockPeriod(0)
+				}
+				if (phase2position.data?.[1]?.toNumber() === (4 || 1)) {
+					setLockPeriod(0)
+				}
+				if (phase2position.data?.[1]?.toNumber() === (9 || 3)) {
+					setLockPeriod(1)
+				}
+				if (phase2position.data?.[1]?.toNumber() === (19 || 7)) {
+					setLockPeriod(2)
+				}
 			}
 		}
 	}, [
@@ -312,12 +321,14 @@ export const Phase2LockModal = (props) => {
 													if (wallet.account) {
 														setToken0Amount(
 															ethers.utils.formatUnits(
-																token0Balance?.data?.div(100).mul(25),
+																doWithdrawal ? phase2position.data?.[2].div(100).mul(25) :
+																 token0Balance?.data?.div(100).mul(25),
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
-															token0Balance?.data?.div(100).mul(25),
+															doWithdrawal ? phase2position.data?.[2].div(100).mul(25) :
+																token0Balance?.data?.div(100).mul(25),
 														)
 													}
 												}}
@@ -328,12 +339,14 @@ export const Phase2LockModal = (props) => {
 													if (wallet.account) {
 														setToken0Amount(
 															ethers.utils.formatUnits(
-																token0Balance?.data?.div(100).mul(50),
+																doWithdrawal ? phase2position.data?.[2].div(100).mul(50) :
+																	token0Balance?.data?.div(100).mul(50),
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
-															token0Balance?.data?.div(100).mul(50),
+															doWithdrawal ? phase2position.data?.[2].div(100).mul(50) :
+																token0Balance?.data?.div(100).mul(50),
 														)
 													}
 												}}
@@ -344,12 +357,14 @@ export const Phase2LockModal = (props) => {
 													if (wallet.account) {
 														setToken0Amount(
 															ethers.utils.formatUnits(
-																token0Balance?.data?.div(100).mul(75),
+																doWithdrawal ? phase2position.data?.[2].div(100).mul(75) :
+																	token0Balance?.data?.div(100).mul(75),
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
-															token0Balance?.data?.div(100).mul(75),
+															doWithdrawal ? phase2position.data?.[2].div(100).mul(75) :
+																token0Balance?.data?.div(100).mul(75),
 														)
 													}
 												}}
@@ -360,11 +375,14 @@ export const Phase2LockModal = (props) => {
 													if (wallet.account) {
 														setToken0Amount(
 															ethers.utils.formatUnits(
+																doWithdrawal ? phase2position.data?.[2] :
+																	token0Balance?.data,
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
-															token0Balance?.data,
+															doWithdrawal ? phase2position.data?.[2] :
+																token0Balance?.data,
 														)
 													}
 												}}
