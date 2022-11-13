@@ -2,6 +2,9 @@ export default {
 	uppercase: {
 		textTransform: 'uppercase',
 	},
+	heading: {
+		marginLeft: '4px',
+	},
 	noLigs: {
 		fontVariantLigatures: 'none',
 	},

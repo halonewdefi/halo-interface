@@ -86,10 +86,6 @@ export const Phase1LockModal = (props) => {
 	const wallet = useWallet()
 	const { colorMode } = useColorMode()
 
-	const headingStyle = {
-		marginLeft: '4px',
-	}
-
 	const groupStyle = {
 		height: 'auto',
 		size: 'lg',
@@ -109,42 +105,14 @@ export const Phase1LockModal = (props) => {
 		alignItems: 'center',
 	}
 
-	const tokenImageStyle = {
-		width: '24px',
-		height: '24px',
-		borderRadius: '50%',
-		mr: '5px',
-	}
-
 	const extrasStyle = {
 		color: useColorModeValue('type.body.dark', 'type.body.light'),
 		p: '3px',
 	}
 
-	const tokenSymbolStyle = {
-		fontWeight: 'bold',
-		textTransform: 'capitalize',
-	}
-
-	const ncGroupStyle = {
-		flexDir: 'row',
-		justifyContent: 'right',
-		gap: '6px',
-	}
-
-	const ncButtonStyle = {
+	const ncButtonProps = {
 		variant: 'outline',
 		size:'sm',
-	}
-
-	const noteStyle = {
-		flexDir: 'column',
-		flexWrap: 'wrap',
-		mb: '1.34rem',
-		bg: '#7D786E26',
-		p: '1rem',
-		borderRadius: '0.5rem',
-		gap: '0.3rem',
 	}
 
 	const markLabelStyle = {
@@ -154,12 +122,6 @@ export const Phase1LockModal = (props) => {
 		textAlign: 'center',
 		cursor: (!doWithdrawal && phase.which === 1) ? 'pointer' : '',
 		pointerEvents: (!doWithdrawal && phase.which === 1) ? 'all !important' : '',
-	}
-
-	const depositedRowStyle = {
-		justifyContent: 'space-between',
-		borderRadius: '0.34rem',
-		padding: '4px 5px',
 	}
 
 	const lock = () => {
@@ -339,7 +301,7 @@ export const Phase1LockModal = (props) => {
 								<>
 									<Box
 										as='h4'
-										{...headingStyle}
+										textStyle='heading'
 									>
 										Amounts
 									</Box>
@@ -370,10 +332,10 @@ export const Phase1LockModal = (props) => {
 												{(!token0Resolved?.isLoading && !uniV2Liquidity.isLoading) &&
 											<>
 												<Image
-													{...tokenImageStyle}
+													layerStyle='tokenImage'
 													src={token0Resolved?.data?.logoURI}
 												/>
-												<Box {...tokenSymbolStyle}>
+												<Box layerStyle='tokenSymbol'>
 													{token0Resolved?.data?.symbol}
 												</Box>
 											</>
@@ -381,10 +343,10 @@ export const Phase1LockModal = (props) => {
 											</InputRightElement>
 										</InputGroup>
 										<Flex
-											{...ncGroupStyle}
+											layerStyle='ncGroup'
 										>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -403,7 +365,7 @@ export const Phase1LockModal = (props) => {
 												}}
 											>25%</Button>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -422,7 +384,7 @@ export const Phase1LockModal = (props) => {
 												}}
 											>50%</Button>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -441,7 +403,7 @@ export const Phase1LockModal = (props) => {
 												}}
 											>75%</Button>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -482,10 +444,10 @@ export const Phase1LockModal = (props) => {
 												{(!token1Resolved?.isLoading && !uniV2Liquidity?.isLoading) &&
 											<>
 												<Image
-													{...tokenImageStyle}
+													layerStyle='tokenImage'
 													src={token1Resolved?.data?.logoURI}
 												/>
-												<Box {...tokenSymbolStyle}>
+												<Box layerStyle='tokenSymbol'>
 													{token1Resolved?.data?.symbol}
 												</Box>
 											</>
@@ -493,10 +455,10 @@ export const Phase1LockModal = (props) => {
 											</InputRightElement>
 										</InputGroup>
 										<Flex
-											{...ncGroupStyle}
+											layerStyle='ncGroup'
 										>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -515,7 +477,7 @@ export const Phase1LockModal = (props) => {
 												}}
 											>25%</Button>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -534,7 +496,7 @@ export const Phase1LockModal = (props) => {
 												}}
 											>50%</Button>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -553,7 +515,7 @@ export const Phase1LockModal = (props) => {
 												}}
 											>75%</Button>
 											<Button
-												{...ncButtonStyle}
+												{...ncButtonProps}
 												onClick={() => {
 													if (wallet.account) {
 														uniV2TokenQuantity.setVsync(false)
@@ -604,13 +566,13 @@ export const Phase1LockModal = (props) => {
 							{phase.which !== 1 &&
 								<Flex
 									mb='1.34rem'
-									{...noteStyle}
+									layerStyle='modalNote'
 								>
 									<Box
 										as='h4'
 										m='0'
 										p='0'
-										{...headingStyle}
+										textStyle='heading'
 									>
 										Phase 1 is over
 									</Box>
@@ -626,7 +588,7 @@ export const Phase1LockModal = (props) => {
 							}
 							<Box
 								as='h4'
-								{...headingStyle}
+								textStyle='heading'
 								margin='0px 0 -2px 4px'
 							>
 								Lock Period
@@ -697,7 +659,7 @@ export const Phase1LockModal = (props) => {
 									as='h4'
 									mb='1rem'
 									w='48%'
-									{...headingStyle}
+									textStyle='heading'
 								>
 									REWARD
 									<Flex
@@ -732,7 +694,7 @@ export const Phase1LockModal = (props) => {
 								<Box
 									as='h4'
 									mb='1rem'
-									{...headingStyle}
+									textStyle='heading'
 								>
 									Multiplier
 									<Flex
@@ -744,7 +706,7 @@ export const Phase1LockModal = (props) => {
 							</Flex>
 							<Box
 								as='h4'
-								{...headingStyle}
+								textStyle='heading'
 							>
 								Deposited
 							</Box>
@@ -755,15 +717,15 @@ export const Phase1LockModal = (props) => {
 								isLoaded={(!token0Resolved.isLoading && !uniV2Liquidity.isLoading)}
 							>
 								<Flex
-									{...depositedRowStyle}
+									layerStyle='tokenAmountDepositedRow'
 									background={colorMode === 'light' ? '#eddcbc' : '#212121'}
 								>
 									<Flex>
 										<Image
-											{...tokenImageStyle}
+											layerStyle='tokenImage'
 											src={token0Resolved?.data?.logoURI}
 										/>
-										<Box {...tokenSymbolStyle}>
+										<Box layerStyle='tokenSymbol'>
 											{token0Resolved?.data?.symbol}
 										</Box>
 									</Flex>
@@ -779,14 +741,14 @@ export const Phase1LockModal = (props) => {
 									</Flex>
 								</Flex>
 								<Flex
-									{...depositedRowStyle}
+									layerStyle='tokenAmountDepositedRow'
 								>
 									<Flex>
 										<Image
-											{...tokenImageStyle}
+											layerStyle='tokenImage'
 											src={token1Resolved?.data?.logoURI}
 										/>
-										<Box {...tokenSymbolStyle}>
+										<Box layerStyle='tokenSymbol'>
 											{token1Resolved?.data?.symbol}
 										</Box>
 									</Flex>
@@ -814,13 +776,13 @@ export const Phase1LockModal = (props) => {
 							 ) &&
 								<Flex
 									mb='1rem'
-									{...noteStyle}
+									layerStyle='modalNote'
 								>
 									<Box
 										as='h4'
 										m='0'
 										p='0'
-										{...headingStyle}
+										textStyle='heading'
 									>
 										{`Allow ${token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
 										  token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
@@ -864,7 +826,7 @@ export const Phase1LockModal = (props) => {
 										}}
 									>
 										<Image
-											{...tokenImageStyle}
+											layerStyle='tokenImage'
 											src={
 												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||
 												token0Allowance?.data?.lt(token0Value) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ?
@@ -875,7 +837,7 @@ export const Phase1LockModal = (props) => {
 											Allow
 										<Box
 											ml='5px'
-											{...tokenSymbolStyle}
+											layerStyle='tokenSymbol'
 										>
 											{
 												token0Allowance?.data?.lte(0) && token0Value.lte(ethers.BigNumber.from(defaults.network.erc20.maxApproval)) ||

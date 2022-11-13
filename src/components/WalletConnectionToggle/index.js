@@ -85,7 +85,7 @@ export const WalletConnectionToggle = props => {
 					<MenuList
 						zIndex={{ base: '2', md: '1' }}>
 						<MenuItem
-							icon={<CloseIcon layerStyle='menuIcon' />}
+							icon={<CloseIcon />}
 							onClick={() => wallet?.reset()}
 						>
       				Disconnect
