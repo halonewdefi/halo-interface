@@ -28,7 +28,7 @@ import {
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
-import { depositStable, withdrawStable } from '../../common/phase2'
+import { depositFromPhase1, depositStable, withdrawStable } from '../../common/phase2'
 import { useUnknownERC20Resolve, useERC20Allowance, useERC20Balance,
 	useAggregatedAccValue, usePhase, usePhase2Position } from '../../hooks'
 
@@ -103,25 +103,49 @@ export const Phase2LockModal = (props) => {
 			) {
 				setWorking(true)
 				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-				depositStable(
-					token0Value,
-					lockPeriodInDays,
-					provider,
-				)
-					.then((tx) => {
-						tx.wait(
-							defaults.network.tx.confirmations,
-						).then(() => {
-							setWorking(false)
-							phase2position.refetch()
-							token0Balance.refetch()
-							aggregatedAccValue.refetch()
+				if (props.p.pair === 'HALO') {
+					depositFromPhase1(
+						token0Value,
+						wallet.account,
+						lockPeriodInDays,
+						provider,
+					)
+						.then((tx) => {
+							tx.wait(
+								defaults.network.tx.confirmations,
+							).then(() => {
+								setWorking(false)
+								phase2position.refetch()
+								token0Balance.refetch()
+								aggregatedAccValue.refetch()
+							})
 						})
-					})
-					.catch(error => {
-						setWorking(false)
-						console.log(error)
-					})
+						.catch(error => {
+							setWorking(false)
+							console.log(error)
+						})
+				}
+				else {
+					depositStable(
+						token0Value,
+						lockPeriodInDays,
+						provider,
+					)
+						.then((tx) => {
+							tx.wait(
+								defaults.network.tx.confirmations,
+							).then(() => {
+								setWorking(false)
+								phase2position.refetch()
+								token0Balance.refetch()
+								aggregatedAccValue.refetch()
+							})
+						})
+						.catch(error => {
+							setWorking(false)
+							console.log(error)
+						})
+				}
 			}
 		}
 		catch (error) {
@@ -286,13 +310,15 @@ export const Phase2LockModal = (props) => {
 														setToken0Amount(
 															ethers.utils.formatUnits(
 																doWithdrawal ? phase2position.data?.[2].div(100).mul(25) :
-																 token0Balance?.data?.div(100).mul(25),
+																	props.p.pair === 'HALO' ? aggregatedAccValue.total.div(100).mul(25) :
+																		token0Balance?.data?.div(100).mul(25),
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
 															doWithdrawal ? phase2position.data?.[2].div(100).mul(25) :
-																token0Balance?.data?.div(100).mul(25),
+																props.p.pair === 'HALO' ? aggregatedAccValue.total.div(100).mul(25) :
+																	token0Balance?.data?.div(100).mul(25),
 														)
 													}
 												}}
@@ -304,13 +330,15 @@ export const Phase2LockModal = (props) => {
 														setToken0Amount(
 															ethers.utils.formatUnits(
 																doWithdrawal ? phase2position.data?.[2].div(100).mul(50) :
-																	token0Balance?.data?.div(100).mul(50),
+																	props.p.pair === 'HALO' ? aggregatedAccValue.total.div(100).mul(50) :
+																		token0Balance?.data?.div(100).mul(50),
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
 															doWithdrawal ? phase2position.data?.[2].div(100).mul(50) :
-																token0Balance?.data?.div(100).mul(50),
+																props.p.pair === 'HALO' ? aggregatedAccValue.total.div(100).mul(50) :
+																	token0Balance?.data?.div(100).mul(50),
 														)
 													}
 												}}
@@ -322,13 +350,15 @@ export const Phase2LockModal = (props) => {
 														setToken0Amount(
 															ethers.utils.formatUnits(
 																doWithdrawal ? phase2position.data?.[2].div(100).mul(75) :
-																	token0Balance?.data?.div(100).mul(75),
+																	props.p.pair === 'HALO' ? aggregatedAccValue.total.div(100).mul(75) :
+																		token0Balance?.data?.div(100).mul(75),
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
 															doWithdrawal ? phase2position.data?.[2].div(100).mul(75) :
-																token0Balance?.data?.div(100).mul(75),
+																props.p.pair === 'HALO' ? aggregatedAccValue.total.div(100).mul(75) :
+																	token0Balance?.data?.div(100).mul(75),
 														)
 													}
 												}}
@@ -340,13 +370,15 @@ export const Phase2LockModal = (props) => {
 														setToken0Amount(
 															ethers.utils.formatUnits(
 																doWithdrawal ? phase2position.data?.[2] :
-																	token0Balance?.data,
+																	props.p.pair === 'HALO' ? aggregatedAccValue.total :
+																		token0Balance?.data,
 																token0Resolved?.data?.decimals,
 															),
 														)
 														setToken0Value(
 															doWithdrawal ? phase2position.data?.[2] :
-																token0Balance?.data,
+																props.p.pair === 'HALO' ? aggregatedAccValue.total :
+																	token0Balance?.data,
 														)
 													}
 												}}
@@ -636,6 +668,7 @@ export const Phase2LockModal = (props) => {
 										token0Amount) ||
 										(!(
 											(token0Value.gt(0)) &&
+											((!doWithdrawal) && (props.p.pair === 'HALO') && (aggregatedAccValue.total) && token0Value.lte(aggregatedAccValue.total)) ||
 											((!doWithdrawal) && (token0Balance?.data) && token0Value.lte(token0Balance?.data)) ||
 											((doWithdrawal) && (phase2position?.data) && token0Value.lte(phase2position?.data[2])) &&
 											(token0Allowance?.data?.gt(0) &&
