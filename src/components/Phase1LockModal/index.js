@@ -108,6 +108,7 @@ export const Phase1LockModal = (props) => {
 	const extrasStyle = {
 		color: useColorModeValue('type.body.dark', 'type.body.light'),
 		p: '3px',
+		alignItems: 'center',
 	}
 
 	const ncButtonProps = {
@@ -676,18 +677,18 @@ export const Phase1LockModal = (props) => {
 												(preQuoteHalo.preQuote && phase1position.data?.[1] == 0)))
 											}>
 											{preQuoteHalo.preQuote &&
-													<>
-														{
-															<>
-																{prettifyNumber(ethers.utils.formatEther(preQuoteHalo.preQuote), 0, 4, 'US', 'compact')}
-															</>
-														}
-													</>
+												<>
+													{
+														<>
+															{prettifyNumber(ethers.utils.formatEther(preQuoteHalo.preQuote), 0, 4, 'US', 'compact')}
+														</>
+													}
+												</>
 											}
 											<Image
-												h='auto'
-												w='24px'
-												src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
+												src={`svg/tokens/${defaults.address.halo}/index.svg`}
+												layerStyle='tokenIcon'
+											/>
 										</Skeleton>
 									</Flex>
 								</Box>

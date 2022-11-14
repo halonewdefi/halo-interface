@@ -7,10 +7,14 @@ import {
 	tokenImage,
 	ncGroup,
 	tokenSymbol,
+	tokenIcon,
+	tokenIconSmall,
 } from '../../components'
 
 export default {
 	tokenImage,
+	tokenIcon,
+	tokenIconSmall,
 	hr,
 	box,
 	card,

@@ -13,6 +13,10 @@ import {
 	Input,
 	Image,
 	InputRightElement,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
 	Spinner,
 	Button,
 	Slider,
@@ -25,12 +29,72 @@ import {
 	Switch,
 	useColorMode,
 } from '@chakra-ui/react'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
-import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
-import { depositFromPhase1, depositStable, withdrawStable } from '../../common/phase2'
+import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber, depositToPhase2 } from '../../common'
+import { depositStable, withdrawStable } from '../../common/phase2'
 import { useUnknownERC20Resolve, useERC20Allowance, useERC20Balance,
-	useAggregatedAccValue, usePhase, usePhase2Position } from '../../hooks'
+	useAggregatedAccValue, usePhase, usePhase2Position, useQuoteHalo } from '../../hooks'
+
+const Phase1PoolItem = (props) => {
+
+	Phase1PoolItem.propTypes = {
+		p: PropTypes.object.isRequired,
+		setFromPhase1Pair: PropTypes.func.isRequired,
+	}
+
+	const halo = useQuoteHalo(props.p.address)
+
+	return <>
+		{halo?.data?.gt(0) &&
+			<MenuItem
+				flexDir='column'
+				onClick={() => props.setFromPhase1Pair(props.p)}
+			>
+				<Flex
+					gap='.34rem'
+				>
+					<Flex
+						gap='.24rem'
+					>
+						{props.p.token0 &&
+							<Image
+								src={`/svg/tokens/${props.p.token0}/index.svg`}
+								layerStyle='tokenIconSmall'
+							/>
+						}
+						{props.p.token1 &&
+							<Image
+								src={`/svg/tokens/${props.p.token1}/index.svg`}
+								layerStyle='tokenIconSmall'
+							/>
+						}
+					</Flex>
+					<Flex as='span'>
+						{props.p.pair}
+					</Flex>
+				</Flex>
+				<Flex>
+					{halo.data &&
+						<>
+							{
+								<>
+									{`${prettifyNumber(ethers.utils.formatEther(halo.data), 0, 5, 'US')}`}
+									<Image
+										marginInlineStart='.14rem'
+										src={`svg/tokens/${defaults.address.halo}/index.svg`}
+										layerStyle='tokenIconSmall'
+									/>
+								</>
+							}
+						</>
+					}
+				</Flex>
+			</MenuItem>
+		}
+	</>
+}
 
 export const Phase2LockModal = (props) => {
 	Phase2LockModal.propTypes = {
@@ -47,6 +111,8 @@ export const Phase2LockModal = (props) => {
 	const phase2position = usePhase2Position(props.p)
 	const [token0Amount, setToken0Amount] = useState('')
 	const [token0Value, setToken0Value] = useState('')
+	const [fromPhase1Pair, setFromPhase1Pair] = useState({})
+	const fromPhase1Value = useQuoteHalo(fromPhase1Pair.address)
 	const [doWithdrawal, setDoWithdrawal] = useState(false)
 
 	const aggregatedAccValue = useAggregatedAccValue()
@@ -80,6 +146,7 @@ export const Phase2LockModal = (props) => {
 	const extrasStyle = {
 		color: useColorModeValue('type.body.dark', 'type.body.light'),
 		p: '3px',
+		alignItems: 'center',
 	}
 
 	const ncButtonProps = {
@@ -104,9 +171,8 @@ export const Phase2LockModal = (props) => {
 				setWorking(true)
 				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
 				if (props.p.pair === 'HALO') {
-					depositFromPhase1(
-						token0Value,
-						wallet.account,
+					depositToPhase2(
+						fromPhase1Pair.address,
 						lockPeriodInDays,
 						provider,
 					)
@@ -209,16 +275,20 @@ export const Phase2LockModal = (props) => {
 	useEffect(() => {
 		if (props.p.pair) {
 			if (phase2position.data) {
-				if (phase2position.data?.[1]?.toNumber() === (0)) {
+				console.log(phase2position.data[1])
+				if (phase2position.data[1].toNumber() === 0) {
 					setLockPeriod(0)
 				}
-				if (phase2position.data?.[1]?.toNumber() === (4 || 1)) {
+				if (phase2position.data[1].toNumber() === 4 ||
+				phase2position.data[1].toNumber() === 1) {
 					setLockPeriod(0)
 				}
-				if (phase2position.data?.[1]?.toNumber() === (9 || 3)) {
+				if (phase2position.data[1].toNumber() === 9 ||
+				phase2position.data[1].toNumber() === 3) {
 					setLockPeriod(1)
 				}
-				if (phase2position.data?.[1]?.toNumber() === (19 || 7)) {
+				if (phase2position.data[1].toNumber() === 19 ||
+				phase2position.data[1].toNumber() === 7) {
 					setLockPeriod(2)
 				}
 			}
@@ -254,14 +324,106 @@ export const Phase2LockModal = (props) => {
 						<Box
 							p='3px 1.5rem 1.5rem'
 						>
-							{phase.which === 2 &&
+							{props.p.pair === 'HALO' &&
 								<>
 									<Box
 										as='h4'
 										textStyle='heading'
 									>
-										Amounts
+										Source pool
 									</Box>
+									<Flex
+										flexDir='column'
+										mt='5px'
+										mb='1.34rem'
+									>
+										<Menu>
+											<MenuButton
+												as={Button}
+												variant='solidAlt'
+												textAlign='left'
+												rightIcon={<ChevronDownIcon />}
+											>
+												{!fromPhase1Pair.pair &&
+													<>
+														Select pool
+													</>
+												}
+												{fromPhase1Pair &&
+													<>
+														<Flex
+															gap='0.24rem'
+														>
+															{fromPhase1Pair.token0 &&
+															<Image
+																src={`/svg/tokens/${fromPhase1Pair.token0}/index.svg`}
+																layerStyle='tokenIconSmall'
+															/>
+															}
+															{fromPhase1Pair.token1 &&
+															<Image
+																src={`/svg/tokens/${fromPhase1Pair.token1}/index.svg`}
+																layerStyle='tokenIconSmall'
+															/>
+															}
+															<Flex
+																ml='0.10rem'
+															>
+																{fromPhase1Pair.pair}
+															</Flex>
+														</Flex>
+													</>
+												}
+											</MenuButton>
+											<MenuList
+												minW='336px'
+											>
+												{defaults
+													?.lockdropPairs
+													?.filter(p => p.phase === 1)
+													.map(p => {
+														return <Phase1PoolItem
+															key={p.pair}
+															setFromPhase1Pair={setFromPhase1Pair}
+															p={p}
+														/>
+													})
+												}
+											</MenuList>
+										</Menu>
+									</Flex>
+								</>
+							}
+							<Box
+								as='h4'
+								mb={props.p.pair === 'HALO' ? '1rem' : ''}
+								textStyle='heading'
+							>
+								Amount
+								{props.p.pair === 'HALO' &&
+									<Flex
+										{...extrasStyle}
+									>
+										{!fromPhase1Value.data &&
+											<>
+												0
+											</>
+										}
+										{fromPhase1Value.data &&
+											<>
+												{prettifyNumber(ethers.utils.formatEther(fromPhase1Value.data), 0, 4, 'US')}
+											</>
+										}
+										<Image
+											src={`svg/tokens/${defaults.address.halo}/index.svg`}
+											ml='0.2rem'
+											layerStyle='tokenIcon'
+										/>
+									</Flex>
+								}
+							</Box>
+							{props.p.pair !== 'HALO' &&
+								<>
 									<Flex
 										flexDir='column'
 										flexWrap='wrap'
@@ -663,14 +825,13 @@ export const Phase2LockModal = (props) => {
 									isLoading={(token0Allowance?.data?.gt(0) &&
 										token0Allowance?.data?.gt(token0Value ? token0Value : 0)) ? working : false}
 									loadingText={ !doWithdrawal ? 'Depositing' : 'Withdrawing'}
-									disabled={!(
+									disabled={!(fromPhase1Pair) || (
 										token0Value &&
 										token0Amount) ||
 										(!(
-											(token0Value.gt(0)) &&
-											((!doWithdrawal) && (props.p.pair === 'HALO') && (aggregatedAccValue.total) && token0Value.lte(aggregatedAccValue.total)) ||
-											((!doWithdrawal) && (token0Balance?.data) && token0Value.lte(token0Balance?.data)) ||
-											((doWithdrawal) && (phase2position?.data) && token0Value.lte(phase2position?.data[2])) &&
+											((props.p.pair === 'HALO')) && (fromPhase1Pair) && (fromPhase1Value.data) && (fromPhase1Value.data.gt(0)) ||
+											((!doWithdrawal) && (token0Balance?.data) && (token0Value) && (token0Value.gt(0)) && token0Value.lte(token0Balance?.data)) ||
+											((doWithdrawal) && (phase2position?.data) && (token0Value) && (token0Value.gt(0)) && token0Value.lte(phase2position?.data[2])) &&
 											(token0Allowance?.data?.gt(0) &&
 												token0Allowance?.data?.gt(token0Value ? token0Value : 0)) &&
 											!(working)

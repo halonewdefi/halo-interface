@@ -3,7 +3,7 @@ module.exports = {
 	[
 		{
 			pair: 'USDC-ETH',
-			address: '0xF98f54D2f5CaE3b2CaC1C16E7B8eD74A3b5Fa580',
+			address: '0x1fE7C64E1b5f3121AbD33957B2944c5e525C5608',
 			token0: '0x0c49C62EA040676D34f3c1fb34bA0198d1d678a2',
 			token1: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
 			phase: 1,

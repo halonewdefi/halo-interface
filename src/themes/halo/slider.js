@@ -9,6 +9,7 @@ export default {
 			background: mode('#b3ac9e;', '#868686')(props),
 		},
 		thumb: {
+			zIndex: '0',
 			_focus: {
 				boxShadow: `0 0 0 3px ${mode('var(--chakra-colors-accent-dark-100)',
 					'var(--chakra-colors-accent-light-100)')(props)}`,

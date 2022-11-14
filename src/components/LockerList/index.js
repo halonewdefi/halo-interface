@@ -30,16 +30,6 @@ const Card = (props) => {
 	)
 	const phase2position = usePhase2Position(props.p)
 
-	const tokeIconStyleMain = {
-		h: 'auto',
-		w: '24px',
-	}
-
-	const tokeIconStyleAlt = {
-		h: 'auto',
-		w: '16px',
-	}
-
 	const valuStyle = {
 		display: 'flex',
 		flexDirection: 'row',
@@ -88,13 +78,13 @@ const Card = (props) => {
 					{props.p.token0 &&
 						<Image
 							src={`/svg/tokens/${props.p.token0}/index.svg`}
-							{...tokeIconStyleMain}
+							layerStyle='tokenIcon'
 						/>
 					}
 					{props.p.token1 &&
 						<Image
 							src={`/svg/tokens/${props.p.token1}/index.svg`}
-							{...tokeIconStyleMain}
+							layerStyle='tokenIcon'
 						/>
 					}
 				</Flex>
@@ -164,8 +154,9 @@ const Card = (props) => {
 									</>
 								}
 								<Image
-									{...tokeIconStyleAlt}
-									src={`svg/tokens/${defaults.address.halo}/index.svg`}/>
+									src={`svg/tokens/${defaults.address.halo}/index.svg`}
+									layerStyle='tokenIconSmall'
+								/>
 							</Skeleton>
 							<Box
 								style={descStyle}
@@ -196,7 +187,7 @@ const Card = (props) => {
 									}
 									<Image
 										src={`/svg/tokens/${props.p.token0}/index.svg`}
-										{...tokeIconStyleAlt}
+										layerStyle='tokenIconSmall'
 									/>
 								</Skeleton>
 								<Box
@@ -229,7 +220,7 @@ const Card = (props) => {
 									}
 									<Image
 										src={`/svg/tokens/${props.p.token1}/index.svg`}
-										{...tokeIconStyleAlt}
+										layerStyle='tokenIconSmall'
 									/>
 								</Skeleton>
 								<Box
@@ -263,7 +254,7 @@ const Card = (props) => {
 									}
 									<Image
 										src={`/svg/tokens/${props.p.token0}/index.svg`}
-										{...tokeIconStyleAlt}
+										layerStyle='tokenIconSmall'
 									/>
 								</Skeleton>
 								<Box

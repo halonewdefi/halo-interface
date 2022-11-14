@@ -70,22 +70,5 @@ const withdrawStable = async (amount, provider) => {
 	)
 }
 
-const depositFromPhase1 = async (
-	amount,
-	userAddress,
-	lockPeriodInDays,
-	provider) => {
-	const contract = new ethers.Contract(
-		defaults.address.phase2,
-		phase2abi,
-		provider.getSigner(0),
-	)
-	return await contract.depositFromPhase1(
-		amount,
-		userAddress,
-		lockPeriodInDays,
-	)
-}
-
 export { getEndTime, getStartTime, getAllocationForHalo, getAllocationForUSDC,
-	getPositions, depositStable, withdrawStable, depositFromPhase1 }
+	getPositions, depositStable, withdrawStable }
