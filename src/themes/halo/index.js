@@ -31,7 +31,7 @@ const overrides = {
 				fontSize: '1em',
 				fontWeight: 'normal',
 				color: mode('type.body.dark', 'type.body.light')(props),
-				bg: mode('bg.light', 'bg.dark')(props),
+				bg: mode('bg.light.100', 'bg.dark.100')(props),
 			},
 			'input::placeholder': {
 				color: '#000',

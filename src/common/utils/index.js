@@ -114,6 +114,8 @@ const isEthereumAddress = (string) => {
 	return regEx.test(string)
 }
 
+const isEven = (num) => num % 2 === 0
+
 const addUnknownTokenToList = (tokenList, newToken) => {
 	if (!newToken) {
 		return tokenList
@@ -198,5 +200,5 @@ export {
 	promiseAllProgress, searchFor, isEthereumAddress, addUnknownTokenToList, getCombinedTokenListFromSources,
 	getTokenByAddress, getStartOfTheDayTimeStamp,
 	calculateDifference, getDateFromSeconds, getDateFromTimestamp, openNewTabURL,
-	handleTokenInput,
+	handleTokenInput, isEven,
 }

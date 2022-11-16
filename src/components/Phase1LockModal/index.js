@@ -719,7 +719,7 @@ export const Phase1LockModal = (props) => {
 							>
 								<Flex
 									layerStyle='tokenAmountDepositedRow'
-									background={colorMode === 'light' ? '#eddcbc' : '#212121'}
+									background={colorMode === 'light' ? 'bg.light.200' : 'bg.dark.200'}
 								>
 									<Flex>
 										<Image

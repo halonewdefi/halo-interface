@@ -29,7 +29,7 @@ export const Header = (props) => {
 			pos={{ base: 'fixed', md: 'initial' }}
 			borderTop={{ base: useColorModeValue('1px solid var(--chakra-colors-stroke-dark)',
 				'1px solid var(--chakra-colors-stroke-light)'), md: '0' }}
-			background={{ base: useColorModeValue('bg.light', 'bg.dark'), md: 'transparent' }}
+			background={{ base: useColorModeValue('bg.light.100', 'bg.dark.100'), md: 'transparent' }}
 			bottom='0'
 			zIndex='9'
 			{...props}>

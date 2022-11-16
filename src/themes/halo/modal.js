@@ -8,7 +8,7 @@ export default {
 		},
 		dialog: {
 			padding: '8px 0 0',
-			background: mode('bg.light', 'bg.dark')(props),
+			background: mode('bg.light.100', 'bg.dark.100')(props),
 			border: mode('0', '1px solid #5d5d5e33')(props),
 			color: mode('type.body.dark', 'type.body.light')(props),
 			margin: 0,

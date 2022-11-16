@@ -1,7 +1,13 @@
 export default {
 	bg: {
-		light: '#FFEDCB',
-		dark: '#161616',
+		light: {
+			100: '#FFEDCB',
+			200: '#eddcbc',
+		},
+		dark: {
+			100: '#161616',
+			200: '#212121',
+		},
 	},
 	baseBg: {
 		light: '#fff5e3',

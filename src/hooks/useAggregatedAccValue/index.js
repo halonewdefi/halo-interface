@@ -14,7 +14,7 @@ export const useAggregatedAccValue = (
 	const balance = useERC20Balance(defaults.address.halo, undefined, staleTime, refetchInterval)
 	const [phase1Total, setPhase1Total] = useState(BigNumber.from('0'))
 	const [aggregated, setAggregated] = useState(BigNumber.from('0'))
-	const [working, setWorking] = useState(true)
+	const [isLoading, setIsLoading] = useState(true)
 
 	const phase1 = {
 		usdcEth: useQuoteHalo(defaults.address.uniswapV2Pairs.usdcEth, address, staleTime, refetchInterval),
@@ -26,7 +26,7 @@ export const useAggregatedAccValue = (
 
 	useEffect(() => {
 		if (!wallet.account) {
-			setWorking(true)
+			setIsLoading(true)
 			setPhase1Total(BigNumber.from('0'))
 			setAggregated(BigNumber.from('0'))
 		}
@@ -72,7 +72,7 @@ export const useAggregatedAccValue = (
 						}
 					}
 				}, BigNumber.from('0')))
-			setWorking(false)
+			setIsLoading(false)
 		}
 	}, [
 		phase1.usdcEth.data,
@@ -92,7 +92,8 @@ export const useAggregatedAccValue = (
 
 	return {
 		total: aggregated,
+		phase1Total: phase1Total,
 		refetch: refetch,
-		working: working,
+		isLoading: isLoading,
 	}
 }

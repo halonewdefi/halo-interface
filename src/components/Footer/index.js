@@ -33,6 +33,7 @@ export const Footer = (props) => {
 						gap='.5rem'
 					>
 						<Link
+							display='inline-flex'
 							href={defaults.external.media.discord}
 							isExternal>
 							<Icon
@@ -42,6 +43,7 @@ export const Footer = (props) => {
 						</Link>
 
 						<Link
+							display='inline-flex'
 							href={defaults.external.media.twitter}
 							isExternal>
 							<Icon
@@ -51,6 +53,7 @@ export const Footer = (props) => {
 						</Link>
 
 						<Link
+							display='inline-flex'
 							href={defaults.external.media.medium}
 							isExternal>
 							<Icon
@@ -60,6 +63,7 @@ export const Footer = (props) => {
 						</Link>
 
 						<Link
+							display='inline-flex'
 							href={defaults.external.media.telegram}
 							isExternal>
 							<Icon
@@ -68,7 +72,9 @@ export const Footer = (props) => {
 							/>
 						</Link>
 					</Flex>
-					<Flex>
+					<Flex
+						alignItems='center'
+					>
 							© {(new Date).getFullYear()} Haloswap
 					</Flex>
 				</Flex>

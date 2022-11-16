@@ -9,12 +9,14 @@ import {
 	tokenSymbol,
 	tokenIcon,
 	tokenIconSmall,
+	tokenIconLarge,
 } from '../../components'
 
 export default {
 	tokenImage,
 	tokenIcon,
 	tokenIconSmall,
+	tokenIconLarge,
 	hr,
 	box,
 	card,
