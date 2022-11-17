@@ -275,7 +275,6 @@ export const Phase2LockModal = (props) => {
 	useEffect(() => {
 		if (props.p.pair) {
 			if (phase2position.data) {
-				console.log(phase2position.data[1])
 				if (phase2position.data[1].toNumber() === 0) {
 					setLockPeriod(0)
 				}
@@ -304,6 +303,12 @@ export const Phase2LockModal = (props) => {
 		}
 	}, [
 		props.p,
+	])
+
+	useEffect(() => {
+		return () => setFromPhase1Pair({})
+	},	[
+		wallet.account,
 	])
 
 	return (
@@ -342,6 +347,8 @@ export const Phase2LockModal = (props) => {
 												as={Button}
 												variant='solidAlt'
 												textAlign='left'
+												disabled={(!wallet.account) ||
+													(aggregatedAccValue?.phase1Total?.eq(0))}
 												rightIcon={<ChevronDownIcon />}
 											>
 												{!fromPhase1Pair.pair &&
@@ -355,16 +362,16 @@ export const Phase2LockModal = (props) => {
 															gap='0.24rem'
 														>
 															{fromPhase1Pair.token0 &&
-															<Image
-																src={`/svg/tokens/${fromPhase1Pair.token0}/index.svg`}
-																layerStyle='tokenIconSmall'
-															/>
+																<Image
+																	src={`/svg/tokens/${fromPhase1Pair.token0}/index.svg`}
+																	layerStyle='tokenIconSmall'
+																/>
 															}
 															{fromPhase1Pair.token1 &&
-															<Image
-																src={`/svg/tokens/${fromPhase1Pair.token1}/index.svg`}
-																layerStyle='tokenIconSmall'
-															/>
+																<Image
+																	src={`/svg/tokens/${fromPhase1Pair.token1}/index.svg`}
+																	layerStyle='tokenIconSmall'
+																/>
 															}
 															<Flex
 																ml='0.10rem'

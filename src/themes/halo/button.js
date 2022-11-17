@@ -27,6 +27,10 @@ export default {
 					'accent.dark.50')(props),
 				color: mode('type.body.dark',
 					'type.body.light')(props),
+				_disabled: {
+					background: mode('#eeeeee8f',
+						'whiteAlpha.200')(props),
+				},
 			},
 			_active: {
 				background: mode('accent.light.50',
@@ -49,6 +53,10 @@ export default {
 					'#d2d7dd0d')(props),
 				color: mode('type.body.dark',
 					'type.body.light')(props),
+				_disabled: {
+					background: mode('#eeeeee8f',
+						'whiteAlpha.200')(props),
+				},
 			},
 			_active: {
 				background: mode('#fff5e1',
