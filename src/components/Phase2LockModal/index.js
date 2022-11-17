@@ -35,7 +35,7 @@ import { useWallet } from 'use-wallet'
 import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber, depositToPhase2 } from '../../common'
 import { depositStable, withdrawStable } from '../../common/phase2'
 import { useUnknownERC20Resolve, useERC20Allowance, useERC20Balance,
-	useAggregatedAccValue, usePhase, usePhase2Position, useQuoteHalo } from '../../hooks'
+	useAggregatedAccValue, usePhase, usePhase2Position, useQuoteHalo, useHaloPrice } from '../../hooks'
 
 const Phase1PoolItem = (props) => {
 
@@ -106,6 +106,7 @@ export const Phase2LockModal = (props) => {
 	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
 	const token0Allowance = useERC20Allowance(props.p.token0, defaults.address.phase2)
 	const token0Balance = useERC20Balance(props.p.token0)
+	const haloPrice = useHaloPrice()
 
 	const phase = usePhase()
 	const phase2position = usePhase2Position(props.p)
@@ -204,6 +205,8 @@ export const Phase2LockModal = (props) => {
 								setWorking(false)
 								phase2position.refetch()
 								token0Balance.refetch()
+								haloPrice.refetch()
+								haloPrice.usdcDeposited.refetch()
 								aggregatedAccValue.refetch()
 							})
 						})
@@ -238,6 +241,8 @@ export const Phase2LockModal = (props) => {
 							setWorking(false)
 							phase2position.refetch()
 							token0Balance.refetch()
+							haloPrice.refetch()
+							haloPrice.usdcDeposited.refetch()
 							aggregatedAccValue.refetch()
 						})
 					})
@@ -832,7 +837,8 @@ export const Phase2LockModal = (props) => {
 									isLoading={(token0Allowance?.data?.gt(0) &&
 										token0Allowance?.data?.gt(token0Value ? token0Value : 0)) ? working : false}
 									loadingText={ !doWithdrawal ? 'Depositing' : 'Withdrawing'}
-									disabled={!(fromPhase1Pair) || (
+									disabled={!(fromPhase1Pair) || ((
+										!fromPhase1Pair &&
 										token0Value &&
 										token0Amount) ||
 										(!(
@@ -842,7 +848,7 @@ export const Phase2LockModal = (props) => {
 											(token0Allowance?.data?.gt(0) &&
 												token0Allowance?.data?.gt(token0Value ? token0Value : 0)) &&
 											!(working)
-										))
+										)))
 									}
 									onClick={() => {
 										if (!doWithdrawal) {
@@ -853,7 +859,7 @@ export const Phase2LockModal = (props) => {
 										}
 									}}
 								>
-									{`${doWithdrawal ? 'Withdraw' : 'Deposit' } assets`}
+									{`${doWithdrawal ? 'Withdraw' : 'Deposit' } asset`}
 								</Button>
 							}
 						</Box>

@@ -4,7 +4,7 @@ import { Flex, Box, Image, Skeleton } from '@chakra-ui/react'
 import { defaults, prettifyNumber } from '../../common'
 import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balance,
 	useUniV2Liquidity, useUnknownERC20Resolve, usePhase, useAllocationForHalo,
-	useAllocationForUSDC, usePhase2Position } from '../../hooks'
+	useAllocationForUSDC, usePhase2Position, useHaloPrice } from '../../hooks'
 import { utils } from 'ethers'
 import { Phase1LockModal, Phase2LockModal } from '../../components'
 
@@ -20,7 +20,9 @@ const Card = (props) => {
 	const allocationForUSDC = useAllocationForUSDC()
 	const t = useUniLPTokenPrice(props.p.address)
 	const { data: p } = useUniEthPrice()
-	const { data: b } = useERC20Balance(props.p.address, defaults.address.phase1)
+	const { data: bP1 } = useERC20Balance(props.p.address, defaults.address.phase1)
+	const { data: bP2 } = useERC20Balance(props.p.token0, defaults.address.phase2)
+	const { usdcDeposited: usdcDeposited } = useHaloPrice()
 	const [tvl, setTvl] = useState('loading')
 
 	const token0Resolved = useUnknownERC20Resolve(props.p.token0)
@@ -29,6 +31,7 @@ const Card = (props) => {
 		props.p.address,
 	)
 	const phase2position = usePhase2Position(props.p)
+	const haloPrice = useHaloPrice()
 
 	const valuStyle = {
 		display: 'flex',
@@ -44,15 +47,53 @@ const Card = (props) => {
 	}
 
 	useEffect(() => {
-		if (t && p && b) {
-			setTvl(
-				Number(utils.formatUnits(b, 18)) *
-				(Number(utils.formatEther(t)) *
-				Number(p.pairs?.[0]?.token0Price)),
-			)
+		if (t && p && bP1) {
+			if (props.p.phase === 1) {
+				setTvl(
+					Number(utils.formatUnits(bP1, 18)) *
+					(Number(utils.formatEther(t)) *
+					Number(p.pairs?.[0]?.token0Price)),
+				)
+			}
+			return () => setTvl('loading')
 		}
-		return () => setTvl('loading')
-	}, [t, p, b])
+	}, [t, p, bP1])
+
+	useEffect(() => {
+		if (haloPrice.data &&
+			bP2) {
+			if (props.p.phase === 2 &&
+				props.p.pair === 'HALO') {
+				setTvl(
+					utils.formatEther(bP2) *
+					haloPrice.data,
+				)
+			}
+		}
+	}, [
+		bP2,
+		haloPrice.data,
+	])
+
+	useEffect(() => {
+		if (usdcDeposited.data &&
+			token0Resolved.data) {
+			if (props.p.phase === 2 &&
+				props.p.pair !== 'HALO') {
+				setTvl(
+					Number(
+						utils.formatUnits(
+							usdcDeposited.data,
+							token0Resolved.data.decimals,
+						),
+					),
+				)
+			}
+		}
+	}, [
+		usdcDeposited.data,
+		token0Resolved.data,
+	])
 
 	return (
 		<Flex

@@ -70,5 +70,42 @@ const withdrawStable = async (amount, provider) => {
 	)
 }
 
+const getHaloDeposited = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase2,
+		phase2abi,
+		defaults.network.provider,
+	)
+	return await contract.haloDeposited()
+}
+
+const getUsdcDeposited = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase2,
+		phase2abi,
+		defaults.network.provider,
+	)
+	return await contract.usdcDeposited()
+}
+
+const getUsdcPerHalo = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase2,
+		phase2abi,
+		defaults.network.provider,
+	)
+	return await contract.usdcPerHalo()
+}
+
+const getUsdc = async () => {
+	const contract = new ethers.Contract(
+		defaults.address.phase2,
+		phase2abi,
+		defaults.network.provider,
+	)
+	return await contract.usdc()
+}
+
 export { getEndTime, getStartTime, getAllocationForHalo, getAllocationForUSDC,
-	getPositions, depositStable, withdrawStable }
+	getPositions, depositStable, withdrawStable, getUsdcDeposited,
+	getHaloDeposited, getUsdcPerHalo, getUsdc }
