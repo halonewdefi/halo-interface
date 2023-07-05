@@ -21,7 +21,7 @@ export const Logomark = (props) => {
 					<Image
 						style={{ maxHeight: height }}
 						src={primary}
-						alt='Haloswap logomark'
+						alt='Halo DeFi Official Logomark'
 						{...props}
 					/>
 				</Link>

@@ -75,7 +75,7 @@ export const Footer = (props) => {
 					<Flex
 						alignItems='center'
 					>
-							© {(new Date).getFullYear()} Haloswap
+							© {(new Date).getFullYear()} Halo DeFi
 					</Flex>
 				</Flex>
 			</Flex>,

@@ -50,7 +50,7 @@ defaults.network.connectors = {
 				`http://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_ALCHEMY_KEY}` :
 				undefined
 		),
-		appName: 'HaloSwap',
+		appName: 'Halo DeFi',
 		appLogoUrl: 'https://raw.githubusercontent.com/halonewdefi/halo-branding/main/' +
 			'logo-main.svg',
 		meta: {

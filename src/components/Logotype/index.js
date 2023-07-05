@@ -23,7 +23,7 @@ export const Logotype = (props) => {
 				<Image
 					style={{ maxHeight: height }}
 					src={primary}
-					alt='Haloswap logotype'
+					alt='Halo DeFi Official Logotype'
 					{...props}
 				/>
 			</Link>
@@ -35,7 +35,7 @@ export const Logotype = (props) => {
 					mt='7px'
 					color={color}
 				>
-					HALO<br/>SWAP
+					HALO<br/>DEFI
 				</Flex>
 			</Link>
 		</Flex>
