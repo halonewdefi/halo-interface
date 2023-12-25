@@ -80,15 +80,15 @@ export const AccountOverview = (props) => {
 			value: balance.data,
 		},
 		{
+			name: 'Total Bought Phase 0',
+			value: BigNumber.from(0),
+		},
+		{
 			name: 'Total Reward Phase 1',
 			value: accountValue.phase1Total,
 		},
 		{
 			name: 'Total Reward Phase 2',
-			value: BigNumber.from(0),
-		},
-		{
-			name: 'Total Reward Phase 3',
 			value: BigNumber.from(0),
 		},
 	]
@@ -224,9 +224,9 @@ export const AccountOverview = (props) => {
 					>
 						{data
 							.filter((n, i) => {
+								if (phase.which === 0) return i <= 0
 								if (phase.which === 1) return i <= 1
 								if (phase.which === 2) return i <= 2
-								if (phase.which === 3) return i <= 3
 							})
 							.sort((a, b) => {
 								if (a.value && b.value) {

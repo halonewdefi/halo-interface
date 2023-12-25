@@ -2,6 +2,11 @@ module.exports = {
 	goerli:
 	[
 		{
+			pair: 'HALO',
+			token0: '0x25A292B95a68D7a74ac803eA51Be17A78f68d001',
+			phase: 0,
+		},
+		{
 			pair: 'USDC-ETH',
 			address: '0x1fE7C64E1b5f3121AbD33957B2944c5e525C5608',
 			token0: '0x0c49C62EA040676D34f3c1fb34bA0198d1d678a2',

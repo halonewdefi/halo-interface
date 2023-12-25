@@ -6,7 +6,7 @@ import { usePhase1allocation, useUniEthPrice, useUniLPTokenPrice, useERC20Balanc
 	useUniV2Liquidity, useUnknownERC20Resolve, usePhase, useAllocationForHalo,
 	useAllocationForUSDC, usePhase2Position, useHaloPrice } from '../../hooks'
 import { utils } from 'ethers'
-import { Phase1LockModal, Phase2LockModal } from '../../components'
+import { Phase0SaleModal, Phase1LockModal, Phase2LockModal } from '../../components'
 
 const Card = (props) => {
 
@@ -314,18 +314,21 @@ const Card = (props) => {
 
 export const LockerList = (props) => {
 
+	const [phase0SaleModalOpen, setPhase0SaleModalOpen] = useState(false)
 	const [phase1LockModalOpen, setPhase1LockModalOpen] = useState(false)
 	const [phase2LockModalOpen, setPhase2LockModalOpen] = useState(false)
 	const [pair, setPair] = useState({})
 	const phase = usePhase()
 
 	const openLockModal = (p) => {
+		if (p.phase === 0) setPhase0SaleModalOpen(true)
 		if (p.phase === 1) setPhase1LockModalOpen(true)
 		if (p.phase === 2) setPhase2LockModalOpen(true)
 		setPair(p)
 	}
 
 	const closeLockModal = () => {
+		setPhase0SaleModalOpen(false)
 		setPhase1LockModalOpen(false)
 		setPhase2LockModalOpen(false)
 		setPair({})
@@ -357,22 +360,35 @@ export const LockerList = (props) => {
 							/>)
 						}
 					</Flex>
-					<Phase1LockModal
-						p={pair}
-						isOpen={phase1LockModalOpen}
-						onClose={() => closeLockModal()}
-					/>
 				</>
 			}
-			<Box as='h2'>Lockdrop Phase 1</Box>
-			<Box as='div' textStyle='subheading'>Earn for bootstraping initial liquidity.</Box>
+			{phase.which > 0 &&
+				<>
+					<Box as='h2'>Lockdrop Phase 1</Box>
+					<Box as='div' textStyle='subheading'>Earn for bootstraping initial liquidity.</Box>
+					<Flex
+						{...rowStyle}
+						{...props}>
+						{defaults
+							?.lockdropPairs
+							?.filter(p => p.phase === 1)
+							.map(p => <Card
+								p={p}
+								key={p.pair}
+								deposit={openLockModal}
+							/>)
+						}
+					</Flex>
+				</>
+			}
+			<Box as='h2'>Pre-sale Phase 0</Box>
+			<Box as='div' textStyle='subheading'>Take little risk to get high rewards.</Box>
 			<Flex
 				{...rowStyle}
-				mb='0'
 				{...props}>
 				{defaults
 					?.lockdropPairs
-					?.filter(p => p.phase === 1)
+					?.filter(p => p.phase === 0)
 					.map(p => <Card
 						p={p}
 						key={p.pair}
@@ -380,14 +396,19 @@ export const LockerList = (props) => {
 					/>)
 				}
 			</Flex>
-			<Phase2LockModal
+			<Phase0SaleModal
 				p={pair}
-				isOpen={phase2LockModalOpen}
+				isOpen={phase0SaleModalOpen}
 				onClose={() => closeLockModal()}
 			/>
 			<Phase1LockModal
 				p={pair}
 				isOpen={phase1LockModalOpen}
+				onClose={() => closeLockModal()}
+			/>
+			<Phase2LockModal
+				p={pair}
+				isOpen={phase2LockModalOpen}
 				onClose={() => closeLockModal()}
 			/>
 		</>
