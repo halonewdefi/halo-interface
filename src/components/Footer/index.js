@@ -1,5 +1,5 @@
 import React from 'react'
-import { useBreakpointValue, Flex, Link, Icon } from '@chakra-ui/react'
+import { useBreakpointValue, Flex, Link, Icon, textDecoration } from '@chakra-ui/react'
 import { RiDiscordFill, AiFillTwitterCircle, FaTelegramPlane, BsMedium } from 'react-icons/all'
 import { Divider } from '../Divider'
 import { defaults } from '../../common'
@@ -75,7 +75,12 @@ export const Footer = (props) => {
 					<Flex
 						alignItems='center'
 					>
-							© {(new Date).getFullYear()} Halo DeFi
+							© {(new Date).getFullYear()} by &nbsp;
+						<Link display='inline-flex'
+							href={defaults.external.media.twitterYlw}
+							textDecoration={'underline'}
+							textDecorationColor={'var(--chakra-colors-accent-dark-100)'}
+							isExternal>yellowgh0st</Link>
 					</Flex>
 				</Flex>
 			</Flex>,

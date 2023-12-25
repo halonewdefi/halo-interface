@@ -184,6 +184,7 @@ defaults.tooltip.delay = 800
 
 defaults.external = {}
 defaults.external.media = {}
+defaults.external.media.twitterYlw = 'https://x.com/ylwghst'
 defaults.external.media.twitter = '#'
 defaults.external.media.discord = '#'
 defaults.external.media.telegram = '#'
