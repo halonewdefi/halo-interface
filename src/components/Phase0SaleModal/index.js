@@ -54,7 +54,6 @@ export const Phase0SaleModal = (props) => {
 	const [token0Value, setToken0Value] = useState('')
 	const [token1Amount, setToken1Amount] = useState('')
 	const [token1Value, setToken1Value] = useState('')
-	const [doWithdrawal, setDoWithdrawal] = useState(false)
 
 	const aggregatedAccValue = useAggregatedAccValue()
 
@@ -73,15 +72,9 @@ export const Phase0SaleModal = (props) => {
 		props.p.address,
 	)
 
-	const [lockPeriod, setLockPeriod] = useState(0)
+	const [ogLevel, setOgLevel] = useState(0)
 	const [lockPeriodInDays, setLockPeriodInDays] = useState(7776000)
-	const [multiplier, setMultiplier] = useState(4)
-	const preQuoteHalo = usePreQuoteHalo(
-		uniV2LPTokenQuantity.lpTokenQuantity,
-		multiplier,
-		props.p.address,
-		doWithdrawal,
-	)
+	const [ratio, setRatio] = useState(ethers.utils.parseEther('0.003'))
 	const [working, setWorking] = useState(false)
 	const wallet = useWallet()
 	const { colorMode } = useColorMode()
@@ -121,8 +114,8 @@ export const Phase0SaleModal = (props) => {
 		ml: '-3.5',
 		fontSize: 'sm',
 		textAlign: 'center',
-		cursor: (!doWithdrawal && phase.which === 1) ? 'pointer' : '',
-		pointerEvents: (!doWithdrawal && phase.which === 1) ? 'all !important' : '',
+		cursor: (phase.which === 0) ? 'pointer' : '',
+		pointerEvents: (phase.which === 0) ? 'all !important' : '',
 	}
 
 	useEffect(() => {
@@ -158,32 +151,32 @@ export const Phase0SaleModal = (props) => {
 
 	useEffect(() => {
 		if(props.p.pair) {
-			if (lockPeriod === 0) {
+			if (ogLevel === 0) {
 				setLockPeriodInDays(7776000)
-				setMultiplier(4)
+				setRatio(0.003)
 			}
-			if (lockPeriod === 1) {
+			if (ogLevel === 1) {
 				setLockPeriodInDays(15552000)
-				setMultiplier(9)
+				setRatio(0.0025)
 			}
-			if (lockPeriod === 2) {
+			if (ogLevel === 2) {
 				setLockPeriodInDays(31536000)
-				setMultiplier(19)
+				setRatio(0.002)
 			}
 		}
-	}, [lockPeriod])
+	}, [])
 
 	useEffect(() => {
 		if (props.p.pair) {
 			if (phase1position.data) {
 				if (phase1position.data?.[1]?.toNumber() <= 4) {
-					setLockPeriod(0)
+					setOgLevel(0)
 				}
 				if (phase1position.data?.[1]?.toNumber() === 9) {
-					setLockPeriod(1)
+					setOgLevel(1)
 				}
 				if (phase1position.data?.[1]?.toNumber() === 19) {
-					setLockPeriod(2)
+					setOgLevel(2)
 				}
 			}
 		}
@@ -306,20 +299,20 @@ export const Phase0SaleModal = (props) => {
 								padding='0px 18px 1.5px'
 								marginBottom='3.5rem'
 								opacity='1'
-								cursor={(!doWithdrawal && phase.which === 0) ? 'pointer' : 'not-allowed'}
+								cursor={(phase.which === 0) ? 'pointer' : 'not-allowed'}
 							>
 								<Slider
 									defaultValue={0}
 									min={0}
 									max={2}
-									disabled={(!doWithdrawal && phase.which === 0 ? false : true)}
+									disabled={(phase.which === 0 ? false : true)}
 									_disabled={{
 										pointerEvents: 'none',
 										opacity: '1',
 									}}
 									step={1}
-									value={lockPeriod}
-									onChange={(n) => setLockPeriod(n)}
+									value={ratio}
+									onChange={(n) => setOgLevel(n)}
 								>
 									<Box
 										mt='15px'
@@ -327,26 +320,23 @@ export const Phase0SaleModal = (props) => {
 									>
 										<SliderMark
 											value={0}
-											opacity={(!doWithdrawal && phase.which === 0) ? '' :
-												(lockPeriod === 0) ? '1' : '0.6'}
-											onClick={() => { if (!doWithdrawal) { setLockPeriod(0) }}}
+											opacity={(phase.which === 0) ? '1' : '0.6'}
+											onClick={() => { setOgLevel(0) }}
 											{...markLabelStyle}>
 											Level<br/>1
 										</SliderMark>
 										<SliderMark
 											value={1}
-											opacity={(!doWithdrawal && phase.which === 1) ? '' :
-												(lockPeriod === 1) ? '1' : '0.6'}
-											onClick={() => { if (!doWithdrawal) { setLockPeriod(1) }}}
+											opacity={(phase.which === 1) ? '1' : '0.6'}
+											onClick={() => { setOgLevel(1) }}
 											{...markLabelStyle}
 										>
 											Level<br/>2
 										</SliderMark>
 										<SliderMark
 											value={2}
-											opacity={(!doWithdrawal && phase.which === 1) ? '' :
-												(lockPeriod === 2) ? '1' : '0.6'}
-											onClick={() => { if (!doWithdrawal) { setLockPeriod(2) }}}
+											opacity={(phase.which === 1) ? '1' : '0.6'}
+											onClick={() => { setOgLevel(2) }}
 											{...markLabelStyle}
 										>
 											Level<br/>3
@@ -373,7 +363,7 @@ export const Phase0SaleModal = (props) => {
 										{...extrasStyle}
 									>
 										<>
-											{prettifyCurrency(1.25, 0, 4, 'USD')}
+											{prettifyCurrency(0.0003, 0, 4, 'ETH')}
 										</>
 									</Flex>
 								</Box>
@@ -386,7 +376,7 @@ export const Phase0SaleModal = (props) => {
 									<Flex
 										{...extrasStyle}
 									>
-										{`${multiplier}x`}
+
 									</Flex>
 								</Box>
 							</Flex>
@@ -538,34 +528,9 @@ export const Phase0SaleModal = (props) => {
 							{phase.which === 0 &&
 								<Button
 									w='100%'
-									isLoading={(token0Allowance?.data?.gt(0) &&
-										token0Allowance?.data?.gt(token0Value ? token0Value : 0)) ||
-										(token1Allowance?.data?.gt(0) &&
-										token1Allowance?.data?.gt(token1Value ? token1Value : 0)) ? working : false}
-									loadingText={ !doWithdrawal ? 'Depositing' : 'Withdrawing'}
-									disabled={!(uniV2TokenQuantity.token0Quantity &&
-										uniV2TokenQuantity.token1Quantity &&
-										uniV2LPTokenQuantity.lpTokenQuantity &&
-										token1Balance.data &&
-										token1Balance.data &&
-										lpTokenBalance.data &&
-										token0Value &&
-										token1Value &&
-										token0Amount &&
-										token1Amount) ||
-										(!(uniV2TokenQuantity.token0Quantity?.gt(0) &&
-										uniV2TokenQuantity.token1Quantity?.gt(0) &&
-										uniV2LPTokenQuantity.lpTokenQuantity.gt(0) &&
-										(token0Value?.lte(token0Balance.data) &&
-										token1Value.lte(token1Balance.data)) ||
-										(uniV2LPTokenQuantity.lpTokenQuantity.lte(lpTokenBalance.data)) &&
-									(token0Allowance?.data?.gt(0) &&
-										token0Allowance?.data?.gt(token0Value)) &&
-									(token1Allowance?.data?.gt(0) &&
-										token1Allowance?.data?.gt(token1Value)) &&
-									!(working)))}
+									loadingText={ 'Acquiring tokens'}
 								>
-									{`${doWithdrawal ? 'Withdraw' : 'Deposit' } assets`}
+									{'Acquire tokens'}
 								</Button>
 							}
 						</Box>
