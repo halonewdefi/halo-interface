@@ -18,6 +18,7 @@ const Card = (props) => {
 	const allocation = usePhase1allocation()
 	const allocationForHalo = useAllocationForHalo()
 	const allocationForUSDC = useAllocationForUSDC()
+	const phase = usePhase()
 	const t = useUniLPTokenPrice(props.p.address)
 	const { data: p } = useUniEthPrice()
 	const { data: bP1 } = useERC20Balance(props.p.address, defaults.address.phase1)
@@ -155,7 +156,16 @@ const Card = (props) => {
 							<Box
 								style={descStyle}
 							>
-								TVL
+								{phase.which === 0 &&
+									<>
+										Remaining
+									</>
+								}
+								{phase.which > 0 &&
+									<>
+										TVL
+									</>
+								}
 							</Box>
 						</>
 					</Flex>

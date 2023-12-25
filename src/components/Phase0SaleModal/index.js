@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react'
 import { ethers } from 'ethers'
 import { useWallet } from 'use-wallet'
-import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber } from '../../common'
+import { defaults, handleTokenInput, approveERC20ToSpend, prettifyNumber, prettifyCurrency } from '../../common'
 import { deposit, withdraw } from '../../common/phase1'
 import { useUnknownERC20Resolve, useERC20Allowance, useUniV2TokenQuantity, useERC20Balance,
 	useUniV2LPTokenQuantity, usePreQuoteHalo, usePhase1Position, useAggregatedAccValue, usePhase, useUniV2Liquidity } from '../../hooks'
@@ -125,84 +125,6 @@ export const Phase0SaleModal = (props) => {
 		pointerEvents: (!doWithdrawal && phase.which === 1) ? 'all !important' : '',
 	}
 
-	const lock = () => {
-		try {
-			if (
-				(uniV2TokenQuantity.token0Quantity?.gt(0) && uniV2TokenQuantity.token1Quantity?.gt(0)) &&
-				(token0Balance.data?.gte(uniV2TokenQuantity.token0Quantity)) &&
-				(token1Balance.data?.gte(uniV2TokenQuantity.token1Quantity)) &&
-				!(working)
-			) {
-				setWorking(true)
-				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-				deposit(
-					props.p.address,
-					uniV2TokenQuantity.token0Quantity,
-					uniV2TokenQuantity.token1Quantity,
-					lockPeriodInDays,
-					provider,
-				)
-					.then((tx) => {
-						tx.wait(
-							defaults.network.tx.confirmations,
-						).then(() => {
-							setWorking(false)
-							if (phase.which === 1) phase1position.refetch()
-							preQuoteHalo.refetchTotalWeightOfLockedPositions()
-							token0Balance.refetch()
-							token1Balance.refetch()
-							aggregatedAccValue.refetch()
-						})
-					})
-					.catch(error => {
-						setWorking(false)
-						console.log(error)
-					})
-			}
-		}
-		catch (error) {
-			console.log(error)
-		}
-	}
-
-	const withdrawal = () => {
-		try {
-			if (
-				(doWithdrawal) &&
-				(uniV2LPTokenQuantity.lpTokenQuantity) &&
-				(phase1position?.data[2].gte(uniV2LPTokenQuantity.lpTokenQuantity)) &&
-				!(working)
-			) {
-				setWorking(true)
-				const provider = new ethers.providers.Web3Provider(wallet.ethereum)
-				withdraw(
-					props.p.address,
-					uniV2LPTokenQuantity.lpTokenQuantity,
-					provider,
-				)
-					.then((tx) => {
-						tx.wait(
-							defaults.network.tx.confirmations,
-						).then(() => {
-							setWorking(false)
-							if (phase.which === 1) phase1position.refetch()
-							preQuoteHalo.refetchTotalWeightOfLockedPositions()
-							token0Balance.refetch()
-							token1Balance.refetch()
-							aggregatedAccValue.refetch()
-						})
-					})
-					.catch(error => {
-						setWorking(false)
-						console.log(error)
-					})
-			}
-		}
-		catch (error) {
-			console.log(error)
-		}
-	}
-
 	useEffect(() => {
 		if (
 			uniV2TokenQuantity.token0Quantity &&
@@ -298,13 +220,13 @@ export const Phase0SaleModal = (props) => {
 						<Box
 							p='3px 1.5rem 1.5rem'
 						>
-							{phase.which === 1 &&
+							{phase.which === 0 &&
 								<>
 									<Box
 										as='h4'
 										textStyle='heading'
 									>
-										Amounts
+										Amount
 									</Box>
 									<Flex
 										flexDir='column'
@@ -343,228 +265,10 @@ export const Phase0SaleModal = (props) => {
 												}
 											</InputRightElement>
 										</InputGroup>
-										<Flex
-											layerStyle='ncGroup'
-										>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken0Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(25) :
-																	token0Balance?.data?.div(100).mul(25),
-																token0Resolved?.data?.decimals,
-															),
-														)
-														setToken0Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(25) :
-																token0Balance?.data?.div(100).mul(25),
-														)
-													}
-												}}
-											>25%</Button>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken0Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(50) :
-																	token0Balance?.data?.div(100).mul(50),
-																token0Resolved?.data?.decimals,
-															),
-														)
-														setToken0Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(50) :
-																token0Balance?.data?.div(100).mul(50),
-														)
-													}
-												}}
-											>50%</Button>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken0Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(75) :
-																	token0Balance?.data?.div(100).mul(75),
-																token0Resolved?.data?.decimals,
-															),
-														)
-														setToken0Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0.div(100).mul(75) :
-																token0Balance?.data?.div(100).mul(75),
-														)
-													}
-												}}
-											>75%</Button>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken0Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0 :
-																	token0Balance?.data,
-																token0Resolved?.data?.decimals,
-															),
-														)
-														setToken0Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token0 :
-																token0Balance?.data,
-														)
-													}
-												}}
-											>Max</Button>
-										</Flex>
-
-										<InputGroup {...groupStyle}>
-											<Input
-												{...inputStyle}
-												value={token1Amount}
-												onChange={(e) => {
-													uniV2TokenQuantity.setVsync(false)
-													handleTokenInput(
-														setToken1Amount,
-														setToken1Value,
-														e,
-														token1Resolved,
-													)
-												}}
-											/>
-											<InputRightElement {...rightElementStyle}>
-												{(token1Resolved?.isLoading || uniV2Liquidity?.isLoading) &&
-											<Spinner />
-												}
-												{(!token1Resolved?.isLoading && !uniV2Liquidity?.isLoading) &&
-											<>
-												<Image
-													layerStyle='tokenImage'
-													src={token1Resolved?.data?.logoURI}
-												/>
-												<Box layerStyle='tokenSymbol'>
-													{token1Resolved?.data?.symbol}
-												</Box>
-											</>
-												}
-											</InputRightElement>
-										</InputGroup>
-										<Flex
-											layerStyle='ncGroup'
-										>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken1Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(25) :
-																	token1Balance?.data?.div(100).mul(25),
-																token1Resolved?.data?.decimals,
-															),
-														)
-														setToken1Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(25) :
-																token1Balance?.data?.div(100).mul(25),
-														)
-													}
-												}}
-											>25%</Button>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken1Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(50) :
-																	token1Balance?.data?.div(100).mul(50),
-																token1Resolved?.data?.decimals,
-															),
-														)
-														setToken1Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(50) :
-																token1Balance?.data?.div(100).mul(50),
-														)
-													}
-												}}
-											>50%</Button>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken1Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(75) :
-																	token1Balance?.data?.div(100).mul(75),
-																token1Resolved?.data?.decimals,
-															),
-														)
-														setToken1Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1.div(100).mul(75) :
-																token1Balance?.data?.div(100).mul(75),
-														)
-													}
-												}}
-											>75%</Button>
-											<Button
-												{...ncButtonProps}
-												onClick={() => {
-													if (wallet.account) {
-														uniV2TokenQuantity.setVsync(false)
-														setToken1Amount(
-															ethers.utils.formatUnits(
-																doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1 :
-																	token1Balance?.data,
-																token1Resolved?.data?.decimals,
-															),
-														)
-														setToken1Value(
-															doWithdrawal && phase.which === 1 ? uniV2Liquidity?.token1 :
-																token1Balance?.data,
-														)
-													}
-												}}
-											>Max</Button>
-										</Flex>
-									</Flex>
-									<Flex
-										flexFlow='column'
-										marginBottom='2rem'
-									>
-										<Switch
-											variant='wide'
-											size='lg'
-											isChecked={doWithdrawal}
-											onChange={() => setDoWithdrawal(!doWithdrawal)}
-										>
-											<Box
-												w='50%'
-												as='span'
-												textAlign='center'
-											>
-												Deposit
-											</Box>
-											<Box
-												w='50%'
-												as='span'
-												textAlign='center'
-											>
-												Withdraw
-											</Box>
-										</Switch>
 									</Flex>
 								</>
 							}
-							{phase.which !== 1 &&
+							{phase.which !== 0 &&
 								<Flex
 									mb='1.34rem'
 									layerStyle='modalNote'
@@ -575,14 +279,16 @@ export const Phase0SaleModal = (props) => {
 										p='0'
 										textStyle='heading'
 									>
-										Phase 1 is over
+										Phase 0 is over
 									</Box>
 									<Box
 										as='p'
 										ml='4px'
+										textAlign='justify'
 									>
-										Lock period has been initiated.
-										Deposits or&nbsp;withdrawals are&nbsp;not possible anymore. Below is current
+										This phase has ended.
+										There will be no more sells.
+										Below is current
 										summary of your position.
 									</Box>
 								</Flex>
@@ -592,7 +298,7 @@ export const Phase0SaleModal = (props) => {
 								textStyle='heading'
 								margin='0px 0 -2px 4px'
 							>
-								Lock Period
+								OG Level
 							</Box>
 							<Flex
 								flexFlow='column'
@@ -600,13 +306,13 @@ export const Phase0SaleModal = (props) => {
 								padding='0px 18px 1.5px'
 								marginBottom='3.5rem'
 								opacity='1'
-								cursor={(!doWithdrawal && phase.which === 1) ? 'pointer' : 'not-allowed'}
+								cursor={(!doWithdrawal && phase.which === 0) ? 'pointer' : 'not-allowed'}
 							>
 								<Slider
 									defaultValue={0}
 									min={0}
 									max={2}
-									disabled={(!doWithdrawal && phase.which === 1) ? false : true}
+									disabled={(!doWithdrawal && phase.which === 0 ? false : true)}
 									_disabled={{
 										pointerEvents: 'none',
 										opacity: '1',
@@ -621,11 +327,11 @@ export const Phase0SaleModal = (props) => {
 									>
 										<SliderMark
 											value={0}
-											opacity={(!doWithdrawal && phase.which === 1) ? '' :
+											opacity={(!doWithdrawal && phase.which === 0) ? '' :
 												(lockPeriod === 0) ? '1' : '0.6'}
 											onClick={() => { if (!doWithdrawal) { setLockPeriod(0) }}}
 											{...markLabelStyle}>
-											90<br/>days
+											Level<br/>1
 										</SliderMark>
 										<SliderMark
 											value={1}
@@ -634,7 +340,7 @@ export const Phase0SaleModal = (props) => {
 											onClick={() => { if (!doWithdrawal) { setLockPeriod(1) }}}
 											{...markLabelStyle}
 										>
-											180<br/>days
+											Level<br/>2
 										</SliderMark>
 										<SliderMark
 											value={2}
@@ -643,7 +349,7 @@ export const Phase0SaleModal = (props) => {
 											onClick={() => { if (!doWithdrawal) { setLockPeriod(2) }}}
 											{...markLabelStyle}
 										>
-											365<br/>days
+											Level<br/>3
 										</SliderMark>
 									</Box>
 									<SliderTrack bg='red.100'>
@@ -662,34 +368,13 @@ export const Phase0SaleModal = (props) => {
 									w='48%'
 									textStyle='heading'
 								>
-									REWARD
+									RATIO
 									<Flex
 										{...extrasStyle}
 									>
-										<Skeleton
-											display='flex'
-											flexDir='row'
-											gap='0.2rem'
-											minW='50%'
-											isLoaded={
-												!!(preQuoteHalo.preQuote && ((preQuoteHalo.preQuote > 0 && uniV2LPTokenQuantity.lpTokenQuantity >= 0) ||
-												(doWithdrawal && preQuoteHalo.preQuote == 0) ||
-												(preQuoteHalo.preQuote && phase1position.data?.[1] == 0)))
-											}>
-											{preQuoteHalo.preQuote &&
-												<>
-													{
-														<>
-															{prettifyNumber(ethers.utils.formatEther(preQuoteHalo.preQuote), 0, 4, 'US', 'compact')}
-														</>
-													}
-												</>
-											}
-											<Image
-												src={`svg/tokens/${defaults.address.halo}/index.svg`}
-												layerStyle='tokenIcon'
-											/>
-										</Skeleton>
+										<>
+											{prettifyCurrency(1.25, 0, 4, 'USD')}
+										</>
 									</Flex>
 								</Box>
 								<Box
@@ -697,7 +382,7 @@ export const Phase0SaleModal = (props) => {
 									mb='1rem'
 									textStyle='heading'
 								>
-									Multiplier
+									Total TBP
 									<Flex
 										{...extrasStyle}
 									>
@@ -709,7 +394,7 @@ export const Phase0SaleModal = (props) => {
 								as='h4'
 								textStyle='heading'
 							>
-								Deposited
+								Acquired
 							</Box>
 							<Skeleton
 								flexFlow='column'
@@ -850,7 +535,7 @@ export const Phase0SaleModal = (props) => {
 									</Button>
 								</Flex>
 							}
-							{phase.which === 1 &&
+							{phase.which === 0 &&
 								<Button
 									w='100%'
 									isLoading={(token0Allowance?.data?.gt(0) &&
@@ -879,14 +564,6 @@ export const Phase0SaleModal = (props) => {
 									(token1Allowance?.data?.gt(0) &&
 										token1Allowance?.data?.gt(token1Value)) &&
 									!(working)))}
-									onClick={() => {
-										if (!doWithdrawal) {
-											lock()
-										}
-										else {
-											withdrawal()
-										}
-									}}
 								>
 									{`${doWithdrawal ? 'Withdraw' : 'Deposit' } assets`}
 								</Button>
